@@ -1,0 +1,8 @@
+google-api-core
+google-api-python-client
+google-auth
+google-cloud-secret-manager
+pandas
+google-cloud-aiplatform
+pytest
+google-cloud-bigquery
