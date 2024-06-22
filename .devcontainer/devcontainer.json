@@ -1,5 +1,5 @@
 {
-    "name": "Article-Ally DevContainer",
+    "name": "ReadRobin DevContainer",
     "dockerFile": "./Dockerfile",
     "context": "..",
     "customizations": {

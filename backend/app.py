@@ -1,35 +1,27 @@
 from flask import Flask, request, jsonify
-import requests
+from google.auth.transport import requests
+from google.oauth2 import id_token
 
 app = Flask(__name__)
-
-# Replace with your Gemini API details
-GEMINI_API_URL = 'https://api.gemini.com/v1/endpoint'
-GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'
-GEMINI_API_SECRET = 'YOUR_GEMINI_API_SECRET'
 
 @app.route('/generate-questions', methods=['POST'])
 def generate_questions():
     data = request.get_json()
-    text = data['text']
-    
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {GEMINI_API_KEY}'
-    }
-    
-    payload = {
-        'prompt': f"Generate five comprehension questions for the following text:\n\n{text}",
-        'max_tokens': 150
-    }
-    
-    response = requests.post(GEMINI_API_URL, headers=headers, json=payload)
-    
-    if response.status_code == 200:
-        questions = response.json().get('choices', [])[0].get('text', '').strip().split('\n')
-        return jsonify({'questions': questions})
-    else:
-        return jsonify({'error': 'Failed to generate questions'}), response.status_code
+    token = request.headers.get('Authorization').split('Bearer ')[1]
+    try:
+        # Verify the token
+        id_info = id_token.verify_oauth2_token(token, requests.Request())
+        user_id = id_info['sub']
+        
+        text = data['text']
+        
+        # Mocking LLM response for illustration purposes
+        questions = ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"]
+        
+        return jsonify({'user_id': user_id, 'questions': questions})
+    except ValueError:
+        # Invalid token
+        return jsonify({'error': 'Invalid token'}), 401
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

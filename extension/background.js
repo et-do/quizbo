@@ -1,25 +1,21 @@
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('Article Ally extension installed');
-  });
-  
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'fetchComprehensionQuestions') {
-      fetch('http://localhost:5000/generate-questions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text: message.text })
-      })
-      .then(response => response.json())
-      .then(data => {
-        sendResponse({ questions: data.questions });
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        sendResponse({ error: 'Failed to fetch questions' });
-      });
-      return true; // Will respond asynchronously
+  chrome.identity.getAuthToken({ interactive: true }, (token) => {
+    if (chrome.runtime.lastError || !token) {
+      console.error('Failed to get auth token:', chrome.runtime.lastError);
+      return;
     }
+    console.log('Auth token:', token);
+
+    // Get user info
+    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(userInfo => {
+      console.log('User info:', userInfo);
+      // Store user info in local storage
+      chrome.storage.local.set({ userInfo });
+    })
+    .catch(error => console.error('Failed to fetch user info:', error));
   });
-  
+});
