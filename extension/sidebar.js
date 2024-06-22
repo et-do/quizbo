@@ -30,4 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('No auth token or user info found');
       }
     });
+  
+    // Add event listener for the close button
+    document.getElementById('close-sidebar').addEventListener('click', () => {
+      document.getElementById('readrobin-sidebar').remove();
+    });
   });
+  
