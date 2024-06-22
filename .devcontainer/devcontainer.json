@@ -12,6 +12,7 @@
       }
     },
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-	  "workspaceFolder": "/workspace"
+	  "workspaceFolder": "/workspace",
+    "remoteUser": "root"
   }
   

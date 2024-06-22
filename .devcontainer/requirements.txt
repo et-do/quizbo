@@ -6,3 +6,4 @@ pandas
 google-cloud-aiplatform
 pytest
 google-cloud-bigquery
+flask
