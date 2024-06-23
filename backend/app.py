@@ -1,27 +1,65 @@
 from flask import Flask, request, jsonify
-from google.auth.transport import requests
-from google.oauth2 import id_token
+import vertexai
+from vertexai.generative_models import GenerativeModel
+import vertexai.preview.generative_models as generative_models
+import os
 
 app = Flask(__name__)
 
-@app.route('/generate-questions', methods=['POST'])
-def generate_questions():
-    data = request.get_json()
-    token = request.headers.get('Authorization').split('Bearer ')[1]
-    try:
-        # Verify the token
-        id_info = id_token.verify_oauth2_token(token, requests.Request())
-        user_id = id_info['sub']
-        
-        text = data['text']
-        
-        # Mocking LLM response for illustration purposes
-        questions = ["Question 1", "Question 2", "Question 3", "Question 4", "Question 5"]
-        
-        return jsonify({'user_id': user_id, 'questions': questions})
-    except ValueError:
-        # Invalid token
-        return jsonify({'error': 'Invalid token'}), 401
+vertexai.init(project=os.environ["GCP_PROJECT"])
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+
+@app.route("/process-page", methods=["POST"])
+def process_page():
+    data = request.get_json()
+    url = data.get("url")
+    html_content = data.get("html")
+    print(url)
+
+    generation_config = {
+        "max_output_tokens": 8192,
+        "temperature": 1,
+        "top_p": 0.95,
+    }
+
+    safety_settings = {
+        generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+        generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+        generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+        generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+    }
+
+    # Process the HTML content with the LLM
+    model = GenerativeModel(
+        "gemini-1.5-flash-001",
+        system_instruction=["""You are an expert Webscraper. Scrape this HTML content for the Article name and its contents."""]
+    )
+
+    response = model.generate_content(
+        [f"""HTML Content: {html_content} || Your Response: """],
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+        stream=False,
+    )
+
+    # Access the text from the single response
+    extracted_text = response.text
+    print(extracted_text)
+
+    # Generate questions and answers
+    questions_answers = model.predict(
+        f"Generate ten comprehension questions and answers for the following text:\n\n{extracted_text}",
+        max_output_tokens=1024,
+    )
+
+    return jsonify(
+        {
+            "url": url,
+            "summary": extracted_text,
+            "questions_answers": questions_answers.text,
+        }
+    )
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

@@ -17,8 +17,8 @@ WORKDIR /workspace
 COPY . /workspace
 
 # Set the environment variable for the GCP project
-ENV GCP_PROJECT=dvan-genai-poc
-ENV GCP_PROJECT_NUMBER=651397568677
+ENV GCP_PROJECT=manifest-space-398415
+ENV GCP_PROJECT_NUMBER=676064365176
 RUN gcloud config set project $GCP_PROJECT
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/secrets/service_account_credentials.json
