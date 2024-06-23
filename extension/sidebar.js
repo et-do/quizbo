@@ -22,8 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
           console.log('Questions:', data.questions);
-          document.getElementById('content').innerHTML += `<p>User ID: ${userId}</p>`;
-          document.getElementById('content').innerHTML += `<ul>${data.questions.map(q => `<li>${q}</li>`).join('')}</ul>`;
+          data.questions.forEach((question, index) => {
+            document.getElementById(`question-${index + 1}`).value = question;
+          });
         })
         .catch(error => console.error('Error:', error));
       } else {
@@ -35,5 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-sidebar').addEventListener('click', () => {
       document.getElementById('readrobin-sidebar').remove();
     });
+  
+    // Add event listeners for the submit buttons
+    for (let i = 1; i <= 10; i++) {
+      document.getElementById(`submit-${i}`).addEventListener('click', () => {
+        const answer = document.getElementById(`answer-${i}`).value;
+        console.log(`Answer for question ${i}: ${answer}`);
+        // Add your submission logic here
+      });
+    }
   });
   
