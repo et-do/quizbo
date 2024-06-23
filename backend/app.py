@@ -7,34 +7,27 @@ app = Flask(__name__)
 
 vertexai.init(project=os.environ["GCP_PROJECT"])
 
-
 @app.route("/process-page", methods=["POST"])
 def process_page():
     data = request.get_json()
     url = data.get("url")
-    prompt = data.get("html")
-    print(url)
+    html_content = data.get("html")
 
-    model = create_model(role=Role.WEBSCRAPER)
+    # Web scraping
+    scraper_model = create_model(role=Role.WEBSCRAPER)
+    response = scraper_model.generate_content([f"HTML Content: {html_content} || Your Response: "], stream=False)
+    scraped_content = response.text
 
-    response_text = get_response_text_from_model(prompt=prompt, model=model)
+    # Generating questions and answers
+    question_creator_model = create_model(role=Role.QUESTION_CREATOR)
+    qa_response = question_creator_model.generate_content([f"Generate ten comprehension questions and answers for the following text:\n\n{scraped_content}"], stream=False)
+    questions_answers = qa_response.text
 
-    print(response_text)
-
-    # Generate questions and answers
-    questions_answers = model.predict(
-        f"Generate ten comprehension questions and answers for the following text:\n\n{extracted_text}",
-        max_output_tokens=1024,
-    )
-
-    return jsonify(
-        {
-            "url": url,
-            "summary": extracted_text,
-            "questions_answers": questions_answers.text,
-        }
-    )
-
+    return jsonify({
+        "url": url,
+        "scraped_content": scraped_content,
+        "questions_answers": questions_answers
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
