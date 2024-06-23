@@ -1,0 +1,19 @@
+{
+    "name": "ReadRobin DevContainer",
+    "dockerFile": "./Dockerfile",
+    "context": "..",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+            "ms-python.python",
+            "dbaeumer.vscode-eslint",
+            "esbenp.prettier-vscode",
+            "ms-python.black-formatter"
+        ]
+      }
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+	  "workspaceFolder": "/workspace",
+    "remoteUser": "root"
+  }
+  

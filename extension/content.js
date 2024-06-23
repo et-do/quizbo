@@ -19,7 +19,7 @@
     <div style="position: relative; padding: 20px;">
       <button id="close-sidebar" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px;">&times;</button>
       <h2 style="margin-top: 40px; color: #333;">Welcome to ReadRobin</h2>
-      <h3 style="color: #666;">Lets test your comprehension of: Article Title</h3>
+      <h3 style="color: #666;">Lets test your comprehension of Article Title</h3>
       <div id="questions">
         ${Array.from({ length: 10 }).map((_, i) => `
           <div style="margin-bottom: 20px;">
@@ -37,5 +37,12 @@
 
   document.getElementById('close-sidebar').addEventListener('click', () => {
     document.getElementById('readrobin-sidebar').remove();
+  });
+
+  const currentUrl = window.location.href;
+  const htmlContent = document.documentElement.outerHTML;
+
+  chrome.runtime.sendMessage({ action: 'sendPageInfo', url: currentUrl, html: htmlContent }, (response) => {
+    console.log('Page info sent:', response.status);
   });
 })();
