@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "ReadRobin Sidebar",
+  "name": "ReadRobin",
   "description": "A Chrome extension that shows a sidebar for ReadRobin.",
   "version": "1.0",
   "permissions": ["activeTab", "storage", "scripting"],
