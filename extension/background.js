@@ -1,31 +1,34 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'sendPageInfo') {
-    const { url, html } = message;
+  if (message.action === 'generateQuiz') {
+    const { url, html, userId } = message.data;
+    console.log('Sending request to backend with:', { url, html, userId });
 
-    // Replace with your backend URL
-    const backendUrl = 'http://localhost:5000/process-page';
-
-    fetch(backendUrl, {
+    fetch('http://127.0.0.1:5000/process-page', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         url: url,
         html: html,
-      }),
+        user_id: userId
+      })
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
-      console.log('Page processed:', data);
-      sendResponse({ status: 'success', data: data });
+      console.log('Received response from backend:', data);
+      sendResponse(data);
     })
     .catch(error => {
-      console.error('Error processing page:', error);
-      sendResponse({ status: 'error', error: error });
+      console.error('Error:', error);
+      sendResponse({ error: 'Failed to fetch data. Please try again later.' });
     });
 
-    // Keep the message channel open until sendResponse is called
-    return true;
+    return true;  // Keep the message channel open for sendResponse
   }
 });
