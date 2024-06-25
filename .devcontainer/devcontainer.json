@@ -1,19 +1,28 @@
 {
-    "name": "ReadRobin DevContainer",
-    "dockerFile": "./Dockerfile",
-    "context": "..",
-    "customizations": {
-      "vscode": {
-        "extensions": [
-            "ms-python.python",
-            "dbaeumer.vscode-eslint",
-            "esbenp.prettier-vscode",
-            "ms-python.black-formatter"
+  "name": "ReadRobin DevContainer",
+  "dockerFile": "./Dockerfile",
+  "context": "..",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-python.black-formatter",
+        "ms-python.vscode-pylance",  // For better Python support
+        "littlefoxteam.vscode-python-test-adapter"  // For running tests
+      ],
+      "settings": {
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.nosetestsEnabled": false,
+        "python.testing.pytestArgs": [
+          "tests"  // Assuming your tests are in the 'tests' directory
         ]
       }
-    },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-	  "workspaceFolder": "/workspace",
-    "remoteUser": "root"
-  }
-  
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root"
+}
