@@ -27,6 +27,3 @@ ENV PYTHONPATH "${PYTHONPATH}:/workspace"
 
 # Expose the necessary ports
 EXPOSE 5000
-
-# Command to run the backend server
-CMD ["python", "backend/app.py"]
