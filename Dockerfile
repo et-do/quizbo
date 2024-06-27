@@ -1,5 +1,5 @@
 # Use the official Golang image as a base
-FROM golang:1.22.2
+FROM golang:1.22.4
 
 # Install necessary tools
 RUN apt-get update && apt-get install -y \
@@ -45,7 +45,10 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/secrets/service_account_credential
 EXPOSE 8080
 
 # Build the Go application
-RUN go build -o main .
+# RUN go build -o main .
+
+# # Set the default command for the container
+# CMD ["./main"]
 
 # Set the default command for the container
-CMD ["./main"]
+CMD ["go", "run", "main.go"]
