@@ -35,8 +35,8 @@ RUN go mod download
 COPY . .
 
 # Set the environment variable for the GCP project
-ENV GCP_PROJECT=manifest-space-398415
-ENV GCP_PROJECT_NUMBER=676064365176
+ENV GCP_PROJECT=read-robin-2e150
+ENV GCP_PROJECT_NUMBER=31059740280
 RUN gcloud config set project $GCP_PROJECT
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/secrets/service_account_credentials.json
