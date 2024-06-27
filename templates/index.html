@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Submission</title>
+</head>
+<body>
+    <h1>Submit a URL</h1>
+    <form action="/submit" method="post">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url" required>
+        <input type="submit" value="Submit">
+    </form>
+    {{ if . }}
+    <h2>Response</h2>
+    <pre>{{ . }}</pre>
+    {{ end }}
+</body>
+</html>
