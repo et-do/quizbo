@@ -11,7 +11,8 @@
         "go.toolsGopath": "/go"
       },
       "extensions": [
-        "golang.go"
+        "golang.go",
+        "premparihar.gotestexplorer"
       ]
     }
   },
