@@ -1,26 +1,31 @@
 {
   "name": "Read-Robin Go Development Environment",
-  "dockerFile": "../Dockerfile",
+  "dockerFile": "./Dockerfile",
   "context": "..",
   "appPort": [ "8080:8080" ],
   "workspaceFolder": "/workspace",
-  "settings": {
-      "go.gopath": "/go",
-      "go.toolsGopath": "/go"
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.gopath": "/go",
+        "go.toolsGopath": "/go"
+      },
+      "extensions": [
+        "golang.go"
+      ]
+    }
   },
-  "extensions": [
-    "golang.go",
-    "premparihar.gotestexplorer"
-  ],
   "postCreateCommand": "go mod tidy",
   "runArgs": [
-      "--init",
-      "--cap-add=SYS_PTRACE",
-      "--security-opt",
-      "seccomp=unconfined"
+    "--init",
+    "--cap-add=SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "${localWorkspaceFolder}:/workspace"
   ],
   "remoteUser": "root",
   "containerEnv": {
-      "PORT": "8080"
+    "PORT": "8080"
   }
 }
