@@ -44,11 +44,5 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/workspace/secrets/service_account_credential
 # Expose port 8080 for the app
 EXPOSE 8080
 
-# Build the Go application
-# RUN go build -o main .
-
-# # Set the default command for the container
-# CMD ["./main"]
-
 # Set the default command for the container
 CMD ["go", "run", "main.go"]

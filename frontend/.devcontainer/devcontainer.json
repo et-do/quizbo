@@ -1,0 +1,32 @@
+{
+  "name": "React Frontend Development Environment",
+  "dockerFile": "Dockerfile",
+  "context": "..",
+  "appPort": ["3000:3000"],
+  "workspaceFolder": "/workspace/frontend",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "postCreateCommand": "npm install -g create-react-app",
+  "runArgs": [
+    "--init",
+    "--cap-add=SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined",
+    "-v",
+    "${localWorkspaceFolder}:/workspace/frontend"
+  ],
+  "remoteUser": "node",
+  "containerEnv": {
+    "PORT": "3000"
+  }
+}
