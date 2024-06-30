@@ -61,14 +61,18 @@ function App() {
 
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch("https://your-cloud-run-url/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ url }),
-      });
+      // const res = await fetch(`${process.env.REACT_APP_API_URL}/submit`, {
+      const res = await fetch(
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ url }),
+        }
+      );
       const data = await res.json();
       setResponse(data);
     } catch (error) {
