@@ -1,4 +1,0 @@
-Flask
-requests
-google-cloud-aiplatform
-flask-cors

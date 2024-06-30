@@ -6,14 +6,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strings"
 	"testing"
 )
 
 // TestSubmitHandler tests the SubmitHandler function
 func TestSubmitHandler(t *testing.T) {
 	// Ensure the working directory is the project root
-	// This is necessary to correctly locate the template files
 	err := os.Chdir("..")
 	if err != nil {
 		t.Fatal(err)
@@ -51,9 +49,11 @@ func TestSubmitHandler(t *testing.T) {
 
 	// Get the response body as a string
 	responseBody := responseRecorder.Body.String()
-	// Check if the response body contains the expected HTML elements and content
-	if !strings.Contains(responseBody, `<h2>Response</h2>`) ||
-		!strings.Contains(responseBody, `<pre>{success http://example.com}</pre>`) {
-		t.Errorf("handler returned unexpected body: got %v", responseBody)
+	// Define the expected JSON response
+	expectedResponse := `{"status":"success","url":"http://example.com"}`
+
+	// Compare the actual response body with the expected response
+	if responseBody != expectedResponse+"\n" { // Account for newline in JSON encoding
+		t.Errorf("handler returned unexpected body: got %v want %v", responseBody, expectedResponse)
 	}
 }
