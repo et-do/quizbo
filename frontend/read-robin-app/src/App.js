@@ -11,7 +11,8 @@ import logo from "./logo.png"; // Ensure you have a logo.png in the src director
 
 function App() {
   const [url, setUrl] = useState("");
-  const [response, setResponse] = useState(null);
+  const [quizID, setQuizID] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
@@ -52,7 +53,8 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
-    setResponse(null);
+    setQuizID(null);
+    setQuestions([]);
 
     if (!user) {
       setError("You must be logged in to submit a URL");
@@ -73,9 +75,22 @@ function App() {
         }
       );
       const data = await res.json();
-      setResponse(data);
+      setQuizID(data.quiz_id);
+      fetchQuestions(data.quiz_id);
     } catch (error) {
       setError("Error submitting URL");
+    }
+  };
+
+  const fetchQuestions = async (quizID) => {
+    try {
+      const res = await fetch(
+        `https://read-robin-6yudia4zva-nn.a.run.app/quiz/${quizID}`
+      );
+      const data = await res.json();
+      setQuestions(data.questions);
+    } catch (error) {
+      setError("Error fetching questions");
     }
   };
 
@@ -108,21 +123,15 @@ function App() {
         <button onClick={signIn}>Sign in with Google</button>
       )}
       {error && <div style={{ color: "red" }}>{error}</div>}
-      {response && (
+      {questions.length > 0 && (
         <div>
           <h2>Questions</h2>
-          {response.quiz && response.quiz.length > 0 ? (
-            <div>
-              {response.quiz.map((item, index) => (
-                <div key={index} className="quiz-item">
-                  <h3>Question {index + 1}</h3>
-                  <p>{item.question}</p>
-                </div>
-              ))}
+          {questions.map((item, index) => (
+            <div key={index} className="quiz-item">
+              <h3>Question {index + 1}</h3>
+              <p>{item}</p>
             </div>
-          ) : (
-            <pre>{JSON.stringify(response, null, 2)}</pre>
-          )}
+          ))}
         </div>
       )}
     </div>
