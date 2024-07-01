@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"read-robin/utils" // Import the utils package
+	"read-robin/services"
+	"read-robin/utils"
+
+	"golang.org/x/net/context"
 )
 
 // URLRequest is a struct to hold the URL submitted by the user
@@ -14,9 +17,12 @@ type URLRequest struct {
 
 // Response is a struct to hold the response to be sent back to the user
 type Response struct {
-	Status string `json:"status"`
-	URL    string `json:"url"`
-	HTML   string `json:"html"`
+	Status   string `json:"status"`
+	URL      string `json:"url"`
+	HTML     string `json:"html"`
+	QuizID   string `json:"quiz_id"`
+	FullQuiz string `json:"full_quiz"`
+	FullHTML string `json:"full_html"`
 }
 
 // SubmitHandler handles the form submission and responds with JSON
@@ -58,10 +64,66 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a Response struct with the status, URL, and HTML content
-	response := Response{Status: "success", URL: urlRequest.URL, HTML: htmlContent}
-	// Log the received URL to the server logs
-	log.Println("Constructed Response: ", response)
+	ctx := context.Background()
+
+	// Initialize the Gemini client
+	geminiClient, err := services.NewGeminiClient(ctx)
+	if err != nil {
+		log.Printf("SubmitHandler: Error creating Gemini client: %v", err)
+		http.Error(w, "Error creating Gemini client", http.StatusInternalServerError)
+		return
+	}
+
+	// Extract content using the Gemini client
+	extractedContent, fullHTML, err := geminiClient.ExtractContent(ctx, htmlContent)
+	if err != nil {
+		log.Printf("SubmitHandler: Error extracting content: %v", err)
+		http.Error(w, "Error extracting content", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate quiz using the Gemini client
+	quizContent, fullQuiz, err := geminiClient.GenerateQuiz(ctx, extractedContent)
+	if err != nil {
+		log.Printf("SubmitHandler: Error generating quiz: %v", err)
+		http.Error(w, "Error generating quiz", http.StatusInternalServerError)
+		return
+	}
+
+	// Parse quiz content
+	quiz, err := services.ParseQuizResponse(quizContent)
+	if err != nil {
+		log.Printf("SubmitHandler: Error parsing quiz response: %v", err)
+		http.Error(w, "Error parsing quiz response", http.StatusInternalServerError)
+		return
+	}
+
+	// Initialize the Firestore client
+	firestoreClient, err := services.NewFirestoreClient(ctx)
+	if err != nil {
+		log.Printf("SubmitHandler: Error creating Firestore client: %v", err)
+		http.Error(w, "Error creating Firestore client", http.StatusInternalServerError)
+		return
+	}
+
+	// Save quiz to Firestore
+	quizID, err := firestoreClient.SaveQuiz(ctx, urlRequest.URL, quiz.Quiz)
+	if err != nil {
+		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
+		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
+		return
+	}
+
+	// Include the quiz ID and full responses in the response
+	response := Response{
+		Status:   "success",
+		URL:      urlRequest.URL,
+		HTML:     extractedContent,
+		QuizID:   quizID,
+		FullQuiz: fullQuiz,
+		FullHTML: fullHTML,
+	}
+
 	// Set the content type of the response to JSON
 	w.Header().Set("Content-Type", "application/json")
 	// Write the JSON response
