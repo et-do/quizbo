@@ -56,3 +56,27 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (st
 
 	return string(summary), nil
 }
+
+// GenerateQuiz generates quiz questions and answers from the summarized content
+func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent string) (string, error) {
+	systemInstructions := "You are a highly skilled model that generates quiz questions and answers from summarized content. Your task is to generate questions and answers based on the summarized content provided. You should also generate a small piece of reference text that was used to create your question/answer pair. Return everything in a JSON dictionary"
+	geminiModel := gc.client.GenerativeModel(modelName)
+	geminiModel.SystemInstruction = &genai.Content{
+		Parts: []genai.Part{genai.Text(systemInstructions)},
+	}
+
+	prompt := genai.Text(summarizedContent)
+
+	resp, err := geminiModel.GenerateContent(ctx, prompt)
+	if err != nil {
+		return "", fmt.Errorf("error generating quiz: %w", err)
+	}
+
+	// Extract the quiz from the response
+	quiz, err := json.MarshalIndent(resp, "", "  ")
+	if err != nil {
+		return "", fmt.Errorf("json.MarshalIndent: %w", err)
+	}
+
+	return string(quiz), nil
+}
