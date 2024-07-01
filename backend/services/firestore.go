@@ -63,14 +63,14 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quizzes []m
 	return contentID, nil
 }
 
-// GetQuiz retrieves a quiz from Firestore by QuizID
-func (fc *FirestoreClient) GetQuiz(ctx context.Context, quizID string) (*models.Quiz, error) {
+// GetQuiz retrieves a quiz from Firestore by contentID and quizID
+func (fc *FirestoreClient) GetQuiz(ctx context.Context, contentID, quizID string) (*models.Quiz, error) {
 	collection := "quizzes"
 	if os.Getenv("ENV") == "development" {
 		collection = "dev_quizzes"
 	}
 
-	doc, err := fc.Client.Collection(collection).Doc(quizID).Get(ctx)
+	doc, err := fc.Client.Collection(collection).Doc(contentID).Get(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed retrieving quiz: %v", err)
 	}
@@ -80,11 +80,13 @@ func (fc *FirestoreClient) GetQuiz(ctx context.Context, quizID string) (*models.
 		return nil, fmt.Errorf("dataTo: %v", err)
 	}
 
-	if len(content.Quizzes) == 0 {
-		return nil, fmt.Errorf("no quizzes found for quizID: %s", quizID)
+	for _, quiz := range content.Quizzes {
+		if quiz.QuizID == quizID {
+			return &quiz, nil
+		}
 	}
 
-	return &content.Quizzes[0], nil
+	return nil, fmt.Errorf("no quiz found for quizID: %s", quizID)
 }
 
 // generateID creates a unique ID based on the URL
