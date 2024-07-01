@@ -17,7 +17,7 @@ type URLRequest struct {
 }
 
 // Response is a struct to hold the response to be sent back to the user
-type Response struct {
+type SubmitResponse struct {
 	Status string `json:"status"`
 	URL    string `json:"url"`
 	QuizID string `json:"quiz_id"`
@@ -120,8 +120,8 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return the quiz ID in the response
-	response := Response{
+	// Include the quiz ID in the response
+	response := SubmitResponse{
 		Status: "success",
 		URL:    urlRequest.URL,
 		QuizID: quizID,
