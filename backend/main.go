@@ -25,6 +25,7 @@ func main() {
 		"http://127.0.0.1:5000",
 		"https://read-robin-2e150.web.app",
 		"https://read-robin-dev-6yudia4zva-nn.a.run.app",
+		"https://read-robin-6yudia4zva-nn.a.run.app/",
 	})
 	corsAllowedMethods := gorillahandlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
 	corsAllowedHeaders := gorillahandlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
