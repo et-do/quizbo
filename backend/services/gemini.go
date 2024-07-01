@@ -12,8 +12,8 @@ import (
 
 const (
 	location                    = "northamerica-northeast1"
-	modelName                   = "gemini-1.5-flash-001"
-	quizModelSystemInstructions = `You are a highly skilled model that generates quiz questions and answers from summarized content. Your task is to generate questions and answers based on the summarized content provided. You should also generate a small piece of reference text that was used to create your question/answer pair. Return everything in a JSON dictionary with 'quiz' being an array of objects containing 'question', 'answer', and 'reference' strings. The structure should look like this in plaintext, no backslahes or 'json':
+	modelName                   = "gemini-1.5-pro"
+	quizModelSystemInstructions = `You are a highly skilled model that generates quiz questions and answers from summarized content. Your task is to generate questions and answers based on the summarized content provided. You should also generate a small piece of reference text that was used to create your question/answer pair. Return everything in a JSON dictionary with 'quiz' being an array of objects containing 'question', 'answer', and 'reference' strings. The structure should look like this:
 {
 	"quiz": [
 		{
@@ -94,25 +94,4 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (st
 // GenerateQuiz generates quiz questions and answers from the summarized content
 func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent string) (string, string, error) {
 	return gc.generateContent(ctx, quizModelSystemInstructions, summarizedContent)
-}
-
-// QuizResponseToJSON parses the quiz response part into a JSON format
-func (gc *GeminiClient) QuizResponseToJSON(quizResponse string) (string, error) {
-	// Remove the backticks and leading/trailing whitespace
-	cleanedResponse := strings.ReplaceAll(quizResponse, "```json", "")
-	cleanedResponse = strings.ReplaceAll(cleanedResponse, "```", "")
-	cleanedResponse = strings.TrimSpace(cleanedResponse)
-
-	// Convert to JSON
-	var jsonResponse map[string]interface{}
-	if err := json.Unmarshal([]byte(cleanedResponse), &jsonResponse); err != nil {
-		return "", fmt.Errorf("error unmarshalling cleaned response: %w", err)
-	}
-
-	jsonString, err := json.MarshalIndent(jsonResponse, "", "  ")
-	if err != nil {
-		return "", fmt.Errorf("error marshalling json response: %w", err)
-	}
-
-	return string(jsonString), nil
 }

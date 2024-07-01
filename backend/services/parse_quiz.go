@@ -1,63 +1,50 @@
 package services
 
 import (
-	"encoding/json"
 	"fmt"
 	"read-robin/models"
-	"strings"
 )
 
-// ParseQuizResponse parses the response from the Gemini model into a Quizzes struct
-func ParseQuizResponse(response string) (models.Quizzes, error) {
-	// Remove the backticks and leading/trailing whitespace
-	cleanedResponse := strings.ReplaceAll(response, "```json", "")
-	cleanedResponse = strings.ReplaceAll(cleanedResponse, "```", "")
-	cleanedResponse = strings.TrimSpace(cleanedResponse)
-
-	// Parse the cleaned response into a map
-	var result map[string]interface{}
-	if err := json.Unmarshal([]byte(cleanedResponse), &result); err != nil {
-		return models.Quizzes{}, fmt.Errorf("error unmarshalling quiz response: %w", err)
-	}
-
+// ParseQuizResponse parses the response from the Gemini model into a Quiz struct
+func ParseQuizResponse(response map[string]interface{}) (models.Quiz, error) {
 	// Extract the quiz array
-	quizInterface, ok := result["quiz"].([]interface{})
+	quizInterface, ok := response["quiz"].([]interface{})
 	if !ok {
-		return models.Quizzes{}, fmt.Errorf("quiz field missing or not an array")
+		return models.Quiz{}, fmt.Errorf("quiz field missing or not an array")
 	}
 
-	var quizzes []models.Quiz
+	var questions []models.Question
 	for _, qa := range quizInterface {
 		qaMap, ok := qa.(map[string]interface{})
 		if !ok {
-			return models.Quizzes{}, fmt.Errorf("error parsing question and answer pair")
+			return models.Quiz{}, fmt.Errorf("error parsing question and answer pair")
 		}
 
-		question, ok := qaMap["question"].(string)
+		questionText, ok := qaMap["question"].(string)
 		if !ok {
-			return models.Quizzes{}, fmt.Errorf("question field missing or not a string")
+			return models.Quiz{}, fmt.Errorf("question field missing or not a string")
 		}
 
 		answer, ok := qaMap["answer"].(string)
 		if !ok {
-			return models.Quizzes{}, fmt.Errorf("answer field missing or not a string")
+			return models.Quiz{}, fmt.Errorf("answer field missing or not a string")
 		}
 
 		reference, ok := qaMap["reference"].(string)
 		if !ok {
-			return models.Quizzes{}, fmt.Errorf("reference field missing or not a string")
+			return models.Quiz{}, fmt.Errorf("reference field missing or not a string")
 		}
 
-		quizzes = append(quizzes, models.Quiz{
-			QuizID:    generateQuizID(),
-			Question:  question,
-			Answer:    answer,
-			Reference: reference,
+		questions = append(questions, models.Question{
+			QuestionID: generateQuestionID(),
+			Question:   questionText,
+			Answer:     answer,
+			Reference:  reference,
 		})
 	}
 
-	return models.Quizzes{
-		QuizID: generateQuizID(),
-		Quiz:   quizzes,
+	return models.Quiz{
+		QuizID:    generateQuizID(),
+		Questions: questions,
 	}, nil
 }

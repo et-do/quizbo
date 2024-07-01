@@ -41,21 +41,19 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quizzes []m
 
 	contentID := generateID(url)
 
-	// Assign a QuizID to each Quiz
+	// Assign a QuizID and QuestionID to each Quiz and Question
 	for i := range quizzes {
 		quizzes[i].QuizID = generateQuizID()
+		for j := range quizzes[i].Questions {
+			quizzes[i].Questions[j].QuestionID = generateQuestionID()
+		}
 	}
 
 	content := models.Content{
 		URL:       url,
 		Timestamp: time.Now(),
 		ContentID: contentID,
-		Quizzes: []models.Quizzes{
-			{
-				QuizID: generateQuizID(),
-				Quiz:   quizzes,
-			},
-		},
+		Quizzes:   quizzes,
 	}
 
 	_, err := fc.client.Collection(collection).Doc(contentID).Set(ctx, content)
@@ -74,7 +72,11 @@ func generateID(url string) string {
 
 // generateQuizID generates a 4-digit random quiz ID
 func generateQuizID() string {
-	rand.Seed(time.Now().UnixNano())
+	return fmt.Sprintf("%04d", rand.Intn(10000))
+}
+
+// generateQuestionID generates a 4-digit random question ID
+func generateQuestionID() string {
 	return fmt.Sprintf("%04d", rand.Intn(10000))
 }
 

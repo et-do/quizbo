@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"read-robin/models"
 	"read-robin/services"
 	"read-robin/utils"
 
@@ -90,8 +91,16 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Convert the quiz content to a map for parsing
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
+		log.Printf("SubmitHandler: Error unmarshalling quiz content: %v", err)
+		http.Error(w, "Error unmarshalling quiz content", http.StatusInternalServerError)
+		return
+	}
+
 	// Parse quiz content
-	quiz, err := services.ParseQuizResponse(quizContent)
+	quiz, err := services.ParseQuizResponse(quizContentMap)
 	if err != nil {
 		log.Printf("SubmitHandler: Error parsing quiz response: %v", err)
 		http.Error(w, "Error parsing quiz response", http.StatusInternalServerError)
@@ -107,7 +116,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Save quiz to Firestore
-	quizID, err := firestoreClient.SaveQuiz(ctx, urlRequest.URL, quiz.Quiz)
+	quizID, err := firestoreClient.SaveQuiz(ctx, urlRequest.URL, []models.Quiz{quiz})
 	if err != nil {
 		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
 		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
