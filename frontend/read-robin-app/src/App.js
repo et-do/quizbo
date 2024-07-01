@@ -61,9 +61,8 @@ function App() {
 
     try {
       const idToken = await user.getIdToken();
-      // const res = await fetch(`${process.env.REACT_APP_API_URL}/submit`, {
       const res = await fetch(
-        `https://read-robin-6yudia4zva-nn.a.run.app/submit`,
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
         {
           method: "POST",
           headers: {
@@ -111,8 +110,19 @@ function App() {
       {error && <div style={{ color: "red" }}>{error}</div>}
       {response && (
         <div>
-          <h2>Response</h2>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
+          <h2>Questions</h2>
+          {response.quiz && response.quiz.length > 0 ? (
+            <div>
+              {response.quiz.map((item, index) => (
+                <div key={index} className="quiz-item">
+                  <h3>Question {index + 1}</h3>
+                  <p>{item.question}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <pre>{JSON.stringify(response, null, 2)}</pre>
+          )}
         </div>
       )}
     </div>
