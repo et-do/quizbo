@@ -77,3 +77,35 @@ func TestExtractContent(t *testing.T) {
 		t.Logf("extracted_contents: %s", extracted_contents)
 	}
 }
+
+func TestGenerateQuiz(t *testing.T) {
+	ctx := context.Background()
+
+	// Ensure the environment variable is set for the test
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	geminiClient, err := NewGeminiClient(ctx)
+	if err != nil {
+		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
+	}
+
+	// Use the previously tested method to get the extracted content
+	extractedContents, err := geminiClient.ExtractContent(ctx, testHTML)
+	if err != nil {
+		t.Fatalf("ExtractContent: expected no error, got %v", err)
+	}
+
+	quiz, err := geminiClient.GenerateQuiz(ctx, extractedContents)
+	if err != nil {
+		t.Fatalf("GenerateQuiz: expected no error, got %v", err)
+	}
+
+	if quiz == "" {
+		t.Errorf("GenerateQuiz: expected a quiz, got an empty string")
+	} else {
+		t.Logf("Quiz: %s", quiz)
+	}
+}
