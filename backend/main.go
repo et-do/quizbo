@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"read-robin/handlers" // Import your handlers package
+	"read-robin/handlers"
+	"read-robin/middleware" // Import the middleware package
 
 	gorillahandlers "github.com/gorilla/handlers" // Alias the gorilla/handlers package
 	"github.com/gorilla/mux"
@@ -19,13 +20,16 @@ func main() {
 	r.HandleFunc("/", handlers.HomeHandler).Methods("GET")
 	r.HandleFunc("/submit", handlers.SubmitHandler).Methods("POST")
 
+	// Apply logging middleware
+	r.Use(middleware.LoggingMiddleware)
+
 	// Set up CORS
 	corsAllowedOrigins := gorillahandlers.AllowedOrigins([]string{
 		"http://localhost:3000",
 		"http://127.0.0.1:5000",
 		"https://read-robin-2e150.web.app",
 		"https://read-robin-dev-6yudia4zva-nn.a.run.app",
-		"https://read-robin-6yudia4zva-nn.a.run.app/",
+		"https://read-robin-6yudia4zva-nn.a.run.app",
 	})
 	corsAllowedMethods := gorillahandlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
 	corsAllowedHeaders := gorillahandlers.AllowedHeaders([]string{"Content-Type", "Authorization"})

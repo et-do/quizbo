@@ -25,25 +25,28 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Content-Type") == "application/json" {
 		// Parse JSON data
 		if err := json.NewDecoder(r.Body).Decode(&urlRequest); err != nil {
+			log.Printf("SubmitHandler: Unable to parse JSON request: %v", err)
 			http.Error(w, "Unable to parse JSON request", http.StatusBadRequest)
 			return
 		}
 	} else {
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
+			log.Printf("SubmitHandler: Unable to parse form: %v", err)
 			http.Error(w, "Unable to parse form", http.StatusBadRequest)
 			return
 		}
 
 		urlRequest.URL = r.FormValue("url")
 		if urlRequest.URL == "" {
+			log.Println("SubmitHandler: Missing URL")
 			http.Error(w, "Missing URL", http.StatusBadRequest)
 			return
 		}
 	}
 
 	// Log the received URL to the server logs
-	log.Printf("Received URL: %s\n", urlRequest.URL)
+	log.Printf("SubmitHandler: Received URL: %s", urlRequest.URL)
 
 	// Create a Response struct with the status and URL
 	response := Response{Status: "success", URL: urlRequest.URL}
@@ -52,7 +55,8 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// Write the JSON response
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		log.Printf("Error encoding response: %v", err)
+		log.Printf("SubmitHandler: Error encoding response: %v", err)
 		http.Error(w, "Error encoding response", http.StatusInternalServerError)
 	}
+	log.Println("SubmitHandler: Response sent successfully")
 }
