@@ -64,7 +64,7 @@ function App() {
     try {
       const idToken = await user.getIdToken();
       const res = await fetch(
-        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
+        `https://read-robin-6yudia4zva-nn.a.run.app/submit`,
         {
           method: "POST",
           headers: {
@@ -129,7 +129,9 @@ function App() {
           {questions.map((item, index) => (
             <div key={index} className="quiz-item">
               <h3>Question {index + 1}</h3>
-              <p>{item}</p>
+              <p>{item.question}</p>
+              <p>Answer: {item.answer}</p>
+              <p>Reference: {item.reference}</p>
             </div>
           ))}
         </div>

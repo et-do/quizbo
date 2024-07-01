@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"read-robin/models"
 	"read-robin/services"
 
 	"github.com/gorilla/mux"
@@ -11,16 +12,18 @@ import (
 )
 
 type QuizResponse struct {
-	Questions []string `json:"questions"`
+	QuizID    string            `json:"quiz_id"`
+	Questions []models.Question `json:"questions"`
 }
 
-// GetQuizHandler retrieves a quiz from Firestore by QuizID
+// GetQuizHandler retrieves a quiz from Firestore by contentID and quizID
 func GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	contentID := vars["contentID"]
 	quizID := vars["quizID"]
 
-	if quizID == "" {
-		http.Error(w, "quizID is required", http.StatusBadRequest)
+	if contentID == "" || quizID == "" {
+		http.Error(w, "contentID and quizID are required", http.StatusBadRequest)
 		return
 	}
 
@@ -34,22 +37,17 @@ func GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 	defer firestoreClient.Client.Close()
 
 	// Retrieve the quiz from Firestore
-	quiz, err := firestoreClient.GetQuiz(ctx, quizID)
+	quiz, err := firestoreClient.GetQuiz(ctx, contentID, quizID)
 	if err != nil {
 		log.Printf("GetQuizHandler: Error retrieving quiz from Firestore: %v", err)
 		http.Error(w, "Error retrieving quiz from Firestore", http.StatusInternalServerError)
 		return
 	}
 
-	// Extract questions
-	var questions []string
-	for _, question := range quiz.Questions {
-		questions = append(questions, question.Question)
-	}
-
 	// Send response
 	response := QuizResponse{
-		Questions: questions,
+		QuizID:    quiz.QuizID,
+		Questions: quiz.Questions,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
