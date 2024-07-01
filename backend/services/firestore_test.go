@@ -31,24 +31,27 @@ func TestSaveQuiz(t *testing.T) {
 	}
 	defer firestoreClient.client.Close()
 
-	quiz := models.Quiz{
-		Question:  "What is the purpose of the 'Example Domain'?",
-		Answer:    "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
-		Reference: "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+	questions := []models.Question{
+		{
+			QuestionID: generateQuestionID(),
+			Question:   "What is the purpose of the 'Example Domain'?",
+			Answer:     "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+			Reference:  "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+		},
 	}
 
-	quizzes := models.Quizzes{
-		QuizID: generateQuizID(),
-		Quiz:   []models.Quiz{quiz},
+	quiz := models.Quiz{
+		QuizID:    generateQuizID(),
+		Questions: questions,
 	}
 
 	content := models.Content{
 		URL:       "http://example.com",
 		Timestamp: time.Now(),
-		Quizzes:   []models.Quizzes{quizzes},
+		Quizzes:   []models.Quiz{quiz},
 	}
 
-	docID, err := firestoreClient.SaveQuiz(ctx, content.URL, quizzes.Quiz)
+	docID, err := firestoreClient.SaveQuiz(ctx, content.URL, content.Quizzes)
 	if err != nil {
 		t.Fatalf("SaveQuiz: expected no error, got %v", err)
 	}
@@ -73,8 +76,8 @@ func TestSaveQuiz(t *testing.T) {
 	t.Logf("Saved Content URL: %v", savedContent.URL)
 	t.Logf("Saved Content Timestamp: %v", savedContent.Timestamp)
 	for _, savedQuiz := range savedContent.Quizzes {
-		for _, qa := range savedQuiz.Quiz {
-			t.Logf("QuizID: %v", qa.QuizID)
+		for _, qa := range savedQuiz.Questions {
+			t.Logf("QuestionID: %v", qa.QuestionID)
 			t.Logf("Question: %v", qa.Question)
 			t.Logf("Answer: %v", qa.Answer)
 			t.Logf("Reference: %v", qa.Reference)
@@ -85,8 +88,8 @@ func TestSaveQuiz(t *testing.T) {
 		t.Errorf("expected URL %v, got %v", content.URL, savedContent.URL)
 	}
 
-	if savedContent.Quizzes[0].Quiz[0].Question != quizzes.Quiz[0].Question {
-		t.Errorf("expected question %v, got %v", quizzes.Quiz[0].Question, savedContent.Quizzes[0].Quiz[0].Question)
+	if savedContent.Quizzes[0].Questions[0].Question != quiz.Questions[0].Question {
+		t.Errorf("expected question %v, got %v", quiz.Questions[0].Question, savedContent.Quizzes[0].Questions[0].Question)
 	}
 
 	// Clean up: Delete the document

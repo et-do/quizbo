@@ -2,24 +2,24 @@ package models
 
 import "time"
 
-// Quiz represents a single question and answer pair with a reference
-type Quiz struct {
-	QuizID    string `json:"quiz_id" firestore:"quiz_id"`
-	Question  string `json:"question" firestore:"question"`
-	Answer    string `json:"answer" firestore:"answer"`
-	Reference string `json:"reference" firestore:"reference"`
+// Question represents a single question and answer pair with a reference
+type Question struct {
+	QuestionID string `json:"question_id" firestore:"question_id"`
+	Question   string `json:"question" firestore:"question"`
+	Answer     string `json:"answer" firestore:"answer"`
+	Reference  string `json:"reference" firestore:"reference"`
 }
 
-// Quizzes represents the structure of a quiz collection
-type Quizzes struct {
-	QuizID string `json:"quiz_id" firestore:"quiz_id"`
-	Quiz   []Quiz `json:"quiz" firestore:"questions_and_answers"`
+// Quiz represents the structure of a quiz with a list of questions
+type Quiz struct {
+	QuizID    string     `json:"quiz_id" firestore:"quiz_id"`
+	Questions []Question `json:"questions" firestore:"questions"`
 }
 
 // Content represents the structure of content with multiple quizzes
 type Content struct {
-	Timestamp time.Time `firestore:"timestamp"`
-	ContentID string    `firestore:"content_id"`
-	URL       string    `firestore:"url"`
-	Quizzes   []Quizzes `firestore:"quizzes"`
+	Timestamp time.Time `json:"timestamp" firestore:"timestamp"`
+	ContentID string    `json:"content_id" firestore:"content_id"`
+	URL       string    `json:"url" firestore:"url"`
+	Quizzes   []Quiz    `json:"quizzes" firestore:"quizzes"`
 }
