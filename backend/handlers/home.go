@@ -15,4 +15,5 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error encoding response: %v", err)
 		http.Error(w, "Error encoding response", http.StatusInternalServerError)
 	}
+	log.Println("HomeHandler: Response sent successfully")
 }
