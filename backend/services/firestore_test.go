@@ -29,7 +29,7 @@ func TestSaveQuiz(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewFirestoreClient: expected no error, got %v", err)
 	}
-	defer firestoreClient.client.Close()
+	defer firestoreClient.Client.Close()
 
 	questions := []models.Question{
 		{
@@ -62,7 +62,7 @@ func TestSaveQuiz(t *testing.T) {
 		collection = "quizzes"
 	}
 
-	doc, err := firestoreClient.client.Collection(collection).Doc(docID).Get(ctx)
+	doc, err := firestoreClient.Client.Collection(collection).Doc(docID).Get(ctx)
 	if err != nil {
 		t.Fatalf("Failed to retrieve quiz: %v", err)
 	}
@@ -93,7 +93,7 @@ func TestSaveQuiz(t *testing.T) {
 	}
 
 	// Clean up: Delete the document
-	_, err = firestoreClient.client.Collection(collection).Doc(docID).Delete(ctx)
+	_, err = firestoreClient.Client.Collection(collection).Doc(docID).Delete(ctx)
 	if err != nil {
 		t.Fatalf("Failed to delete test document: %v", err)
 	}

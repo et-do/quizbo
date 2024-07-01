@@ -14,7 +14,7 @@ import (
 
 // FirestoreClient is a wrapper around the Firestore client
 type FirestoreClient struct {
-	client *firestore.Client
+	Client *firestore.Client
 }
 
 // NewFirestoreClient creates a new Firestore client
@@ -29,7 +29,7 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 		return nil, fmt.Errorf("firestore.NewClient: %v", err)
 	}
 
-	return &FirestoreClient{client: client}, nil
+	return &FirestoreClient{Client: client}, nil
 }
 
 // SaveQuiz saves a quiz to Firestore
@@ -56,11 +56,35 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quizzes []m
 		Quizzes:   quizzes,
 	}
 
-	_, err := fc.client.Collection(collection).Doc(contentID).Set(ctx, content)
+	_, err := fc.Client.Collection(collection).Doc(contentID).Set(ctx, content)
 	if err != nil {
 		return "", fmt.Errorf("failed adding quiz: %v", err)
 	}
 	return contentID, nil
+}
+
+// GetQuiz retrieves a quiz from Firestore by QuizID
+func (fc *FirestoreClient) GetQuiz(ctx context.Context, quizID string) (*models.Quiz, error) {
+	collection := "quizzes"
+	if os.Getenv("ENV") == "development" {
+		collection = "dev_quizzes"
+	}
+
+	doc, err := fc.Client.Collection(collection).Doc(quizID).Get(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed retrieving quiz: %v", err)
+	}
+
+	var content models.Content
+	if err := doc.DataTo(&content); err != nil {
+		return nil, fmt.Errorf("dataTo: %v", err)
+	}
+
+	if len(content.Quizzes) == 0 {
+		return nil, fmt.Errorf("no quizzes found for quizID: %s", quizID)
+	}
+
+	return &content.Quizzes[0], nil
 }
 
 // generateID creates a unique ID based on the URL
