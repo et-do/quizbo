@@ -18,12 +18,9 @@ type URLRequest struct {
 
 // Response is a struct to hold the response to be sent back to the user
 type Response struct {
-	Status   string `json:"status"`
-	URL      string `json:"url"`
-	HTML     string `json:"html"`
-	QuizID   string `json:"quiz_id"`
-	FullQuiz string `json:"full_quiz"`
-	FullHTML string `json:"full_html"`
+	Status string `json:"status"`
+	URL    string `json:"url"`
+	QuizID string `json:"quiz_id"`
 }
 
 // SubmitHandler handles the form submission and responds with JSON
@@ -76,7 +73,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract content using the Gemini client
-	extractedContent, fullHTML, err := geminiClient.ExtractContent(ctx, htmlContent)
+	extractedContent, _, err := geminiClient.ExtractContent(ctx, htmlContent)
 	if err != nil {
 		log.Printf("SubmitHandler: Error extracting content: %v", err)
 		http.Error(w, "Error extracting content", http.StatusInternalServerError)
@@ -84,7 +81,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate quiz using the Gemini client
-	quizContent, fullQuiz, err := geminiClient.GenerateQuiz(ctx, extractedContent)
+	quizContent, _, err := geminiClient.GenerateQuiz(ctx, extractedContent)
 	if err != nil {
 		log.Printf("SubmitHandler: Error generating quiz: %v", err)
 		http.Error(w, "Error generating quiz", http.StatusInternalServerError)
@@ -123,14 +120,11 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Include the quiz ID and full responses in the response
+	// Return the quiz ID in the response
 	response := Response{
-		Status:   "success",
-		URL:      urlRequest.URL,
-		HTML:     extractedContent,
-		QuizID:   quizID,
-		FullQuiz: fullQuiz,
-		FullHTML: fullHTML,
+		Status: "success",
+		URL:    urlRequest.URL,
+		QuizID: quizID,
 	}
 
 	// Set the content type of the response to JSON
