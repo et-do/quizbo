@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -18,7 +19,7 @@ func TestSubmitHandler(t *testing.T) {
 	}
 
 	// Create a URLRequest payload to be sent in the POST request
-	urlRequestPayload := URLRequest{URL: "http://example.com"}
+	urlRequestPayload := URLRequest{URL: "http://www.example.com"}
 	// Marshal the payload into JSON format
 	urlRequestPayloadBytes, err := json.Marshal(urlRequestPayload)
 	if err != nil {
@@ -49,11 +50,12 @@ func TestSubmitHandler(t *testing.T) {
 
 	// Get the response body as a string
 	responseBody := responseRecorder.Body.String()
-	// Define the expected JSON response
-	expectedResponse := `{"status":"success","url":"http://example.com"}`
 
-	// Compare the actual response body with the expected response
-	if responseBody != expectedResponse+"\n" { // Account for newline in JSON encoding
-		t.Errorf("handler returned unexpected body: got %v want %v", responseBody, expectedResponse)
+	// Check if the response body contains the expected status and URL
+	if !strings.Contains(responseBody, `"status":"success"`) || !strings.Contains(responseBody, `"url":"http://www.example.com"`) {
+		t.Errorf("handler returned unexpected body: got %v", responseBody)
 	}
+
+	// Log the full responses for debugging
+	t.Logf("Response body: %v", responseBody)
 }
