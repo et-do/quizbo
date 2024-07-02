@@ -59,6 +59,9 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models
 		}
 	}
 
+	// Add logging to check existing quizzes
+	fmt.Printf("Existing quizzes: %v\n", content.Quizzes)
+
 	nextQuizID := GetNextQuizID(content.Quizzes)
 	quiz.QuizID = nextQuizID
 
@@ -106,7 +109,9 @@ func GetNextQuizID(quizzes []models.Quiz) string {
 			maxID = id
 		}
 	}
-	return fmt.Sprintf("%04d", maxID+1)
+	nextID := fmt.Sprintf("%04d", maxID+1)
+	fmt.Printf("Next quiz ID: %s\n", nextID) // Add logging to check next quiz ID
+	return nextID
 }
 
 // GenerateID creates a unique ID based on the URL
