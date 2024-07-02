@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"read-robin/services"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -56,7 +55,7 @@ func TestSubmitHandler(t *testing.T) {
 		t.Fatalf("failed to parse response body: %v", err)
 	}
 
-	// Check if the response body contains the expected status and URL
+	// Check if the response body contains the expected status, URL, contentID, and quizID
 	if submitResponse.Status != "success" || submitResponse.URL != "http://www.example.com" {
 		t.Errorf("handler returned unexpected body: got %v", submitResponse)
 	}
@@ -64,9 +63,8 @@ func TestSubmitHandler(t *testing.T) {
 	// Log the full response for debugging
 	t.Logf("Submit response body: %v", submitResponse)
 
-	// Now make a GET request to the /quiz/{contentID}/{quizID} endpoint using the contentID and quizID from the response
-	contentID := services.GenerateID(urlRequestPayload.URL)
-	getRequest, err := http.NewRequest("GET", "/quiz/"+contentID+"/"+submitResponse.QuizID, nil)
+	// Now make a GET request to the /quiz/{contentID}/{quizID} endpoint using the content_id and quiz_id from the response
+	getRequest, err := http.NewRequest("GET", "/quiz/"+submitResponse.ContentID+"/"+submitResponse.QuizID, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
