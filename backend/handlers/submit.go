@@ -131,6 +131,9 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		QuizID:    nextQuizID,
 	}
 
+	// Add logging to ensure correct response values
+	log.Printf("SubmitHandler: Response - %v\n", response)
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Printf("SubmitHandler: Error encoding response: %v", err)
