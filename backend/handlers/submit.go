@@ -18,9 +18,10 @@ type URLRequest struct {
 
 // SubmitResponse is a struct to hold the response to be sent back to the user
 type SubmitResponse struct {
-	Status string `json:"status"`
-	URL    string `json:"url"`
-	QuizID string `json:"quiz_id"`
+	Status    string `json:"status"`
+	URL       string `json:"url"`
+	ContentID string `json:"content_id"`
+	QuizID    string `json:"quiz_id"`
 }
 
 // SubmitHandler handles the form submission and responds with JSON
@@ -95,7 +96,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	contentID := services.GenerateID(urlRequest.URL)
-	doc, err := firestoreClient.Client.Collection("quizzes").Doc(contentID).Get(ctx)
+	doc, err := firestoreClient.Client.Collection("dev_quizzes").Doc(contentID).Get(ctx)
 	var existingQuizzes []models.Quiz
 	if err == nil {
 		var existingContent models.Content
@@ -124,9 +125,10 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := SubmitResponse{
-		Status: "success",
-		URL:    urlRequest.URL,
-		QuizID: nextQuizID,
+		Status:    "success",
+		URL:       urlRequest.URL,
+		ContentID: contentID,
+		QuizID:    nextQuizID,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

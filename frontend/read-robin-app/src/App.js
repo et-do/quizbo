@@ -11,6 +11,7 @@ import logo from "./logo.png"; // Ensure you have a logo.png in the src director
 
 function App() {
   const [url, setUrl] = useState("");
+  const [contentID, setContentID] = useState(null);
   const [quizID, setQuizID] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(null);
@@ -53,6 +54,7 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
+    setContentID(null);
     setQuizID(null);
     setQuestions([]);
 
@@ -75,17 +77,18 @@ function App() {
         }
       );
       const data = await res.json();
+      setContentID(data.content_id);
       setQuizID(data.quiz_id);
-      fetchQuestions(data.quiz_id);
+      fetchQuestions(data.content_id, data.quiz_id);
     } catch (error) {
       setError("Error submitting URL");
     }
   };
 
-  const fetchQuestions = async (quizID) => {
+  const fetchQuestions = async (contentID, quizID) => {
     try {
       const res = await fetch(
-        `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${quizID}`
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
       );
       const data = await res.json();
       setQuestions(data.questions);
