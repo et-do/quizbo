@@ -64,7 +64,7 @@ function App() {
     try {
       const idToken = await user.getIdToken();
       const res = await fetch(
-        `https://read-robin-6yudia4zva-nn.a.run.app/submit`,
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
         {
           method: "POST",
           headers: {
@@ -85,7 +85,7 @@ function App() {
   const fetchQuestions = async (quizID) => {
     try {
       const res = await fetch(
-        `https://read-robin-6yudia4zva-nn.a.run.app/quiz/${quizID}`
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${quizID}`
       );
       const data = await res.json();
       setQuestions(data.questions);
