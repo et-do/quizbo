@@ -2,22 +2,65 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
+	"cloud.google.com/go/firestore"
 	"github.com/gorilla/mux"
+	"google.golang.org/api/iterator"
 )
 
-// TestSubmitHandler tests the SubmitHandler function
+// cleanupFirestore removes all documents from the specified collection.
+func cleanupFirestore(t *testing.T, collection string) {
+	ctx := context.Background()
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	client, err := firestore.NewClient(ctx, projectID)
+	if err != nil {
+		t.Fatalf("firestore.NewClient: %v", err)
+	}
+	defer client.Close()
+
+	iter := client.Collection(collection).Documents(ctx)
+	batch := client.Batch()
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			t.Fatalf("Failed to iterate documents: %v", err)
+		}
+		batch.Delete(doc.Ref)
+	}
+
+	_, err = batch.Commit(ctx)
+	if err != nil {
+		t.Fatalf("Failed to delete documents: %v", err)
+	}
+}
+
 func TestSubmitHandler(t *testing.T) {
 	// Ensure the working directory is the project root
 	err := os.Chdir("..")
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Cleanup the Firestore collection before and after the test
+	collection := "dev_quizzes"
+	if os.Getenv("ENV") != "development" {
+		collection = "quizzes"
+	}
+	cleanupFirestore(t, collection)
+	defer cleanupFirestore(t, collection)
 
 	// Create a URLRequest payload to be sent in the POST request
 	urlRequestPayload := URLRequest{URL: "http://www.example.com"}
