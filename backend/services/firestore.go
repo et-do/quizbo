@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"read-robin/models"
@@ -33,30 +34,37 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 }
 
 // SaveQuiz saves a quiz to Firestore
-func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quizzes []models.Quiz) (string, error) {
+func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models.Quiz) (string, error) {
 	collection := "quizzes"
 	if os.Getenv("ENV") == "development" {
 		collection = "dev_quizzes"
 	}
 
-	contentID := generateID(url)
+	contentID := GenerateID(url)
+	docRef := fc.Client.Collection(collection).Doc(contentID)
 
-	// Assign a QuizID and QuestionID to each Quiz and Question
-	for i := range quizzes {
-		quizzes[i].QuizID = generateQuizID()
-		for j := range quizzes[i].Questions {
-			quizzes[i].Questions[j].QuestionID = generateQuestionID()
+	// Get the existing document or create a new one
+	doc, err := docRef.Get(ctx)
+	var content models.Content
+	if err == nil {
+		if err := doc.DataTo(&content); err != nil {
+			return "", fmt.Errorf("failed to parse existing content: %v", err)
+		}
+	} else {
+		content = models.Content{
+			URL:       url,
+			Timestamp: time.Now(),
+			ContentID: contentID,
+			Quizzes:   []models.Quiz{},
 		}
 	}
 
-	content := models.Content{
-		URL:       url,
-		Timestamp: time.Now(),
-		ContentID: contentID,
-		Quizzes:   quizzes,
-	}
+	nextQuizID := GetNextQuizID(content.Quizzes)
+	quiz.QuizID = nextQuizID
 
-	_, err := fc.Client.Collection(collection).Doc(contentID).Set(ctx, content)
+	content.Quizzes = append(content.Quizzes, quiz)
+
+	_, err = docRef.Set(ctx, content)
 	if err != nil {
 		return "", fmt.Errorf("failed adding quiz: %v", err)
 	}
@@ -89,16 +97,21 @@ func (fc *FirestoreClient) GetQuiz(ctx context.Context, contentID, quizID string
 	return nil, fmt.Errorf("no quiz found for quizID: %s", quizID)
 }
 
-// generateID creates a unique ID based on the URL
-func generateID(url string) string {
-	// Implement your own logic to generate a unique ID based on the URL
-	// For simplicity, let's use a hash or similar technique
-	return fmt.Sprintf("%x", hash(url))
+// GetNextQuizID generates the next sequential quiz ID for the given quizzes
+func GetNextQuizID(quizzes []models.Quiz) string {
+	maxID := 0
+	for _, quiz := range quizzes {
+		id, err := strconv.Atoi(quiz.QuizID)
+		if err == nil && id > maxID {
+			maxID = id
+		}
+	}
+	return fmt.Sprintf("%04d", maxID+1)
 }
 
-// generateQuizID generates a 4-digit random quiz ID
-func generateQuizID() string {
-	return fmt.Sprintf("%04d", rand.Intn(10000))
+// GenerateID creates a unique ID based on the URL
+func GenerateID(url string) string {
+	return fmt.Sprintf("%x", hash(url))
 }
 
 // generateQuestionID generates a 4-digit random question ID

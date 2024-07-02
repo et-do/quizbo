@@ -16,10 +16,8 @@ import (
 func TestSaveQuiz(t *testing.T) {
 	ctx := context.Background()
 
-	// Set the environment variable for development
 	os.Setenv("ENV", "development")
 
-	// Ensure the environment variable is set for the test
 	projectID := os.Getenv("GCP_PROJECT")
 	if projectID == "" {
 		t.Fatal("GCP_PROJECT environment variable not set")
@@ -41,7 +39,7 @@ func TestSaveQuiz(t *testing.T) {
 	}
 
 	quiz := models.Quiz{
-		QuizID:    generateQuizID(),
+		QuizID:    "0001",
 		Questions: questions,
 	}
 
@@ -51,12 +49,11 @@ func TestSaveQuiz(t *testing.T) {
 		Quizzes:   []models.Quiz{quiz},
 	}
 
-	docID, err := firestoreClient.SaveQuiz(ctx, content.URL, content.Quizzes)
+	docID, err := firestoreClient.SaveQuiz(ctx, content.URL, quiz)
 	if err != nil {
 		t.Fatalf("SaveQuiz: expected no error, got %v", err)
 	}
 
-	// Verify the quiz was saved correctly
 	collection := "dev_quizzes"
 	if os.Getenv("ENV") != "development" {
 		collection = "quizzes"
@@ -72,7 +69,6 @@ func TestSaveQuiz(t *testing.T) {
 		t.Fatalf("DataTo: %v", err)
 	}
 
-	// Log the saved quiz fields
 	t.Logf("Saved Content URL: %v", savedContent.URL)
 	t.Logf("Saved Content Timestamp: %v", savedContent.Timestamp)
 	for _, savedQuiz := range savedContent.Quizzes {
@@ -92,14 +88,12 @@ func TestSaveQuiz(t *testing.T) {
 		t.Errorf("expected question %v, got %v", quiz.Questions[0].Question, savedContent.Quizzes[0].Questions[0].Question)
 	}
 
-	// Clean up: Delete the document
 	_, err = firestoreClient.Client.Collection(collection).Doc(docID).Delete(ctx)
 	if err != nil {
 		t.Fatalf("Failed to delete test document: %v", err)
 	}
 }
 
-// Additional cleanup for Firestore emulator
 func cleanupFirestoreEmulator(t *testing.T, client *firestore.Client, collection string) {
 	ctx := context.Background()
 	iter := client.Collection(collection).Documents(ctx)
@@ -133,7 +127,6 @@ func TestMain(m *testing.M) {
 	}
 	defer firestoreClient.Close()
 
-	// Clean up collections before and after tests
 	cleanupFirestoreEmulator(nil, firestoreClient, "dev_quizzes")
 	cleanupFirestoreEmulator(nil, firestoreClient, "quizzes")
 
