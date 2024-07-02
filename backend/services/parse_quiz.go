@@ -6,8 +6,7 @@ import (
 )
 
 // ParseQuizResponse parses the response from the Gemini model into a Quiz struct
-func ParseQuizResponse(response map[string]interface{}) (models.Quiz, error) {
-	// Extract the quiz array
+func ParseQuizResponse(response map[string]interface{}, quizID string) (models.Quiz, error) {
 	quizInterface, ok := response["quiz"].([]interface{})
 	if !ok {
 		return models.Quiz{}, fmt.Errorf("quiz field missing or not an array")
@@ -44,7 +43,7 @@ func ParseQuizResponse(response map[string]interface{}) (models.Quiz, error) {
 	}
 
 	return models.Quiz{
-		QuizID:    generateQuizID(),
+		QuizID:    quizID,
 		Questions: questions,
 	}, nil
 }

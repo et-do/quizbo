@@ -46,7 +46,7 @@ func GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send response
 	response := QuizResponse{
-		QuizID:    quiz.QuizID,
+		QuizID:    quizID,
 		Questions: quiz.Questions,
 	}
 	w.Header().Set("Content-Type", "application/json")
