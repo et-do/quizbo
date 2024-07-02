@@ -19,6 +19,7 @@ func main() {
 	// Define your routes
 	r.HandleFunc("/", handlers.HomeHandler).Methods("GET")
 	r.HandleFunc("/submit", handlers.SubmitHandler).Methods("POST")
+	r.HandleFunc("/quiz/{contentID}/{quizID}", handlers.GetQuizHandler).Methods("GET")
 
 	// Apply logging middleware
 	r.Use(middleware.LoggingMiddleware)
