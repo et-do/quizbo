@@ -14,6 +14,9 @@ function App() {
   const [contentID, setContentID] = useState(null);
   const [quizID, setQuizID] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [responses, setResponses] = useState({});
+  const [status, setStatus] = useState({});
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
@@ -57,9 +60,11 @@ function App() {
     setContentID(null);
     setQuizID(null);
     setQuestions([]);
+    setLoading(true);
 
     if (!user) {
       setError("You must be logged in to submit a URL");
+      setLoading(false);
       return;
     }
 
@@ -82,6 +87,7 @@ function App() {
       fetchQuestions(data.content_id, data.quiz_id);
     } catch (error) {
       setError("Error submitting URL");
+      setLoading(false);
     }
   };
 
@@ -92,9 +98,25 @@ function App() {
       );
       const data = await res.json();
       setQuestions(data.questions);
+      setLoading(false);
     } catch (error) {
       setError("Error fetching questions");
+      setLoading(false);
     }
+  };
+
+  const handleResponseChange = (e, index) => {
+    const newResponses = { ...responses, [index]: e.target.value };
+    setResponses(newResponses);
+  };
+
+  const handleSubmitResponse = (index, correctAnswer) => {
+    const isCorrect = responses[index] === correctAnswer;
+    const newStatus = {
+      ...status,
+      [index]: isCorrect ? "Correct" : "Incorrect",
+    };
+    setStatus(newStatus);
   };
 
   return (
@@ -126,6 +148,9 @@ function App() {
         <button onClick={signIn}>Sign in with Google</button>
       )}
       {error && <div style={{ color: "red" }}>{error}</div>}
+      {loading && (
+        <div className="loading-spinner">Generating your Quiz...</div>
+      )}
       {questions.length > 0 && (
         <div>
           <h2>Questions</h2>
@@ -133,8 +158,23 @@ function App() {
             <div key={index} className="quiz-item">
               <h3>Question {index + 1}</h3>
               <p>{item.question}</p>
-              <p>Answer: {item.answer}</p>
-              <p>Reference: {item.reference}</p>
+              <input
+                type="text"
+                value={responses[index] || ""}
+                onChange={(e) => handleResponseChange(e, index)}
+              />
+              <button onClick={() => handleSubmitResponse(index, item.answer)}>
+                Submit
+              </button>
+              {status[index] && (
+                <span
+                  className={
+                    status[index] === "Correct" ? "correct" : "incorrect"
+                  }
+                >
+                  {status[index]}
+                </span>
+              )}
             </div>
           ))}
         </div>
