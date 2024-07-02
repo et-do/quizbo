@@ -31,7 +31,7 @@ func TestParseQuizResponse(t *testing.T) {
 	}
 
 	expectedQuiz := models.Quiz{
-		QuizID: generateQuizID(),
+		QuizID: "0001",
 		Questions: []models.Question{
 			{
 				QuestionID: generateQuestionID(),
@@ -48,7 +48,7 @@ func TestParseQuizResponse(t *testing.T) {
 		},
 	}
 
-	quiz, err := ParseQuizResponse(sampleResponseMap)
+	quiz, err := ParseQuizResponse(sampleResponseMap, "0001")
 	if err != nil {
 		t.Fatalf("ParseQuizResponse: expected no error, got %v", err)
 	}

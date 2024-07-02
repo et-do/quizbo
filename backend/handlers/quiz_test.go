@@ -29,7 +29,7 @@ func setupFirestoreClient(t *testing.T) *services.FirestoreClient {
 func TestGetQuizHandler(t *testing.T) {
 	// Known document and quiz IDs
 	contentID := "-5a93f065626cbf2c"
-	quizID := "7991"
+	quizID := "0001"
 
 	// Ensure the working directory is the project root
 	err := os.Chdir("..")

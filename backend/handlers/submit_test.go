@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strings"
+	"read-robin/services"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 // TestSubmitHandler tests the SubmitHandler function
@@ -48,14 +50,54 @@ func TestSubmitHandler(t *testing.T) {
 		return
 	}
 
-	// Get the response body as a string
-	responseBody := responseRecorder.Body.String()
-
-	// Check if the response body contains the expected status and URL
-	if !strings.Contains(responseBody, `"status":"success"`) || !strings.Contains(responseBody, `"url":"http://www.example.com"`) {
-		t.Errorf("handler returned unexpected body: got %v", responseBody)
+	// Parse the response body into SubmitResponse struct
+	var submitResponse SubmitResponse
+	if err := json.NewDecoder(responseRecorder.Body).Decode(&submitResponse); err != nil {
+		t.Fatalf("failed to parse response body: %v", err)
 	}
 
-	// Log the full responses for debugging
-	t.Logf("Response body: %v", responseBody)
+	// Check if the response body contains the expected status and URL
+	if submitResponse.Status != "success" || submitResponse.URL != "http://www.example.com" {
+		t.Errorf("handler returned unexpected body: got %v", submitResponse)
+	}
+
+	// Log the full response for debugging
+	t.Logf("Submit response body: %v", submitResponse)
+
+	// Now make a GET request to the /quiz/{contentID}/{quizID} endpoint using the contentID and quizID from the response
+	contentID := services.GenerateID(urlRequestPayload.URL)
+	getRequest, err := http.NewRequest("GET", "/quiz/"+contentID+"/"+submitResponse.QuizID, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a new ResponseRecorder to record the response
+	getResponseRecorder := httptest.NewRecorder()
+
+	// Use mux to set up the router and route variables
+	router := mux.NewRouter()
+	router.HandleFunc("/quiz/{contentID}/{quizID}", GetQuizHandler)
+
+	// Serve the HTTP request using the router
+	router.ServeHTTP(getResponseRecorder, getRequest)
+
+	// Check if the status code returned by the handler is 200 OK
+	if statusCode := getResponseRecorder.Code; statusCode != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", statusCode, http.StatusOK)
+		return
+	}
+
+	// Parse the response body into QuizResponse struct
+	var quizResponse QuizResponse
+	if err := json.NewDecoder(getResponseRecorder.Body).Decode(&quizResponse); err != nil {
+		t.Fatalf("failed to parse response body: %v", err)
+	}
+
+	// Check if the response body contains questions
+	if len(quizResponse.Questions) == 0 {
+		t.Errorf("handler returned no questions: got %v", quizResponse)
+	}
+
+	// Log the full response for debugging
+	t.Logf("Quiz response body: %v", quizResponse)
 }
