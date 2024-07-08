@@ -12,7 +12,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(
-          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
+          `https://read-robin-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
         );
         const data = await res.json();
         if (data.questions) {
