@@ -95,7 +95,14 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contentID := services.GenerateID(urlRequest.URL)
+	normalizedURL, err := utils.NormalizeURL(urlRequest.URL)
+	if err != nil {
+		log.Printf("SubmitHandler: Error normalizing URL: %v", err)
+		http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
+		return
+	}
+
+	contentID := services.GenerateID(normalizedURL)
 	doc, err := firestoreClient.Client.Collection("dev_quizzes").Doc(contentID).Get(ctx)
 	var existingQuizzes []models.Quiz
 	if err == nil {
@@ -117,7 +124,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = firestoreClient.SaveQuiz(ctx, urlRequest.URL, quiz)
+	_, err = firestoreClient.SaveQuiz(ctx, normalizedURL, quiz)
 	if err != nil {
 		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
 		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
@@ -131,7 +138,6 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		QuizID:    nextQuizID,
 	}
 
-	// Add logging to ensure correct response values
 	log.Printf("SubmitHandler: Response - %v\n", response)
 
 	w.Header().Set("Content-Type", "application/json")
