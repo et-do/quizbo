@@ -66,7 +66,14 @@ function App() {
       case "selection":
         return <SelectionPage setPage={setPage} />;
       case "quizForm":
-        return <QuizForm user={user} setPage={setPage} />;
+        return (
+          <QuizForm
+            user={user}
+            setPage={setPage}
+            setContentID={setContentID}
+            setQuizID={setQuizID}
+          />
+        );
       case "quizPage":
         return <QuizPage contentID={contentID} quizID={quizID} />;
       default:
