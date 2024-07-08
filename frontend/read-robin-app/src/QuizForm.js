@@ -54,9 +54,7 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
         <button type="submit">Submit</button>
       </form>
       {error && <div style={{ color: "red" }}>{error}</div>}
-      {loading && (
-        <div className="loading-spinner">Generating your Quiz...</div>
-      )}
+      {loading && <div className="loading-spinner"></div>}
     </div>
   );
 }

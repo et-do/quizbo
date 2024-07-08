@@ -131,9 +131,22 @@ button.selection-button:disabled {
 }
 
 .loading-spinner {
-  margin-top: 1rem;
-  font-size: 1.2rem;
-  color: #dd3730;
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .quiz-item {
@@ -179,7 +192,7 @@ button.selection-button:disabled {
 }
 
 .back-button {
-  background-color: #a96a59;
+  background-color: #dd3730;
   color: #ffffff;
   margin-bottom: 1rem;
   border: none;
@@ -189,7 +202,7 @@ button.selection-button:disabled {
 }
 
 .back-button:hover {
-  background-color: #dd3730;
+  background-color: #a96a59;
 }
 
 .login-page {
@@ -201,4 +214,51 @@ button.selection-button:disabled {
 .selection-options h1 {
   color: white;
   margin-bottom: 1rem;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.header-top-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Adjust spacing between title and tagline */
+}
+
+.logo {
+  max-height: 80px; /* Adjust as needed for better visibility */
+  width: auto;
+  margin-right: 10px; /* Adjust spacing between logo and title */
+}
+
+.app-title {
+  margin: 0;
+}
+
+.tagline {
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* Adjust as needed */
+}
+
+.user-info p {
+  margin: 0 10px 0 0;
+}
+
+.logout {
+  margin-left: 10px;
 }
