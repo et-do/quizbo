@@ -11,6 +11,7 @@ import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
 import QuizPage from "./QuizPage";
+import Login from "./Login";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -58,11 +59,7 @@ function App() {
   const renderPage = () => {
     switch (page) {
       case "login":
-        return (
-          <div className="login-page">
-            <button onClick={signIn}>Sign in with Google</button>
-          </div>
-        );
+        return <Login signIn={signIn} />;
       case "selection":
         return <SelectionPage setPage={setPage} />;
       case "quizForm":
@@ -75,7 +72,14 @@ function App() {
           />
         );
       case "quizPage":
-        return <QuizPage contentID={contentID} quizID={quizID} />;
+        return (
+          <QuizPage
+            user={user}
+            setPage={setPage}
+            contentID={contentID}
+            quizID={quizID}
+          />
+        );
       default:
         return null;
     }
@@ -83,9 +87,16 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <img src={logo} alt="Logo" />
-        <h1>Your AI Companion for Smarter Comprehension</h1>
+      <header className="app-header">
+        <div className="header-top-row">
+          <div className="logo-title">
+            <img src={logo} alt="Logo" className="logo" />
+            <h1 className="app-title">ReadRobin</h1>
+          </div>
+          <h2 className="tagline">
+            Your AI Companion for Smarter Comprehension
+          </h2>
+        </div>
         {user && (
           <div className="user-info">
             <p>Welcome, {user.displayName}</p>

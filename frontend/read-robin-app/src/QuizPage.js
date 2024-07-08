@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-function QuizPage({ contentID, quizID }) {
+function QuizPage({ user, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [status, setStatus] = useState({});
@@ -15,7 +15,11 @@ function QuizPage({ contentID, quizID }) {
           `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
         );
         const data = await res.json();
-        setQuestions(data.questions);
+        if (data.questions) {
+          setQuestions(data.questions);
+        } else {
+          setError("Error fetching questions");
+        }
         setLoading(false);
       } catch (error) {
         setError("Error fetching questions");
@@ -41,12 +45,13 @@ function QuizPage({ contentID, quizID }) {
 
   return (
     <div className="quiz-page">
+      <button className="back-button" onClick={() => setPage("quizForm")}>
+        Back
+      </button>
       <h2>Quiz</h2>
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {loading && (
-        <div className="loading-spinner">Generating your Quiz...</div>
-      )}
-      {questions.length > 0 && (
+      {error && !loading && <div style={{ color: "red" }}>{error}</div>}
+      {loading && <div className="loading-spinner"></div>}
+      {!loading && questions.length > 0 && (
         <div>
           {questions.map((item, index) => (
             <div key={index} className="quiz-item">
