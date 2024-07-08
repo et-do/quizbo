@@ -103,7 +103,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	contentID := services.GenerateID(normalizedURL)
-	doc, err := firestoreClient.Client.Collection("dev_quizzes").Doc(contentID).Get(ctx)
+	doc, err := firestoreClient.Client.Collection("quizzes").Doc(contentID).Get(ctx)
 	var existingQuizzes []models.Quiz
 	if err == nil {
 		var existingContent models.Content
