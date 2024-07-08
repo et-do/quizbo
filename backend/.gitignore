@@ -162,3 +162,7 @@ cython_debug/
 #.idea/
 
 secrets/
+
+
+# Go test coverage
+cover.out

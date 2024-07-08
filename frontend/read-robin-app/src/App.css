@@ -19,7 +19,7 @@ body {
   border-radius: 10px;
   padding: 2rem;
   margin: 2rem;
-  max-width: 400px;
+  max-width: 600px;
   margin: auto;
 }
 
@@ -32,6 +32,17 @@ header {
 
 header img {
   width: 100px;
+  margin-bottom: 1rem;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+header h2 {
+  font-size: 1.2rem;
+  color: #666;
   margin-bottom: 1rem;
 }
 
@@ -66,7 +77,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 1rem; /* Added for better spacing */
+  margin-top: 1rem;
 }
 
 button:hover {
@@ -74,11 +85,21 @@ button:hover {
 }
 
 button.logout {
-  background-color: #dc3545; /* Different color for logout button */
+  background-color: #dc3545;
 }
 
 button.logout:hover {
   background-color: #c82333;
+}
+
+button.selection-button {
+  background-color: red;
+  color: white;
+  margin: 0.5rem 0;
+}
+
+button.selection-button:disabled {
+  background-color: #ccc;
 }
 
 pre {
@@ -88,4 +109,49 @@ pre {
   margin-top: 1rem;
   width: 100%;
   overflow-x: auto;
+}
+
+.selection-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.loading-spinner {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.quiz-item {
+  margin-top: 1rem;
+}
+
+.quiz-item input {
+  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.quiz-item button {
+  background-color: red;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.quiz-item .correct {
+  color: green;
+}
+
+.quiz-item .incorrect {
+  color: red;
 }
