@@ -26,18 +26,18 @@ body {
 header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
 }
 
 header img {
   width: 100px;
-  margin-bottom: 1rem;
 }
 
 header h1 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+  color: white;
 }
 
 header h2 {
@@ -46,9 +46,25 @@ header h2 {
   margin-bottom: 1rem;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info p {
+  margin: 0 1rem 0 0;
+}
+
 h1 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #dd3730;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #dd3730;
 }
 
 form {
@@ -72,7 +88,7 @@ input {
 button {
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: #dd3730;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -81,34 +97,29 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #a96a59;
 }
 
 button.logout {
-  background-color: #dc3545;
+  background-color: #a96a59;
 }
 
 button.logout:hover {
-  background-color: #c82333;
+  background-color: #dd3730;
 }
 
 button.selection-button {
-  background-color: red;
-  color: white;
-  margin: 0.5rem 0;
+  background-color: #dd3730;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+button.selection-button:hover {
+  background-color: #a96a59;
 }
 
 button.selection-button:disabled {
   background-color: #ccc;
-}
-
-pre {
-  background-color: #f4f4f4;
-  padding: 1rem;
-  border-radius: 5px;
-  margin-top: 1rem;
-  width: 100%;
-  overflow-x: auto;
 }
 
 .selection-options {
@@ -122,7 +133,7 @@ pre {
 .loading-spinner {
   margin-top: 1rem;
   font-size: 1.2rem;
-  color: #333;
+  color: #dd3730;
 }
 
 .quiz-item {
@@ -139,7 +150,7 @@ pre {
 }
 
 .quiz-item button {
-  background-color: red;
+  background-color: #dd3730;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -148,10 +159,46 @@ pre {
   margin-right: 0.5rem;
 }
 
+.quiz-item button:hover {
+  background-color: #a96a59;
+}
+
 .quiz-item .correct {
   color: green;
 }
 
 .quiz-item .incorrect {
   color: red;
+}
+
+.response-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.back-button {
+  background-color: #a96a59;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #dd3730;
+}
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selection-options h1 {
+  color: white;
+  margin-bottom: 1rem;
 }
