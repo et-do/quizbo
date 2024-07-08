@@ -19,25 +19,52 @@ body {
   border-radius: 10px;
   padding: 2rem;
   margin: 2rem;
-  max-width: 400px;
+  max-width: 600px;
   margin: auto;
 }
 
 header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
 }
 
 header img {
   width: 100px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+header h2 {
+  font-size: 1.2rem;
+  color: #666;
   margin-bottom: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info p {
+  margin: 0 1rem 0 0;
 }
 
 h1 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #dd3730;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #dd3730;
 }
 
 form {
@@ -61,31 +88,177 @@ input {
 button {
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: #dd3730;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 1rem; /* Added for better spacing */
+  margin-top: 1rem;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #a96a59;
 }
 
 button.logout {
-  background-color: #dc3545; /* Different color for logout button */
+  background-color: #a96a59;
 }
 
 button.logout:hover {
-  background-color: #c82333;
+  background-color: #dd3730;
 }
 
-pre {
-  background-color: #f4f4f4;
-  padding: 1rem;
-  border-radius: 5px;
+button.selection-button {
+  background-color: #dd3730;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+button.selection-button:hover {
+  background-color: #a96a59;
+}
+
+button.selection-button:disabled {
+  background-color: #ccc;
+}
+
+.selection-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin-top: 1rem;
   width: 100%;
-  overflow-x: auto;
+}
+
+.loading-spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.quiz-item {
+  margin-top: 1rem;
+}
+
+.quiz-item input {
+  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.quiz-item button {
+  background-color: #dd3730;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.quiz-item button:hover {
+  background-color: #a96a59;
+}
+
+.quiz-item .correct {
+  color: green;
+}
+
+.quiz-item .incorrect {
+  color: red;
+}
+
+.response-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.back-button {
+  background-color: #dd3730;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #a96a59;
+}
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selection-options h1 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.header-top-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Adjust spacing between title and tagline */
+}
+
+.logo {
+  max-height: 80px; /* Adjust as needed for better visibility */
+  width: auto;
+  margin-right: 10px; /* Adjust spacing between logo and title */
+}
+
+.app-title {
+  margin: 0;
+}
+
+.tagline {
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* Adjust as needed */
+}
+
+.user-info p {
+  margin: 0 10px 0 0;
+}
+
+.logout {
+  margin-left: 10px;
 }
