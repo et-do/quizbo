@@ -48,7 +48,6 @@ function QuizPage({ contentID, quizID }) {
       )}
       {questions.length > 0 && (
         <div>
-          <h2>Questions</h2>
           {questions.map((item, index) => (
             <div key={index} className="quiz-item">
               <h3>Question {index + 1}</h3>

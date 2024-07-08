@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import "./App.css";
 
-function QuizForm({ user, setPage }) {
+function QuizForm({ user, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
-  const [contentID, setContentID] = useState(null);
-  const [quizID, setQuizID] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
-    setContentID(null);
-    setQuizID(null);
     setLoading(true);
 
     try {
@@ -31,7 +27,7 @@ function QuizForm({ user, setPage }) {
       const data = await res.json();
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
-      setPage("quizPage", { contentID: data.content_id, quizID: data.quiz_id });
+      setPage("quizPage");
       setLoading(false);
     } catch (error) {
       setError("Error submitting URL");
