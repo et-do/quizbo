@@ -30,6 +30,7 @@ func cleanupFirestore(t *testing.T, collection string) {
 
 	iter := client.Collection(collection).Documents(ctx)
 	batch := client.Batch()
+	docCount := 0
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -39,11 +40,14 @@ func cleanupFirestore(t *testing.T, collection string) {
 			t.Fatalf("Failed to iterate documents: %v", err)
 		}
 		batch.Delete(doc.Ref)
+		docCount++
 	}
 
-	_, err = batch.Commit(ctx)
-	if err != nil {
-		t.Fatalf("Failed to delete documents: %v", err)
+	if docCount > 0 {
+		_, err = batch.Commit(ctx)
+		if err != nil {
+			t.Fatalf("Failed to delete documents: %v", err)
+		}
 	}
 }
 
@@ -55,12 +59,12 @@ func TestSubmitHandler(t *testing.T) {
 	}
 
 	// Cleanup the Firestore collection before and after the test
-	collection := "dev_quizzes"
-	if os.Getenv("ENV") != "development" {
-		collection = "quizzes"
-	}
-	cleanupFirestore(t, collection)
-	defer cleanupFirestore(t, collection)
+	// collection := "dev_quizzes"
+	// if os.Getenv("ENV") != "development" {
+	// 	collection = "quizzes"
+	// }
+	// // cleanupFirestore(t, collection)
+	// // defer cleanupFirestore(t, collection)
 
 	// Create a URLRequest payload to be sent in the POST request
 	urlRequestPayload := URLRequest{URL: "http://www.example.com"}

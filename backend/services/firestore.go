@@ -36,9 +36,6 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 // SaveQuiz saves a quiz to Firestore
 func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models.Quiz) (string, error) {
 	collection := "quizzes"
-	if os.Getenv("ENV") == "development" {
-		collection = "dev_quizzes"
-	}
 
 	contentID := GenerateID(url)
 	docRef := fc.Client.Collection(collection).Doc(contentID)
@@ -62,8 +59,9 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models
 	// Add logging to check existing quizzes
 	fmt.Printf("Existing quizzes: %v\n", content.Quizzes)
 
-	nextQuizID := GetNextQuizID(content.Quizzes)
-	quiz.QuizID = nextQuizID
+	latestQuizID := GetLatestQuizID(content.Quizzes)
+	quiz.QuizID = latestQuizID
+	quiz.Timestamp = time.Now()
 
 	content.Quizzes = append(content.Quizzes, quiz)
 
@@ -77,9 +75,6 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models
 // GetQuiz retrieves a quiz from Firestore by contentID and quizID
 func (fc *FirestoreClient) GetQuiz(ctx context.Context, contentID, quizID string) (*models.Quiz, error) {
 	collection := "quizzes"
-	if os.Getenv("ENV") == "development" {
-		collection = "dev_quizzes"
-	}
 
 	doc, err := fc.Client.Collection(collection).Doc(contentID).Get(ctx)
 	if err != nil {
@@ -100,8 +95,24 @@ func (fc *FirestoreClient) GetQuiz(ctx context.Context, contentID, quizID string
 	return nil, fmt.Errorf("no quiz found for quizID: %s", quizID)
 }
 
-// GetNextQuizID generates the next sequential quiz ID for the given quizzes
-func GetNextQuizID(quizzes []models.Quiz) string {
+// GetExistingQuizzes fetches existing quizzes from Firestore
+func (fc *FirestoreClient) GetExistingQuizzes(ctx context.Context, contentID string) ([]models.Quiz, error) {
+	doc, err := fc.Client.Collection("quizzes").Doc(contentID).Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var existingContent models.Content
+	if err := doc.DataTo(&existingContent); err != nil {
+		return nil, err
+	}
+	return existingContent.Quizzes, nil
+}
+
+// GetLatestQuizID generates the next sequential quiz ID for the given quizzes
+func GetLatestQuizID(quizzes []models.Quiz) string {
+	if len(quizzes) == 0 {
+		return "0001"
+	}
 	maxID := 0
 	for _, quiz := range quizzes {
 		id, err := strconv.Atoi(quiz.QuizID)
