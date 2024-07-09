@@ -9,6 +9,8 @@ import (
 	"read-robin/utils"
 
 	"golang.org/x/net/context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // URLRequest is a struct to hold the URL submitted by the user
@@ -18,35 +20,51 @@ type URLRequest struct {
 
 // SubmitResponse is a struct to hold the response to be sent back to the user
 type SubmitResponse struct {
-	Status    string `json:"status"`
-	URL       string `json:"url"`
-	ContentID string `json:"content_id"`
-	QuizID    string `json:"quiz_id"`
+	Status      string `json:"status"`
+	URL         string `json:"url"`
+	ContentID   string `json:"content_id"`
+	QuizID      string `json:"quiz_id"`
+	IsFirstQuiz bool   `json:"is_first_quiz"`
 }
 
-// SubmitHandler handles the form submission and responds with JSON
-func SubmitHandler(w http.ResponseWriter, r *http.Request) {
+// decodeURLRequest decodes the URL request from the HTTP request
+func decodeURLRequest(r *http.Request) (URLRequest, error) {
 	var urlRequest URLRequest
-
 	if r.Header.Get("Content-Type") == "application/json" {
-		if err := json.NewDecoder(r.Body).Decode(&urlRequest); err != nil {
-			log.Printf("SubmitHandler: Unable to parse JSON request: %v", err)
-			http.Error(w, "Unable to parse JSON request", http.StatusBadRequest)
-			return
-		}
+		err := utils.DecodeJSONBody(r, &urlRequest)
+		return urlRequest, err
 	} else {
-		if err := r.ParseForm(); err != nil {
-			log.Printf("SubmitHandler: Unable to parse form: %v", err)
-			http.Error(w, "Unable to parse form", http.StatusBadRequest)
-			return
-		}
+		err := utils.DecodeFormBody(r, "url", &urlRequest.URL)
+		return urlRequest, err
+	}
+}
 
-		urlRequest.URL = r.FormValue("url")
-		if urlRequest.URL == "" {
-			log.Println("SubmitHandler: Missing URL")
-			http.Error(w, "Missing URL", http.StatusBadRequest)
-			return
-		}
+// normalizeAndGenerateID normalizes the URL and generates a content ID
+func normalizeAndGenerateID(url string) (string, string, error) {
+	normalizedURL, err := utils.NormalizeURL(url)
+	if err != nil {
+		return "", "", err
+	}
+	contentID := services.GenerateID(normalizedURL)
+	return normalizedURL, contentID, nil
+}
+
+// createFirestoreClient creates a new Firestore client
+func createFirestoreClient(ctx context.Context) (*services.FirestoreClient, error) {
+	return services.NewFirestoreClient(ctx)
+}
+
+// createGeminiClient creates a new Gemini client
+func createGeminiClient(ctx context.Context) (*services.GeminiClient, error) {
+	return services.NewGeminiClient(ctx)
+}
+
+func SubmitHandler(w http.ResponseWriter, r *http.Request) {
+	urlRequest, err := decodeURLRequest(r)
+	if err != nil {
+		log.Printf("SubmitHandler: Unable to parse request: %v", err)
+		http.Error(w, "Unable to parse request", http.StatusBadRequest)
+		return
 	}
 
 	log.Printf("SubmitHandler: Received URL: %s", urlRequest.URL)
@@ -60,64 +78,52 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
-	geminiClient, err := services.NewGeminiClient(ctx)
+	geminiClient, err := createGeminiClient(ctx)
 	if err != nil {
 		log.Printf("SubmitHandler: Error creating Gemini client: %v", err)
 		http.Error(w, "Error creating Gemini client", http.StatusInternalServerError)
 		return
 	}
 
-	extractedContent, _, err := geminiClient.ExtractContent(ctx, htmlContent)
-	if err != nil {
-		log.Printf("SubmitHandler: Error extracting content: %v", err)
-		http.Error(w, "Error extracting content", http.StatusInternalServerError)
-		return
-	}
-
-	quizContent, _, err := geminiClient.GenerateQuiz(ctx, extractedContent)
-	if err != nil {
-		log.Printf("SubmitHandler: Error generating quiz: %v", err)
-		http.Error(w, "Error generating quiz", http.StatusInternalServerError)
-		return
-	}
-
-	var quizContentMap map[string]interface{}
-	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		log.Printf("SubmitHandler: Error unmarshalling quiz content: %v", err)
-		http.Error(w, "Error unmarshalling quiz content", http.StatusInternalServerError)
-		return
-	}
-
-	firestoreClient, err := services.NewFirestoreClient(ctx)
+	firestoreClient, err := createFirestoreClient(ctx)
 	if err != nil {
 		log.Printf("SubmitHandler: Error creating Firestore client: %v", err)
 		http.Error(w, "Error creating Firestore client", http.StatusInternalServerError)
 		return
 	}
 
-	normalizedURL, err := utils.NormalizeURL(urlRequest.URL)
+	normalizedURL, contentID, err := normalizeAndGenerateID(urlRequest.URL)
 	if err != nil {
 		log.Printf("SubmitHandler: Error normalizing URL: %v", err)
 		http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
 		return
 	}
 
-	contentID := services.GenerateID(normalizedURL)
-	doc, err := firestoreClient.Client.Collection("quizzes").Doc(contentID).Get(ctx)
-	var existingQuizzes []models.Quiz
-	if err == nil {
-		var existingContent models.Content
-		if err := doc.DataTo(&existingContent); err != nil {
-			log.Printf("SubmitHandler: Error parsing existing content: %v", err)
-			http.Error(w, "Error parsing existing content", http.StatusInternalServerError)
+	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
+	isFirstQuiz := false
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			// If the document is not found, proceed as if there are no existing quizzes
+			existingQuizzes = []models.Quiz{}
+			isFirstQuiz = true
+		} else {
+			// If there's another error, log and return it
+			log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
+			http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
 			return
 		}
-		existingQuizzes = existingContent.Quizzes
 	}
 
-	nextQuizID := services.GetNextQuizID(existingQuizzes)
+	quizContentMap, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
+	if err != nil {
+		log.Printf("SubmitHandler: Error generating quiz content: %v", err)
+		http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
+		return
+	}
 
-	quiz, err := services.ParseQuizResponse(quizContentMap, nextQuizID)
+	latestQuizID := services.GetLatestQuizID(existingQuizzes)
+
+	quiz, err := services.ParseQuizResponse(quizContentMap, latestQuizID)
 	if err != nil {
 		log.Printf("SubmitHandler: Error parsing quiz response: %v", err)
 		http.Error(w, "Error parsing quiz response", http.StatusInternalServerError)
@@ -132,10 +138,11 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := SubmitResponse{
-		Status:    "success",
-		URL:       urlRequest.URL,
-		ContentID: contentID,
-		QuizID:    nextQuizID,
+		Status:      "success",
+		URL:         urlRequest.URL,
+		ContentID:   contentID,
+		QuizID:      latestQuizID,
+		IsFirstQuiz: isFirstQuiz,
 	}
 
 	log.Printf("SubmitHandler: Response - %v\n", response)

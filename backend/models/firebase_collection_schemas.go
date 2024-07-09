@@ -10,10 +10,11 @@ type Question struct {
 	Reference  string `json:"reference" firestore:"reference"`
 }
 
-// Quiz represents the structure of a quiz with a list of questions
+// Quiz represents the structure of a quiz with a list of questions and a timestamp
 type Quiz struct {
 	QuizID    string     `json:"quiz_id" firestore:"quiz_id"`
 	Questions []Question `json:"questions" firestore:"questions"`
+	Timestamp time.Time  `json:"timestamp" firestore:"timestamp"`
 }
 
 // Content represents the structure of content with multiple quizzes
