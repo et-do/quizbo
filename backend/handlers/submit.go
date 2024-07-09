@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"read-robin/models"
 	"read-robin/services"
 	"read-robin/utils"
 
 	"golang.org/x/net/context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // URLRequest is a struct to hold the URL submitted by the user
@@ -17,10 +20,11 @@ type URLRequest struct {
 
 // SubmitResponse is a struct to hold the response to be sent back to the user
 type SubmitResponse struct {
-	Status    string `json:"status"`
-	URL       string `json:"url"`
-	ContentID string `json:"content_id"`
-	QuizID    string `json:"quiz_id"`
+	Status      string `json:"status"`
+	URL         string `json:"url"`
+	ContentID   string `json:"content_id"`
+	QuizID      string `json:"quiz_id"`
+	IsFirstQuiz bool   `json:"is_first_quiz"`
 }
 
 // decodeURLRequest decodes the URL request from the HTTP request
@@ -95,11 +99,19 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID) // TODO: Figure out why content IDs with no quizzes aren't generating quizzes
-	if err != nil && err.Error() != "firestore: document not found" {
-		log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
-		http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
-		return
+	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
+	isFirstQuiz := false
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			// If the document is not found, proceed as if there are no existing quizzes
+			existingQuizzes = []models.Quiz{}
+			isFirstQuiz = true
+		} else {
+			// If there's another error, log and return it
+			log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
+			http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	quizContentMap, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
@@ -126,10 +138,11 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := SubmitResponse{
-		Status:    "success",
-		URL:       urlRequest.URL,
-		ContentID: contentID,
-		QuizID:    latestQuizID,
+		Status:      "success",
+		URL:         urlRequest.URL,
+		ContentID:   contentID,
+		QuizID:      latestQuizID,
+		IsFirstQuiz: isFirstQuiz,
 	}
 
 	log.Printf("SubmitHandler: Response - %v\n", response)

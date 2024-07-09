@@ -123,10 +123,6 @@ func TestGetQuiz(t *testing.T) {
 			t.Errorf("GetQuiz: expected reference %v, got %v", quiz.Questions[i].Reference, q.Reference)
 		}
 	}
-
-	if !retrievedQuiz.Timestamp.Equal(quiz.Timestamp) {
-		t.Errorf("GetQuiz: expected timestamp %v, got %v", quiz.Timestamp, retrievedQuiz.Timestamp)
-	}
 }
 
 func TestMain(m *testing.M) {

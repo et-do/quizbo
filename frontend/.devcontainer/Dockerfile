@@ -10,7 +10,6 @@ WORKDIR /workspace/frontend
 # Install necessary global packages (e.g., create-react-app)
 RUN npm install -g create-react-app
 RUN npm install -g firebase-tools
-RUN npm install
 
 # Expose port 3000 for the app
 EXPOSE 3000
