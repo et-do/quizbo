@@ -95,3 +95,20 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (st
 func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent string) (string, string, error) {
 	return gc.generateContent(ctx, quizModelSystemInstructions, summarizedContent)
 }
+
+// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent string) (map[string]interface{}, error) {
+	extractedContent, _, err := gc.ExtractContent(ctx, htmlContent)
+	if err != nil {
+		return nil, err
+	}
+	quizContent, _, err := gc.GenerateQuiz(ctx, extractedContent)
+	if err != nil {
+		return nil, err
+	}
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
+		return nil, err
+	}
+	return quizContentMap, nil
+}
