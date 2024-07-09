@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"read-robin/models"
 	"read-robin/services"
 	"read-robin/utils"
 
@@ -96,16 +95,11 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
+	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID) // TODO: Figure out why content IDs with no quizzes aren't generating quizzes
 	if err != nil && err.Error() != "firestore: document not found" {
 		log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
 		http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
 		return
-	}
-
-	// If the document is not found, we should proceed with an empty list of quizzes
-	if err != nil && err.Error() == "firestore: document not found" {
-		existingQuizzes = []models.Quiz{}
 	}
 
 	quizContentMap, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
