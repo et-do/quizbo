@@ -36,35 +36,32 @@ function QuizPage({ user, setPage, contentID, quizID }) {
 
   const handleSubmitResponse = async (index, questionID) => {
     const userResponse = responses[index];
-    const submissionData = {
-      contentID,
-      quizID,
-      questionID,
-      userResponse,
+    const payload = {
+      content_id: contentID,
+      quiz_id: quizID,
+      question_id: questionID,
+      user_response: userResponse,
     };
 
     try {
       const res = await fetch(
-        "https://read-robin-dev-6yudia4zva-nn.a.run.app/submit-response",
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit-response`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await user.getIdToken()}`,
           },
-          body: JSON.stringify(submissionData),
+          body: JSON.stringify(payload),
         }
       );
-
-      const result = await res.json();
+      const data = await res.json();
       const newStatus = {
         ...status,
-        [index]: result.status === "PASS" ? "Correct" : "Incorrect",
+        [index]: data.status === "PASS" ? "Correct" : "Incorrect",
       };
       setStatus(newStatus);
     } catch (error) {
-      console.error("Error submitting response:", error);
-      setError("Error submitting response");
+      console.error("Error submitting response: ", error);
     }
   };
 
