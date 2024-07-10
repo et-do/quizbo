@@ -38,6 +38,7 @@ To deploy changes to Cloud Run, follow these guidelines:
 ├── main.go # Entry point of the application, sets up routes and middleware
 └── go.mod # Go module file
 ```
+
 ## API Endpoints
 
 ### 1. Submit URL
@@ -48,31 +49,64 @@ To deploy changes to Cloud Run, follow these guidelines:
 - **Request Body**:
     ```json
     {
-    "url": "http://example.com"
+        "url": "http://example.com"
     }
     ```
 - **Response**:
     ```json
     {
-    "status": "success",
-    "url": "http://example.com",
-    "quiz_id": "1234"
+        "status": "success",
+        "url": "http://example.com",
+        "content_id": "abcd1234",
+        "quiz_id": "0001"
     }
     ```
 
-### 2. Get Quiz by QuizID
-- **Endpoint**: `/quiz/{quizID}`
+### 2. Get Quiz by ContentID and QuizID
+- **Endpoint**: `/quiz/{contentID}/{quizID}`
 - **Method**: GET
-- **Description**: Retrieves quiz questions from Firestore by QuizID.
+- **Description**: Retrieves quiz questions from Firestore by ContentID and QuizID.
 - **Response**:
     ```json
     {
-    "questions": [
-        "What is the purpose of the example domain?",
-        "Where can you find more information about the example domain?"
-    ]
+        "questions": [
+            {
+                "question_id": "0001",
+                "question": "What is the purpose of the example domain?",
+                "answer": "The 'Example Domain' is for use in illustrative examples in documents.",
+                "reference": "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission."
+            },
+            {
+                "question_id": "0002",
+                "question": "Where can you find more information about the example domain?",
+                "answer": "You can find more information on the IANA website.",
+                "reference": "More information can be found on the IANA website."
+            }
+        ]
     }
     ```
+
+### 3. Submit Quiz Response
+
+- **Endpoint**: `/submit-response`
+- **Method**: POST
+- **Description**: Submits a user's response to a quiz question for review.
+- **Request Body**:
+    ```json
+    {
+        "content_id": "abcd1234",
+        "quiz_id": "0001",
+        "question_id": "0001",
+        "user_response": "It is used for examples in documents."
+    }
+    ```
+- **Response**:
+    ```json
+    {
+        "status": "PASS"
+    }
+    ```
+
 
 ## Testing
 Test files are written alongside the files they are testing (I.e. "services/firestore.go", "services/firestore_test.go")
