@@ -12,7 +12,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(
-          `https://read-robin-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
+          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
         );
         const data = await res.json();
         if (data.questions) {
@@ -34,13 +34,38 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     setResponses(newResponses);
   };
 
-  const handleSubmitResponse = (index, correctAnswer) => {
-    const isCorrect = responses[index] === correctAnswer;
-    const newStatus = {
-      ...status,
-      [index]: isCorrect ? "Correct" : "Incorrect",
+  const handleSubmitResponse = async (index, questionID) => {
+    const userResponse = responses[index];
+    const submissionData = {
+      contentID,
+      quizID,
+      questionID,
+      userResponse,
     };
-    setStatus(newStatus);
+
+    try {
+      const res = await fetch(
+        "https://read-robin-dev-6yudia4zva-nn.a.run.app/submit-response",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await user.getIdToken()}`,
+          },
+          body: JSON.stringify(submissionData),
+        }
+      );
+
+      const result = await res.json();
+      const newStatus = {
+        ...status,
+        [index]: result.status === "PASS" ? "Correct" : "Incorrect",
+      };
+      setStatus(newStatus);
+    } catch (error) {
+      console.error("Error submitting response:", error);
+      setError("Error submitting response");
+    }
   };
 
   return (
@@ -64,7 +89,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
                   onChange={(e) => handleResponseChange(e, index)}
                 />
                 <button
-                  onClick={() => handleSubmitResponse(index, item.answer)}
+                  onClick={() => handleSubmitResponse(index, item.question_id)}
                 >
                   Submit
                 </button>

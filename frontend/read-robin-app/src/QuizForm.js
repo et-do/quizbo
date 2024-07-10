@@ -14,7 +14,7 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
     try {
       const idToken = await user.getIdToken();
       const res = await fetch(
-        `https://read-robin-6yudia4zva-nn.a.run.app/submit`,
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
         {
           method: "POST",
           headers: {
