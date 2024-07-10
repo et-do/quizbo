@@ -127,27 +127,50 @@ func TestReviewResponse(t *testing.T) {
 		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
 	}
 
-	// Prepare the review data
-	reviewData := map[string]string{
-		"question":        "What is the purpose of the 'Example Domain'?",
-		"user_response":   "The 'Example Domain' is used in documents.",
-		"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
-		"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+	testCases := []struct {
+		name           string
+		reviewData     map[string]string
+		expectedResult string
+	}{
+		{
+			name: "Passing case",
+			reviewData: map[string]string{
+				"question":        "What is the purpose of the 'Example Domain'?",
+				"user_response":   "The 'Example Domain' is used in illustrative examples.",
+				"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+				"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+			},
+			expectedResult: "PASS",
+		},
+		{
+			name: "Failing case",
+			reviewData: map[string]string{
+				"question":        "What is the purpose of the 'Example Domain'?",
+				"user_response":   "It is a domain for testing purposes.",
+				"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+				"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+			},
+			expectedResult: "FAIL",
+		},
 	}
 
-	reviewDataJSON, err := json.Marshal(reviewData)
-	if err != nil {
-		t.Fatalf("Error marshaling review data: %v", err)
-	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			reviewDataJSON, err := json.Marshal(tc.reviewData)
+			if err != nil {
+				t.Fatalf("Error marshaling review data: %v", err)
+			}
 
-	reviewResult, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
-	if err != nil {
-		t.Fatalf("ReviewResponse: expected no error, got %v", err)
-	}
+			reviewResult, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
+			if err != nil {
+				t.Fatalf("ReviewResponse: expected no error, got %v", err)
+			}
 
-	if reviewResult != "PASS" && reviewResult != "FAIL" {
-		t.Errorf("ReviewResponse: expected 'PASS' or 'FAIL', got %s", reviewResult)
-	} else {
-		t.Logf("Review Result: %s", reviewResult)
+			if reviewResult != tc.expectedResult {
+				t.Errorf("ReviewResponse: expected %s, got %s", tc.expectedResult, reviewResult)
+			} else {
+				t.Logf("Review Result for %s: %s", tc.name, reviewResult)
+			}
+		})
 	}
 }

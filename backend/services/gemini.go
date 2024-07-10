@@ -137,5 +137,5 @@ func (gc *GeminiClient) ReviewResponse(ctx context.Context, reviewData string) (
 	if err != nil {
 		return "", fmt.Errorf("error reviewing response: %w", err)
 	}
-	return reviewResult, nil
+	return strings.TrimSpace(reviewResult), nil
 }
