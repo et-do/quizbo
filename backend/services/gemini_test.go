@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"testing"
 )
@@ -109,5 +110,44 @@ func TestGenerateQuiz(t *testing.T) {
 	} else {
 		t.Logf("Quiz: %s", quiz)
 		t.Logf("Full Quiz Response: %s", fullQuiz)
+	}
+}
+
+func TestReviewResponse(t *testing.T) {
+	ctx := context.Background()
+
+	// Ensure the environment variable is set for the test
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	geminiClient, err := NewGeminiClient(ctx)
+	if err != nil {
+		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
+	}
+
+	// Prepare the review data
+	reviewData := map[string]string{
+		"question":        "What is the purpose of the 'Example Domain'?",
+		"user_response":   "The 'Example Domain' is used in documents.",
+		"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+		"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+	}
+
+	reviewDataJSON, err := json.Marshal(reviewData)
+	if err != nil {
+		t.Fatalf("Error marshaling review data: %v", err)
+	}
+
+	reviewResult, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
+	if err != nil {
+		t.Fatalf("ReviewResponse: expected no error, got %v", err)
+	}
+
+	if reviewResult != "PASS" && reviewResult != "FAIL" {
+		t.Errorf("ReviewResponse: expected 'PASS' or 'FAIL', got %s", reviewResult)
+	} else {
+		t.Logf("Review Result: %s", reviewResult)
 	}
 }
