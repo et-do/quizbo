@@ -38,6 +38,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
 
   const handleSubmitResponse = async (index, questionID) => {
     const userResponse = responses[index];
+    const questionData = questions[index];
     const payload = {
       content_id: contentID,
       quiz_id: quizID,
@@ -63,11 +64,14 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       };
       setStatus(newStatus);
 
-      // Save the user's response to Firestore
+      // Save the user's response to Firestore along with the correct answer, question, and reference
       const quizRef = doc(db, "users", user.uid, "quizzes", quizID);
       await updateDoc(quizRef, {
         responses: arrayUnion({
           questionID: questionID,
+          question: questionData.question,
+          correctAnswer: questionData.correct_answer,
+          reference: questionData.reference,
           userResponse: userResponse,
           status: data.status,
         }),
