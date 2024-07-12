@@ -26,6 +26,11 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
           body: JSON.stringify({ url }),
         }
       );
+
+      if (!res.ok) {
+        throw new Error(`Error submitting URL: ${res.statusText}`);
+      }
+
       const data = await res.json();
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
@@ -42,7 +47,8 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       setPage("quizPage");
       setLoading(false);
     } catch (error) {
-      setError("Error submitting URL");
+      console.error("Error:", error);
+      setError(`Error submitting URL: ${error.message}`);
       setLoading(false);
     }
   };
