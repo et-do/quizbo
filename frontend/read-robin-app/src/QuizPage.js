@@ -57,6 +57,11 @@ function QuizPage({ user, setPage, contentID, quizID }) {
           body: JSON.stringify(payload),
         }
       );
+
+      if (!res.ok) {
+        throw new Error(`Error submitting response: ${res.statusText}`);
+      }
+
       const data = await res.json();
       const newStatus = {
         ...status,
