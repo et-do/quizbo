@@ -17,7 +17,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const [error, setError] = useState(null);
   const [attemptID, setAttemptID] = useState(() => {
     const timestamp = new Date().toISOString();
-    return `${contentID}_${timestamp}`;
+    return `${quizID}_${timestamp}`;
   });
 
   useEffect(() => {
@@ -131,12 +131,15 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       );
     } catch (error) {
       console.error("Error submitting response: ", error);
+      if (error.code === "permission-denied") {
+        console.error("Permission denied! Check your Firestore rules.");
+      }
     }
   };
 
   const handleRetakeQuiz = () => {
     const timestamp = new Date().toISOString();
-    setAttemptID(`${contentID}_${timestamp}`); // Generate a new attempt ID
+    setAttemptID(`${quizID}_${timestamp}`); // Generate a new attempt ID
     setResponses({});
     setStatus({});
   };

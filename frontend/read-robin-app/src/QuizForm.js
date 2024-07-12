@@ -39,9 +39,7 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
       await setDoc(quizRef, {
         contentID: data.content_id,
-        quizID: data.quiz_id,
         url: url,
-        createdAt: new Date(),
       });
 
       setPage("quizPage");
