@@ -39,6 +39,25 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const handleSubmitResponse = async (index, questionID) => {
     const userResponse = responses[index];
     const questionData = questions[index];
+
+    // Validate that all necessary fields are defined
+    if (
+      userResponse === undefined ||
+      questionData.question === undefined ||
+      questionData.answer === undefined ||
+      questionData.reference === undefined ||
+      questionID === undefined
+    ) {
+      console.error("One or more fields are undefined", {
+        userResponse,
+        question: questionData.question,
+        correctAnswer: questionData.answer,
+        reference: questionData.reference,
+        questionID,
+      });
+      return;
+    }
+
     const payload = {
       content_id: contentID,
       quiz_id: quizID,
@@ -70,12 +89,12 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       setStatus(newStatus);
 
       // Save the user's response to Firestore along with the correct answer, question, and reference
-      const quizRef = doc(db, "users", user.uid, "quizzes", quizID);
+      const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
       await updateDoc(quizRef, {
         responses: arrayUnion({
           questionID: questionID,
           question: questionData.question,
-          correctAnswer: questionData.correct_answer,
+          correctAnswer: questionData.answer,
           reference: questionData.reference,
           userResponse: userResponse,
           status: data.status,

@@ -36,7 +36,7 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       setQuizID(data.quiz_id);
 
       // Save quiz metadata to Firestore
-      const quizRef = doc(db, "users", user.uid, "quizzes", data.quiz_id);
+      const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
       await setDoc(quizRef, {
         contentID: data.content_id,
         quizID: data.quiz_id,
