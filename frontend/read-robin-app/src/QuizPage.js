@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { db } from "./firebase";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+} from "firebase/firestore";
 
 function QuizPage({ user, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
@@ -9,6 +15,10 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const [status, setStatus] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [attemptID, setAttemptID] = useState(() => {
+    const timestamp = new Date().toISOString();
+    return `${contentID}_${timestamp}`;
+  });
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -40,6 +50,11 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     const userResponse = responses[index];
     const questionData = questions[index];
 
+    if (status[index] !== undefined) {
+      alert("You have already submitted a response for this question.");
+      return;
+    }
+
     // Validate that all necessary fields are defined
     if (
       userResponse === undefined ||
@@ -51,7 +66,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       console.error("One or more fields are undefined", {
         userResponse,
         question: questionData.question,
-        correctAnswer: questionData.answer,
+        answer: questionData.answer,
         reference: questionData.reference,
         questionID,
       });
@@ -89,20 +104,41 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       setStatus(newStatus);
 
       // Save the user's response to Firestore along with the correct answer, question, and reference
-      const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
-      await updateDoc(quizRef, {
-        responses: arrayUnion({
-          questionID: questionID,
-          question: questionData.question,
-          correctAnswer: questionData.answer,
-          reference: questionData.reference,
-          userResponse: userResponse,
-          status: data.status,
-        }),
-      });
+      const attemptRef = doc(
+        db,
+        "users",
+        user.uid,
+        "quizzes",
+        contentID,
+        "attempts",
+        attemptID
+      );
+      await setDoc(
+        attemptRef,
+        {
+          attemptID: attemptID,
+          createdAt: Timestamp.now(),
+          responses: arrayUnion({
+            questionID: questionID,
+            question: questionData.question,
+            answer: questionData.answer,
+            reference: questionData.reference,
+            userResponse: userResponse,
+            status: data.status,
+          }),
+        },
+        { merge: true }
+      );
     } catch (error) {
       console.error("Error submitting response: ", error);
     }
+  };
+
+  const handleRetakeQuiz = () => {
+    const timestamp = new Date().toISOString();
+    setAttemptID(`${contentID}_${timestamp}`); // Generate a new attempt ID
+    setResponses({});
+    setStatus({});
   };
 
   return (
@@ -142,6 +178,9 @@ function QuizPage({ user, setPage, contentID, quizID }) {
               )}
             </div>
           ))}
+          <button className="retake-button" onClick={handleRetakeQuiz}>
+            Retake Quiz
+          </button>
         </div>
       )}
     </div>
