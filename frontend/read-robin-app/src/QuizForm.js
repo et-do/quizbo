@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import { db } from "./firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function QuizForm({ user, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
@@ -27,6 +29,16 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       const data = await res.json();
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
+
+      // Save quiz metadata to Firestore
+      const quizRef = doc(db, "users", user.uid, "quizzes", data.quiz_id);
+      await setDoc(quizRef, {
+        contentID: data.content_id,
+        quizID: data.quiz_id,
+        url: url,
+        createdAt: new Date(),
+      });
+
       setPage("quizPage");
       setLoading(false);
     } catch (error) {

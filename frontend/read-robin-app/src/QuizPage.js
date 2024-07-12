@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import { db } from "./firebase";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 function QuizPage({ user, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
@@ -60,6 +62,16 @@ function QuizPage({ user, setPage, contentID, quizID }) {
         [index]: data.status === "PASS" ? "Correct" : "Incorrect",
       };
       setStatus(newStatus);
+
+      // Save the user's response to Firestore
+      const quizRef = doc(db, "users", user.uid, "quizzes", quizID);
+      await updateDoc(quizRef, {
+        responses: arrayUnion({
+          questionID: questionID,
+          userResponse: userResponse,
+          status: data.status,
+        }),
+      });
     } catch (error) {
       console.error("Error submitting response: ", error);
     }
