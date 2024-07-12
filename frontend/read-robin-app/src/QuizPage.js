@@ -17,7 +17,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const [error, setError] = useState(null);
   const [attemptID, setAttemptID] = useState(() => {
     const timestamp = new Date().toISOString();
-    return `${quizID}_${timestamp}`;
+    return `${quizID}@${timestamp}`;
   });
 
   useEffect(() => {
