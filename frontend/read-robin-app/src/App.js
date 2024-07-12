@@ -7,6 +7,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import { createUserProfile } from "./UserProfile"; // Import the function
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
@@ -21,9 +22,10 @@ function App() {
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
+        await createUserProfile(user);
         setPage("selection");
       } else {
         setUser(null);
@@ -36,8 +38,10 @@ function App() {
 
   const signIn = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
-        setUser(result.user);
+      .then(async (result) => {
+        const user = result.user;
+        setUser(user);
+        await createUserProfile(user);
         setPage("selection");
       })
       .catch((error) => {
