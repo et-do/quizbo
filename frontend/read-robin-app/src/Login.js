@@ -1,9 +1,12 @@
 import React from "react";
+import "./Login.css";
 
 function Login({ signIn }) {
   return (
-    <div>
-      <button onClick={signIn}>Sign in with Google</button>
+    <div className="login-page">
+      <button className="login-button" onClick={signIn}>
+        Sign in with Google
+      </button>
     </div>
   );
 }
