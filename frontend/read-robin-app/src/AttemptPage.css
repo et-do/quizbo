@@ -1,0 +1,29 @@
+.attempt-page {
+  padding: 20px;
+}
+
+.attempt-page h2 {
+  margin-top: 0;
+}
+
+.attempt-page ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.attempt-page li {
+  margin-bottom: 15px;
+}
+
+.back-button {
+  background-color: #dd3730;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #a96a59;
+}
