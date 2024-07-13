@@ -7,6 +7,7 @@ import {
   updateDoc,
   arrayUnion,
   Timestamp,
+  getDoc,
 } from "firebase/firestore";
 
 function QuizPage({ user, setPage, contentID, quizID }) {
@@ -44,6 +45,14 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const handleResponseChange = (e, index) => {
     const newResponses = { ...responses, [index]: e.target.value };
     setResponses(newResponses);
+  };
+
+  const calculateScore = (responses) => {
+    const totalQuestions = responses.length;
+    const correctAnswers = responses.filter(
+      (response) => response.status === "Correct"
+    ).length;
+    return ((correctAnswers / totalQuestions) * 100).toFixed(2);
   };
 
   const handleSubmitResponse = async (index, questionID) => {
@@ -99,11 +108,11 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       const data = await res.json();
       const newStatus = {
         ...status,
-        [index]: data.status === "PASS" ? "Correct" : "Incorrect",
+        [index]: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
       };
       setStatus(newStatus);
 
-      // Save the user's response to Firestore along with the correct answer, question, and reference
+      // Fetch the existing attempt document
       const attemptRef = doc(
         db,
         "users",
@@ -113,19 +122,37 @@ function QuizPage({ user, setPage, contentID, quizID }) {
         "attempts",
         attemptID
       );
+      const attemptDoc = await getDoc(attemptRef);
+      let existingResponses = [];
+
+      if (attemptDoc.exists()) {
+        existingResponses = attemptDoc.data().responses || [];
+      }
+
+      // Add the new response to the existing responses
+      const updatedResponses = [
+        ...existingResponses,
+        {
+          questionID: questionID,
+          question: questionData.question,
+          answer: questionData.answer,
+          reference: questionData.reference,
+          userResponse: userResponse,
+          status: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
+        },
+      ];
+
+      // Calculate the new score
+      const score = calculateScore(updatedResponses);
+
+      // Save the user's response to Firestore along with the correct answer, question, reference, and score
       await setDoc(
         attemptRef,
         {
           attemptID: attemptID,
           createdAt: Timestamp.now(),
-          responses: arrayUnion({
-            questionID: questionID,
-            question: questionData.question,
-            answer: questionData.answer,
-            reference: questionData.reference,
-            userResponse: userResponse,
-            status: data.status,
-          }),
+          responses: updatedResponses,
+          score: score,
         },
         { merge: true }
       );
