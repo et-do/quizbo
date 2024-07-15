@@ -1,3 +1,4 @@
+// Sidebar.js
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
@@ -18,7 +19,7 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
             id: doc.id,
             ...doc.data(),
           }));
-          console.log("Fetched quizzes:", quizzesData); // Debugging statement
+          console.log("Fetched quizzes:", quizzesData);
           setQuizzes(quizzesData);
           setLoading(false);
         } catch (error) {
@@ -82,6 +83,11 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
           ))}
         </ul>
       </div>
+      <div
+        className={`overlay ${isOpen ? "open" : ""}`}
+        onClick={toggleSidebar}
+      ></div>
+      <div className="main-content">{/* Render main content here */}</div>
     </>
   );
 }

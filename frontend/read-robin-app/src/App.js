@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { auth } from "./firebase";
@@ -119,14 +120,12 @@ function App() {
         )}
       </header>
       <div className="main-content">
-        {user && (
-          <Sidebar
-            user={user}
-            setContentID={setContentID}
-            setAttemptID={setAttemptID}
-            setPage={setPage}
-          />
-        )}
+        <Sidebar
+          user={user}
+          setContentID={setContentID}
+          setAttemptID={setAttemptID}
+          setPage={setPage}
+        />
         <div className="page-content">{renderPage()}</div>
       </div>
     </div>
