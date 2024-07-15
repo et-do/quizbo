@@ -1,3 +1,5 @@
+/* App.css */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -5,14 +7,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
+  background-color: #121212; /* Dark background color */
+  color: #ffffff; /* Light text color */
 }
 
 .App {
   display: flex;
   flex-direction: column;
+  align-items: center;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #1e1e1e; /* Darker background for the app container */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin: 2rem auto;
@@ -49,13 +53,13 @@ header {
 .app-title {
   margin: 0;
   font-size: 1.5rem;
-  color: #dd3730;
+  color: #dd3730; /* Accent color */
 }
 
 .tagline {
   margin: 0;
   font-size: 1.2rem;
-  color: #666;
+  color: #bbbbbb; /* Light gray for tagline */
 }
 
 .user-info {
@@ -85,16 +89,18 @@ label {
 input {
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #444444; /* Dark border color */
   border-radius: 5px;
   margin-bottom: 1rem;
+  background-color: #333333; /* Dark input background */
+  color: #ffffff; /* Light text color */
 }
 
 button {
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -102,42 +108,44 @@ button {
 }
 
 button:hover {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color on hover */
 }
 
 button.logout {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color for logout button */
 }
 
 button.logout:hover {
-  background-color: #dd3730;
+  background-color: #dd3730; /* Accent color on hover */
 }
 
 button.selection-button {
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
   margin-bottom: 1rem;
 }
 
 button.selection-button:hover {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color on hover */
 }
 
 button.selection-button:disabled {
-  background-color: #ccc;
+  background-color: #444444; /* Disabled button color */
 }
 
 .selection-options {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Ensure centering horizontally */
+  justify-content: center; /* Ensure centering vertically */
   gap: 1rem;
   margin-top: 1rem;
   width: 100%;
 }
 
 .loading-spinner {
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
+  border: 16px solid #333333; /* Dark border */
+  border-top: 16px solid #3498db; /* Blue accent for spinner */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -165,10 +173,13 @@ button.selection-button:disabled {
   padding: 0.5rem;
   width: 100%;
   max-width: 300px;
+  background-color: #333333; /* Dark input background */
+  color: #ffffff; /* Light text color */
+  border: 1px solid #444444; /* Dark border color */
 }
 
 .quiz-item button {
-  background-color: #dd3730;
+  background-color: #dd3730; /* Accent color */
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -178,7 +189,7 @@ button.selection-button:disabled {
 }
 
 .quiz-item button:hover {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color on hover */
 }
 
 .quiz-item .correct {
@@ -197,8 +208,8 @@ button.selection-button:disabled {
 }
 
 .back-button {
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
   margin-bottom: 1rem;
   border: none;
   border-radius: 5px;
@@ -207,7 +218,7 @@ button.selection-button:disabled {
 }
 
 .back-button:hover {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color on hover */
 }
 
 .login-page {
@@ -215,7 +226,7 @@ button.selection-button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 80px); /* Adjust based on header height */
   padding: 20px;
 }
 
@@ -229,4 +240,23 @@ button.selection-button:disabled {
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensure centering horizontally */
+  justify-content: flex-start; /* Ensure content starts at the top */
+  width: 100%;
+  padding: 20px;
+  flex-grow: 1; /* Ensure it takes up remaining space */
+}
+
+.page-content {
+  width: 100%;
+  max-width: 800px; /* Adjust this as needed */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
 }
