@@ -1,4 +1,5 @@
-/* Sidebar styling */
+/* Sidebar.css */
+
 .sidebar {
   width: 250px;
   height: 100%;
@@ -6,7 +7,7 @@
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
-  left: -250px;
+  left: -250px; /* Initially hide the sidebar */
   top: 0;
   bottom: 0;
   overflow-y: auto;
@@ -15,7 +16,7 @@
 }
 
 .sidebar.open {
-  left: 0;
+  left: 0; /* Slide the sidebar in when open */
 }
 
 .sidebar h2 {
@@ -43,22 +44,38 @@
 .sidebar-toggle {
   position: fixed;
   top: 20px;
-  left: 10px;
+  left: 10px; /* Adjust based on your needs */
   background-color: #dd3730;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 0.5rem;
-  z-index: 1001;
+  z-index: 1001; /* Ensure the button is above the sidebar */
   transition: left 0.3s ease;
 }
 
 .sidebar-toggle.open {
-  left: 260px;
+  left: 260px; /* Adjust based on sidebar width */
+}
+
+.overlay {
+  display: none; /* Hide the overlay initially */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Ensure the overlay is below the sidebar toggle button */
+  transition: opacity 0.3s ease;
+}
+
+.overlay.open {
+  display: block; /* Show the overlay when the sidebar is open */
+  opacity: 1;
 }
 
 .main-content {
-  margin-left: 270px;
   padding: 20px;
 }
