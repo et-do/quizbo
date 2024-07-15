@@ -3,7 +3,7 @@
 .sidebar {
   width: 250px;
   height: 100%;
-  background-color: #f4f4f4;
+  background-color: #1e1e1e; /* Dark background color */
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
@@ -21,6 +21,7 @@
 
 .sidebar h2 {
   margin-top: 0;
+  color: #ffffff; /* Light text color */
 }
 
 .sidebar ul {
@@ -35,18 +36,20 @@
 
 .sidebar li h3 {
   margin: 0;
+  color: #ffffff; /* Light text color */
 }
 
 .sidebar li p {
   margin: 5px 0;
+  color: #bbbbbb; /* Light gray text color */
 }
 
 .sidebar-toggle {
   position: fixed;
   top: 20px;
   left: 10px; /* Adjust based on your needs */
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
   cursor: pointer;
