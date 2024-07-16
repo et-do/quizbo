@@ -6,7 +6,7 @@ import "./AttemptPage.css";
 function AttemptPage({ user, contentID, attemptID, setPage }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [quizUrl, setQuizUrl] = useState("");
+  const [quizTitle, setQuizTitle] = useState("");
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -14,7 +14,7 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
         const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
-          setQuizUrl(quizDoc.data().url);
+          setQuizTitle(quizDoc.data().title || quizDoc.data().url);
         }
 
         const attemptRef = doc(
@@ -57,7 +57,7 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
       <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
-      <h2>{quizUrl}</h2>
+      <h2>{quizTitle}</h2>
       <p className="score-text">
         Score:{" "}
         <span className={`score-value ${getScoreClass(attempt.score)}`}>

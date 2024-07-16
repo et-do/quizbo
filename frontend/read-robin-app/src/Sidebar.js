@@ -7,7 +7,7 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedUrl, setExpandedUrl] = useState(null);
+  const [expandedQuiz, setExpandedQuiz] = useState(null);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -34,7 +34,7 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
                 .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds); // Sort by recency
               return {
                 id: quizDoc.id,
-                url: quizDoc.data().url,
+                title: quizDoc.data().title || quizDoc.data().url,
                 attempts,
               };
             })
@@ -61,8 +61,8 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
     setIsOpen(!isOpen);
   };
 
-  const toggleUrl = (url) => {
-    setExpandedUrl(expandedUrl === url ? null : url);
+  const toggleQuiz = (quizID) => {
+    setExpandedQuiz(expandedQuiz === quizID ? null : quizID);
   };
 
   if (loading) {
@@ -82,8 +82,8 @@ function Sidebar({ user, setContentID, setAttemptID, setPage }) {
         <ul>
           {quizzes.map((quiz) => (
             <li key={quiz.id}>
-              <h3 onClick={() => toggleUrl(quiz.url)}>{quiz.url}</h3>
-              {expandedUrl === quiz.url && (
+              <h3 onClick={() => toggleQuiz(quiz.id)}>{quiz.title}</h3>
+              {expandedQuiz === quiz.id && (
                 <ul>
                   {quiz.attempts.length > 0 ? (
                     quiz.attempts.map((attempt) => (
