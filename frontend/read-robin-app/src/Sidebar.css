@@ -5,16 +5,18 @@
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
-  left: -250px; /* Initially hide the sidebar */
+  left: -270px; /* Initially hide the sidebar completely */
   top: 0;
   bottom: 0;
-  overflow-y: auto;
+  overflow: hidden; /* Hide content when sidebar is closed */
   z-index: 1000;
-  transition: left 0.3s ease;
+  transition: left 0.3s ease, visibility 0.3s ease;
+  visibility: hidden; /* Hide the sidebar content */
 }
 
 .sidebar.open {
   left: 0; /* Slide the sidebar in when open */
+  visibility: visible; /* Show the sidebar content */
 }
 
 .sidebar h2 {
@@ -30,16 +32,46 @@
 .sidebar li {
   margin-bottom: 15px;
   cursor: pointer;
+  color: #ffffff; /* Light text color */
 }
 
 .sidebar li h3 {
   margin: 0;
   color: #ffffff; /* Light text color */
+  cursor: pointer;
+  background-color: #444444; /* Button shade */
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis to overflowing text */
+  font-size: 0.9rem; /* Reduce font size for better fit */
+  width: 100%;
 }
 
-.sidebar li p {
-  margin: 5px 0;
-  color: #bbbbbb; /* Light gray text color */
+.sidebar li h3::after {
+  content: "▼"; /* Dropdown arrow */
+  font-size: 0.8em;
+  margin-left: 10px;
+}
+
+.sidebar li ul {
+  margin-top: 10px;
+  padding-left: 15px;
+}
+
+.sidebar li ul li {
+  background-color: #2e2e2e; /* Slightly lighter shade */
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px; /* Line break between attempts */
+}
+
+.sidebar li ul li:hover {
+  background-color: #444444; /* Hover effect */
 }
 
 .sidebar-toggle {
@@ -77,6 +109,16 @@
   opacity: 1;
 }
 
-.main-content {
-  padding: 20px;
+/* Custom scrollbar styles */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #444444; /* Dark scrollbar color */
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background-color: #2e2e2e; /* Dark scrollbar track color */
 }

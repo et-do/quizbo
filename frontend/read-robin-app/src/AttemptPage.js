@@ -6,10 +6,17 @@ import "./AttemptPage.css";
 function AttemptPage({ user, contentID, attemptID, setPage }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quizUrl, setQuizUrl] = useState("");
 
   useEffect(() => {
     const fetchAttempt = async () => {
       if (user && contentID && attemptID) {
+        const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
+        const quizDoc = await getDoc(quizRef);
+        if (quizDoc.exists()) {
+          setQuizUrl(quizDoc.data().url);
+        }
+
         const attemptRef = doc(
           db,
           "users",
@@ -31,6 +38,12 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
     fetchAttempt();
   }, [user, contentID, attemptID]);
 
+  const getScoreClass = (score) => {
+    if (score <= 50) return "red";
+    if (score >= 80) return "green";
+    return "";
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -44,9 +57,13 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
       <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
-      <h2>Attempt Details</h2>
-      <p>Attempt ID: {attempt.attemptID}</p>
-      <p>Score: {attempt.score}%</p>
+      <h2>{quizUrl}</h2>
+      <p className="score-text">
+        Score:{" "}
+        <span className={`score-value ${getScoreClass(attempt.score)}`}>
+          {attempt.score}%
+        </span>
+      </p>
       <ul>
         {attempt.responses.map((response, index) => (
           <li key={index}>
@@ -55,9 +72,11 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
             <p>Your Response: {response.userResponse}</p>
             <p>Status: {response.status}</p>
             <p>Reference: {response.reference}</p>
+            {index < attempt.responses.length - 1 && <hr />}
           </li>
         ))}
       </ul>
+      <p className="attempt-id">Attempt ID: {attempt.attemptID}</p>
     </div>
   );
 }
