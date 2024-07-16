@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import createUserProfile from "./UserProfile"; // Import the function
+import { createUserProfile } from "./UserProfile"; // Import the function
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
@@ -27,11 +27,13 @@ function App() {
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        createUserProfile(user); // Create/update the user profile
+        await createUserProfile(user); // Create/update the user profile
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+        console.log("User logged in:", user); // Debugging log
+        console.log("Has seen intro:", hasSeenIntro); // Debugging log
         if (!hasSeenIntro) {
           setShowIntro(true);
         } else {
@@ -48,10 +50,12 @@ function App() {
 
   const signIn = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         setUser(result.user);
-        createUserProfile(result.user); // Create/update the user profile
+        await createUserProfile(result.user); // Create/update the user profile
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+        console.log("User signed in:", result.user); // Debugging log
+        console.log("Has seen intro:", hasSeenIntro); // Debugging log
         if (!hasSeenIntro) {
           setShowIntro(true);
         } else {
@@ -59,7 +63,7 @@ function App() {
         }
       })
       .catch((error) => {
-        console.error("Error signing in: ", error);
+        console.error("Error signing in:", error);
       });
   };
 
@@ -70,7 +74,7 @@ function App() {
         setPage("login");
       })
       .catch((error) => {
-        console.error("Error signing out: ", error);
+        console.error("Error signing out:", error);
       });
   };
 
