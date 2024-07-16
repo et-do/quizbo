@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import "./QuizPage.css";
 import { db } from "./firebase";
 import {
   doc,

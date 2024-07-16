@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./QuizForm.css";
 import { db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 

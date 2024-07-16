@@ -1,35 +1,34 @@
-/* SelectionPage.css */
-
 .selection-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 80px); /* Adjust based on header height */
+  height: auto; /* Adjust based on header height */
   padding: 20px;
 }
 
 .selection-options {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Added this line */
+  align-items: center; /* Ensure centering horizontally */
+  justify-content: center; /* Ensure centering vertically */
+  gap: 1rem;
+  margin-top: 1rem;
   width: 100%;
   max-width: 600px;
-  margin-top: 20px;
 }
 
 .selection-options h1 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #ffffff; /* Change the color to white */
+  color: #ffffff; /* Light text color */
 }
 
 .selection-options button {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -39,9 +38,9 @@
 }
 
 .selection-options button:hover {
-  background-color: #a96a59;
+  background-color: #a96a59; /* Darker accent color on hover */
 }
 
 .selection-options button:disabled {
-  background-color: #ccc;
+  background-color: #444444; /* Disabled button color */
 }
