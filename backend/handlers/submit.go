@@ -24,6 +24,7 @@ type SubmitResponse struct {
 	URL         string `json:"url"`
 	ContentID   string `json:"content_id"`
 	QuizID      string `json:"quiz_id"`
+	Title       string `json:"title"` // Add this line
 	IsFirstQuiz bool   `json:"is_first_quiz"`
 }
 
@@ -114,7 +115,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	quizContentMap, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
+	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
 	if err != nil {
 		log.Printf("SubmitHandler: Error generating quiz content: %v", err)
 		http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
@@ -130,7 +131,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = firestoreClient.SaveQuiz(ctx, normalizedURL, quiz)
+	err = firestoreClient.SaveQuiz(ctx, normalizedURL, title, quiz)
 	if err != nil {
 		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
 		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
@@ -142,6 +143,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		URL:         urlRequest.URL,
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
+		Title:       title, // Add this line
 		IsFirstQuiz: isFirstQuiz,
 	}
 

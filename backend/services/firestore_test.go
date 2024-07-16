@@ -12,7 +12,7 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-// TestSaveQuiz tests the SaveQuiz function to ensure it correctly saves a quiz to Firestore
+// TestSaveQuizWithTitle tests the SaveQuizWithTitle function to ensure it correctly saves a quiz and its title to Firestore
 func TestSaveQuiz(t *testing.T) {
 	ctx := context.Background()
 
@@ -44,16 +44,36 @@ func TestSaveQuiz(t *testing.T) {
 		Timestamp: time.Now(),
 	}
 
-	contentURL := "http://example.com"
+	contentURL := "example.com"
+	contentTitle := "Example Domain"
 	contentID := GenerateID(contentURL)
 
-	docID, err := firestoreClient.SaveQuiz(ctx, contentURL, quiz)
+	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)
 	if err != nil {
-		t.Fatalf("SaveQuiz: expected no error, got %v", err)
+		t.Fatalf("SaveQuizWithTitle: expected no error, got %v", err)
 	}
 
-	if docID != contentID {
-		t.Errorf("SaveQuiz: expected docID %v, got %v", contentID, docID)
+	// Retrieve the content to verify the title and quiz
+	doc, err := firestoreClient.Client.Collection("quizzes").Doc(contentID).Get(ctx)
+	if err != nil {
+		t.Fatalf("Failed to retrieve document: %v", err)
+	}
+
+	var content models.Content
+	if err := doc.DataTo(&content); err != nil {
+		t.Fatalf("Failed to parse content: %v", err)
+	}
+
+	if content.Title != contentTitle {
+		t.Errorf("SaveQuizWithTitle: expected title %v, got %v", contentTitle, content.Title)
+	}
+
+	if len(content.Quizzes) == 0 {
+		t.Fatalf("SaveQuizWithTitle: expected quizzes to be saved, got none")
+	}
+
+	if content.Quizzes[0].QuizID != quiz.QuizID {
+		t.Errorf("SaveQuizWithTitle: expected quizID %v, got %v", quiz.QuizID, content.Quizzes[0].QuizID)
 	}
 }
 
@@ -90,12 +110,13 @@ func TestGetQuiz(t *testing.T) {
 	}
 
 	contentURL := "http://example.com"
+	contentTitle := "Example Domain"
 	contentID := GenerateID(contentURL)
 
 	// Save the quiz to Firestore first
-	_, err = firestoreClient.SaveQuiz(ctx, contentURL, quiz)
+	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)
 	if err != nil {
-		t.Fatalf("SaveQuiz: expected no error, got %v", err)
+		t.Fatalf("SaveQuizWithTitle: expected no error, got %v", err)
 	}
 
 	// Retrieve the quiz from Firestore

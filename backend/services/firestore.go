@@ -33,8 +33,8 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 	return &FirestoreClient{Client: client}, nil
 }
 
-// SaveQuiz saves a quiz to Firestore
-func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models.Quiz) (string, error) {
+// SaveQuizWithTitle saves a quiz and its title to Firestore
+func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title string, quiz models.Quiz) error {
 	collection := "quizzes"
 
 	contentID := GenerateID(url)
@@ -45,13 +45,14 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models
 	var content models.Content
 	if err == nil {
 		if err := doc.DataTo(&content); err != nil {
-			return "", fmt.Errorf("failed to parse existing content: %v", err)
+			return fmt.Errorf("failed to parse existing content: %v", err)
 		}
 	} else {
 		content = models.Content{
 			URL:       url,
 			Timestamp: time.Now(),
 			ContentID: contentID,
+			Title:     title,
 			Quizzes:   []models.Quiz{},
 		}
 	}
@@ -64,12 +65,13 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url string, quiz models
 	quiz.Timestamp = time.Now()
 
 	content.Quizzes = append(content.Quizzes, quiz)
+	content.Title = title // Update the title in case it was not previously set
 
 	_, err = docRef.Set(ctx, content)
 	if err != nil {
-		return "", fmt.Errorf("failed adding quiz: %v", err)
+		return fmt.Errorf("failed adding quiz: %v", err)
 	}
-	return contentID, nil
+	return nil
 }
 
 // GetQuiz retrieves a quiz from Firestore by contentID and quizID
