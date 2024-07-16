@@ -68,3 +68,17 @@
 .back-button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
+
+.retake-button {
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.retake-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}

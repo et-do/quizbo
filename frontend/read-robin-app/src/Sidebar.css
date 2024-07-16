@@ -1,11 +1,11 @@
 .sidebar {
-  width: 250px;
+  width: 300px; /* Increased width for better fit */
   height: 100%;
   background-color: #1e1e1e; /* Dark background color */
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
-  left: -270px; /* Initially hide the sidebar completely */
+  left: -320px; /* Adjusted to match increased width */
   top: 0;
   bottom: 0;
   overflow-y: auto; /* Enable vertical scrollbar */
@@ -44,11 +44,12 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: normal; /* Allow text wrapping */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis to overflowing text */
   font-size: 0.9rem; /* Reduce font size for better fit */
   width: 100%;
+  word-break: break-word; /* Break long words to fit */
 }
 
 .sidebar li h3::after {
@@ -88,7 +89,7 @@
 }
 
 .sidebar-toggle.open {
-  left: 260px; /* Adjust based on sidebar width */
+  left: 310px; /* Adjusted to match increased width */
 }
 
 .overlay {
