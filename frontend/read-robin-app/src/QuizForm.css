@@ -18,11 +18,6 @@
   max-width: 600px;
 }
 
-.quiz-form label {
-  margin-bottom: 0.5rem;
-  color: #ffffff; /* Light text color */
-}
-
 .quiz-form input {
   padding: 0.5rem;
   font-size: 1rem;
@@ -31,6 +26,12 @@
   margin-bottom: 1rem;
   background-color: #333333; /* Dark input background */
   color: #ffffff; /* Light text color */
+}
+
+/* Placeholder styling */
+.quiz-form input::placeholder {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.6); /* Adjust the color and opacity as needed */
 }
 
 .quiz-form button {
