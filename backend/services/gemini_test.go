@@ -67,17 +67,24 @@ func TestExtractContent(t *testing.T) {
 		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
 	}
 
-	extractedContents, fullHTML, err := geminiClient.ExtractContent(ctx, testHTML)
+	contentMap, fullHTML, err := geminiClient.ExtractContent(ctx, testHTML)
 	if err != nil {
 		t.Fatalf("ExtractContent: expected no error, got %v", err)
 	}
 
-	if extractedContents == "" {
-		t.Errorf("ExtractContent: expected extracted contents, got an empty string")
+	if contentMap["content"] == "" {
+		t.Errorf("ExtractContent: expected extracted content, got an empty string")
 	} else {
-		t.Logf("Extracted Contents: %s", extractedContents)
-		t.Logf("Full HTML Response: %s", fullHTML)
+		t.Logf("Extracted Content: %s", contentMap["content"])
 	}
+
+	if contentMap["title"] == "" {
+		t.Errorf("ExtractContent: expected generated title, got an empty string")
+	} else {
+		t.Logf("Generated Title: %s", contentMap["title"])
+	}
+
+	t.Logf("Full HTML Response: %s", fullHTML)
 }
 
 func TestGenerateQuiz(t *testing.T) {
@@ -95,12 +102,12 @@ func TestGenerateQuiz(t *testing.T) {
 	}
 
 	// Use the previously tested method to get the extracted content
-	extractedContents, _, err := geminiClient.ExtractContent(ctx, testHTML)
+	contentMap, _, err := geminiClient.ExtractContent(ctx, testHTML)
 	if err != nil {
 		t.Fatalf("ExtractContent: expected no error, got %v", err)
 	}
 
-	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, extractedContents)
+	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, contentMap["content"])
 	if err != nil {
 		t.Fatalf("GenerateQuiz: expected no error, got %v", err)
 	}
