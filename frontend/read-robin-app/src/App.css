@@ -23,10 +23,11 @@ body {
   max-width: 1200px;
 }
 
-header {
+.app-header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   width: 100%;
 }
 
@@ -40,7 +41,6 @@ header {
 
 .logo-title {
   display: flex;
-  flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
 }
@@ -62,90 +62,18 @@ header {
   color: #bbbbbb; /* Light gray for tagline */
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.user-info p {
-  margin: 0 10px 0 0;
-}
-
-.logout {
-  margin-left: 10px;
-}
-
-form {
+.page-content {
+  width: 100%;
+  max-width: 800px; /* Adjust this as needed */
   display: flex;
   flex-direction: column;
-  width: 100%;
-}
-
-label {
-  margin-bottom: 0.5rem;
-}
-
-input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #444444; /* Dark border color */
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  background-color: #333333; /* Dark input background */
-  color: #ffffff; /* Light text color */
-}
-
-button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
-}
-
-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-button.logout {
-  background-color: #a96a59; /* Darker accent color for logout button */
-}
-
-button.logout:hover {
-  background-color: #dd3730; /* Accent color on hover */
-}
-
-button.selection-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  margin-bottom: 1rem;
-}
-
-button.selection-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-button.selection-button:disabled {
-  background-color: #444444; /* Disabled button color */
-}
-
-.selection-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Ensure centering horizontally */
-  justify-content: center; /* Ensure centering vertically */
-  gap: 1rem;
-  margin-top: 1rem;
-  width: 100%;
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
 }
 
 .loading-spinner {
   border: 16px solid #333333; /* Dark border */
-  border-top: 16px solid #3498db; /* Blue accent for spinner */
+  border-top: 16px solid #db3434; /* Accent color for spinner */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -162,101 +90,6 @@ button.selection-button:disabled {
   }
 }
 
-.quiz-item {
-  margin-top: 1rem;
-}
-
-.quiz-item input {
-  display: block;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  width: 100%;
-  max-width: 300px;
-  background-color: #333333; /* Dark input background */
-  color: #ffffff; /* Light text color */
-  border: 1px solid #444444; /* Dark border color */
-}
-
-.quiz-item button {
-  background-color: #dd3730; /* Accent color */
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 0.5rem;
-}
-
-.quiz-item button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-.quiz-item .correct {
-  color: green;
-}
-
-.quiz-item .incorrect {
-  color: red;
-}
-
-.response-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.back-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  margin-bottom: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.back-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-.login-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 80px); /* Adjust based on header height */
-  padding: 20px;
-}
-
-.selection-options h1 {
-  color: white;
-  margin-bottom: 1rem;
-}
-
-.app-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Ensure centering horizontally */
-  justify-content: flex-start; /* Ensure content starts at the top */
-  width: 100%;
-  padding: 20px;
-  flex-grow: 1; /* Ensure it takes up remaining space */
-}
-
-.page-content {
-  width: 100%;
-  max-width: 800px; /* Adjust this as needed */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center horizontally */
-  justify-content: center; /* Center vertically */
+* {
+  outline: 1px solid red; /* Adds a red outline to all elements */
 }
