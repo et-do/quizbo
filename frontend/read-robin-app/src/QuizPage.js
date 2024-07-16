@@ -209,7 +209,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
               )}
             </div>
           ))}
-          <button className="retake-button" onClick={handleRetakeQuiz}>
+          <button className="back-button" onClick={handleRetakeQuiz}>
             Retake Quiz
           </button>
         </div>
