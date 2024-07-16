@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./QuizForm.css";
+import { db } from "./firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function QuizForm({ user, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
@@ -24,13 +26,27 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
           body: JSON.stringify({ url }),
         }
       );
+
+      if (!res.ok) {
+        throw new Error(`Error submitting URL: ${res.statusText}`);
+      }
+
       const data = await res.json();
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
+
+      // Save quiz metadata to Firestore
+      const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
+      await setDoc(quizRef, {
+        contentID: data.content_id,
+        url: url,
+      });
+
       setPage("quizPage");
       setLoading(false);
     } catch (error) {
-      setError("Error submitting URL");
+      console.error("Error:", error);
+      setError(`Error submitting URL: ${error.message}`);
       setLoading(false);
     }
   };

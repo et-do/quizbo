@@ -36,3 +36,7 @@ Users can store their quiz history, compare their performance with peers, and co
     ├── package.json       # Node.js dependencies and scripts
     └── firebase.json      # Firebase configuration
 ```
+
+#### Attributions
+
+Logo: <a href="https://www.flaticon.com/free-icons/robin" title="robin icons">Robin icons created by Freepik - Flaticon</a>

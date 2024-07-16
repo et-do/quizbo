@@ -12,11 +12,14 @@ import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
 import QuizPage from "./QuizPage";
 import Login from "./Login";
+import Sidebar from "./Sidebar";
+import AttemptPage from "./AttemptPage";
 
 function App() {
   const [page, setPage] = useState("login");
   const [user, setUser] = useState(null);
   const [contentID, setContentID] = useState(null);
+  const [attemptID, setAttemptID] = useState(null);
   const [quizID, setQuizID] = useState(null);
   const provider = new GoogleAuthProvider();
 
@@ -80,6 +83,15 @@ function App() {
             quizID={quizID}
           />
         );
+      case "attemptPage":
+        return (
+          <AttemptPage
+            user={user}
+            contentID={contentID}
+            attemptID={attemptID}
+            setPage={setPage}
+          />
+        );
       default:
         return null;
     }
@@ -100,13 +112,23 @@ function App() {
         {user && (
           <div className="user-info">
             <p>Welcome, {user.displayName}</p>
-            <button className="logout" onClick={logout}>
+            <button className="logout-button" onClick={logout}>
               Logout
             </button>
           </div>
         )}
       </header>
-      {renderPage()}
+      <div className="main-content">
+        {user && (
+          <Sidebar
+            user={user}
+            setContentID={setContentID}
+            setAttemptID={setAttemptID}
+            setPage={setPage}
+          />
+        )}
+        <div className="page-content">{renderPage()}</div>
+      </div>
     </div>
   );
 }
