@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { auth } from "./firebase";
@@ -8,6 +7,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import createUserProfile from "./UserProfile"; // Import the function
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
@@ -30,6 +30,7 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        createUserProfile(user); // Create/update the user profile
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
         if (!hasSeenIntro) {
           setShowIntro(true);
@@ -49,6 +50,7 @@ function App() {
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
+        createUserProfile(result.user); // Create/update the user profile
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
         if (!hasSeenIntro) {
           setShowIntro(true);
