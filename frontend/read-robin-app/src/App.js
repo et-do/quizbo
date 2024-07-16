@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { auth } from "./firebase";
@@ -14,6 +15,7 @@ import QuizPage from "./QuizPage";
 import Login from "./Login";
 import Sidebar from "./Sidebar";
 import AttemptPage from "./AttemptPage";
+import IntroScreen from "./IntroScreen";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -21,13 +23,19 @@ function App() {
   const [contentID, setContentID] = useState(null);
   const [attemptID, setAttemptID] = useState(null);
   const [quizID, setQuizID] = useState(null);
+  const [showIntro, setShowIntro] = useState(false);
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        setPage("selection");
+        const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+        if (!hasSeenIntro) {
+          setShowIntro(true);
+        } else {
+          setPage("selection");
+        }
       } else {
         setUser(null);
         setPage("login");
@@ -41,7 +49,12 @@ function App() {
     signInWithPopup(auth, provider)
       .then((result) => {
         setUser(result.user);
-        setPage("selection");
+        const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+        if (!hasSeenIntro) {
+          setShowIntro(true);
+        } else {
+          setPage("selection");
+        }
       })
       .catch((error) => {
         console.error("Error signing in: ", error);
@@ -57,6 +70,12 @@ function App() {
       .catch((error) => {
         console.error("Error signing out: ", error);
       });
+  };
+
+  const finishIntro = () => {
+    localStorage.setItem("hasSeenIntro", "true");
+    setShowIntro(false);
+    setPage("selection");
   };
 
   const renderPage = () => {
@@ -99,36 +118,41 @@ function App() {
 
   return (
     <div className="App">
-      <header className="app-header">
-        <div className="header-top-row">
-          <div className="logo-title">
-            <img src={logo} alt="Logo" className="logo" />
-            <h1 className="app-title">ReadRobin</h1>
+      {showIntro && <IntroScreen onFinish={finishIntro} />}
+      {!showIntro && (
+        <>
+          <header className="app-header">
+            <div className="header-top-row">
+              <div className="logo-title">
+                <img src={logo} alt="Logo" className="logo" />
+                <h1 className="app-title">ReadRobin</h1>
+              </div>
+              <h2 className="tagline">
+                Your AI Companion for Smarter Comprehension
+              </h2>
+            </div>
+            {user && (
+              <div className="user-info">
+                <p>Welcome, {user.displayName}</p>
+                <button className="logout-button" onClick={logout}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </header>
+          <div className="main-content">
+            {user && (
+              <Sidebar
+                user={user}
+                setContentID={setContentID}
+                setAttemptID={setAttemptID}
+                setPage={setPage}
+              />
+            )}
+            <div className="page-content">{renderPage()}</div>
           </div>
-          <h2 className="tagline">
-            Your AI Companion for Smarter Comprehension
-          </h2>
-        </div>
-        {user && (
-          <div className="user-info">
-            <p>Welcome, {user.displayName}</p>
-            <button className="logout-button" onClick={logout}>
-              Logout
-            </button>
-          </div>
-        )}
-      </header>
-      <div className="main-content">
-        {user && (
-          <Sidebar
-            user={user}
-            setContentID={setContentID}
-            setAttemptID={setAttemptID}
-            setPage={setPage}
-          />
-        )}
-        <div className="page-content">{renderPage()}</div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
