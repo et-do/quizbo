@@ -131,7 +131,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = firestoreClient.SaveQuizWithTitle(ctx, normalizedURL, title, quiz)
+	err = firestoreClient.SaveQuiz(ctx, normalizedURL, title, quiz)
 	if err != nil {
 		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
 		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)

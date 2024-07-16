@@ -48,7 +48,7 @@ func TestSaveQuiz(t *testing.T) {
 	contentTitle := "Example Domain"
 	contentID := GenerateID(contentURL)
 
-	err = firestoreClient.SaveQuizWithTitle(ctx, contentURL, contentTitle, quiz)
+	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)
 	if err != nil {
 		t.Fatalf("SaveQuizWithTitle: expected no error, got %v", err)
 	}
@@ -114,7 +114,7 @@ func TestGetQuiz(t *testing.T) {
 	contentID := GenerateID(contentURL)
 
 	// Save the quiz to Firestore first
-	err = firestoreClient.SaveQuizWithTitle(ctx, contentURL, contentTitle, quiz)
+	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)
 	if err != nil {
 		t.Fatalf("SaveQuizWithTitle: expected no error, got %v", err)
 	}

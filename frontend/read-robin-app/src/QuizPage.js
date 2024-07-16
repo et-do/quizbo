@@ -153,6 +153,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
           createdAt: Timestamp.now(),
           responses: updatedResponses,
           score: score,
+          title: questionData.title, // Include the title field
         },
         { merge: true }
       );

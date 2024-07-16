@@ -35,11 +35,12 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
 
-      // Save quiz metadata to Firestore
+      // Save quiz metadata to Firestore, including the title field
       const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
       await setDoc(quizRef, {
         contentID: data.content_id,
         url: url,
+        title: data.title, // Include the title field
       });
 
       setPage("quizPage");
