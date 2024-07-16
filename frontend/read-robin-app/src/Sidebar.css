@@ -8,7 +8,7 @@
   left: -270px; /* Initially hide the sidebar completely */
   top: 0;
   bottom: 0;
-  overflow: hidden; /* Hide content when sidebar is closed */
+  overflow-y: auto; /* Enable vertical scrollbar */
   z-index: 1000;
   transition: left 0.3s ease, visibility 0.3s ease;
   visibility: hidden; /* Hide the sidebar content */
@@ -43,7 +43,6 @@
   padding: 10px;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   white-space: nowrap; /* Prevent text wrapping */
   overflow: hidden; /* Hide overflowing text */
@@ -55,7 +54,7 @@
 .sidebar li h3::after {
   content: "▼"; /* Dropdown arrow */
   font-size: 0.8em;
-  margin-left: 10px;
+  margin-left: auto;
 }
 
 .sidebar li ul {

@@ -67,11 +67,26 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
       <ul>
         {attempt.responses.map((response, index) => (
           <li key={index}>
-            <p>Question: {response.question}</p>
-            <p>Correct Answer: {response.answer}</p>
-            <p>Your Response: {response.userResponse}</p>
-            <p>Status: {response.status}</p>
-            <p>Reference: {response.reference}</p>
+            <div className="response-item">
+              <span className="response-title">Question:</span>
+              <span>{response.question}</span>
+            </div>
+            <div className="response-item">
+              <span className="response-title">Correct Answer:</span>
+              <span>{response.answer}</span>
+            </div>
+            <div className="response-item">
+              <span className="response-title">Your Response:</span>
+              <span>{response.userResponse}</span>
+            </div>
+            <div className="response-item">
+              <span className="response-title">Status:</span>
+              <span>{response.status}</span>
+            </div>
+            <div className="response-item">
+              <span className="response-title">Reference:</span>
+              <span>{response.reference}</span>
+            </div>
             {index < attempt.responses.length - 1 && <hr />}
           </li>
         ))}

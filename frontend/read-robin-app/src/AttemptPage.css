@@ -51,8 +51,15 @@
   color: #ffffff; /* Light text color */
 }
 
-.attempt-page li p {
-  margin: 5px 0;
+.attempt-page .response-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.attempt-page .response-title {
+  font-weight: bold;
+  min-width: 150px; /* Adjust as necessary */
 }
 
 .attempt-page hr {
