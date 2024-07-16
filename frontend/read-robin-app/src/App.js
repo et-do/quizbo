@@ -112,7 +112,7 @@ function App() {
         {user && (
           <div className="user-info">
             <p>Welcome, {user.displayName}</p>
-            <button className="logout" onClick={logout}>
+            <button className="logout-button" onClick={logout}>
               Logout
             </button>
           </div>
