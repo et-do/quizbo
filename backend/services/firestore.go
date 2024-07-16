@@ -34,7 +34,7 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 }
 
 // SaveQuizWithTitle saves a quiz and its title to Firestore
-func (fc *FirestoreClient) SaveQuizWithTitle(ctx context.Context, url, title string, quiz models.Quiz) error {
+func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title string, quiz models.Quiz) error {
 	collection := "quizzes"
 
 	contentID := GenerateID(url)
