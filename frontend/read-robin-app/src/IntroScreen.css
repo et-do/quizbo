@@ -1,0 +1,68 @@
+.intro-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  width: 500px; /* Ensure intro-screen takes full width */
+  background-color: #121212;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  transition: opacity 1s ease-in-out;
+}
+
+.intro-screen.fade-out {
+  opacity: 0;
+}
+
+.intro-logo {
+  width: 200px;
+  margin-top: 20px;
+}
+
+.slides-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80%; /* Increased height */
+  width: 100%; /* Ensure it takes full width */
+  max-width: 500px; /* Set a max width */
+  margin-top: 20px;
+  position: relative;
+  padding: 0 40px; /* Adjusted padding */
+  box-sizing: border-box;
+  overflow: hidden; /* Ensure slides don't overflow the container */
+}
+
+.slide {
+  width: 100%;
+  max-width: 500px; /* Increased max-width to match container */
+  text-align: center;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 1s ease-in-out;
+  position: absolute; /* Stack slides on top of each other */
+  top: 0; /* Ensure slides are vertically aligned */
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide.left {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.slide h2 {
+  font-size: 2rem;
+  color: #ffffff;
+}
+
+.slide p {
+  font-size: 1.2rem;
+  color: #cccccc;
+}
