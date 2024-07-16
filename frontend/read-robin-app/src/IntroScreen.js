@@ -4,16 +4,28 @@ import logo from "./logo.png"; // Import the logo
 
 const slides = [
   {
-    title: "Welcome to ReadRobin!",
-    text: "Your AI Companion for Smarter Comprehension",
+    title: "👋 Welcome to ReadRobin!",
+    text: "Your AI Companion for Smarter Personalized Comprehension.",
   },
   {
-    title: "Generate Quizzes",
-    text: "Turn your content into quizzes for improved learning",
+    title: "📝 Generate Personalized Quizzes",
+    text: "Turn any content—websites, PDFs, podcasts, and videos—into quizzes tailored to your unique needs and goals.",
   },
   {
-    title: "Track Your Progress",
-    text: "See your quiz history and improve over time",
+    title: "📈 Track Your Progress",
+    text: "See your quiz history, track your progress, and improve over time with detailed analytics and insights.",
+  },
+  {
+    title: "💡 Tailored Learning Experience",
+    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your learning style and objectives.",
+  },
+  {
+    title: "🌐 Diverse Content Sources",
+    text: "Easily create quizzes from a variety of content sources, ensuring a comprehensive and adaptable learning experience.",
+  },
+  {
+    title: "🚀 Get Started!",
+    text: "Join now and enhance your learning journey with ReadRobin today!",
   },
 ];
 
@@ -25,7 +37,7 @@ const IntroScreen = ({ onFinish }) => {
     if (currentSlide < slides.length) {
       const timer = setTimeout(() => {
         setCurrentSlide((prev) => prev + 1);
-      }, 3000); // Adjust the timeout as needed
+      }, 5000); // Adjust the timeout as needed
       return () => clearTimeout(timer);
     } else {
       const fadeTimer = setTimeout(() => {

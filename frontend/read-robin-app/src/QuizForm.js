@@ -59,15 +59,13 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       </button>
       <h2>Webpage Quiz</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          URL:
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            required
-          />
-        </label>
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Enter your URL here..."
+          required
+        />
         <button type="submit">Submit</button>
       </form>
       {error && <div style={{ color: "red" }}>{error}</div>}

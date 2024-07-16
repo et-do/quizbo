@@ -18,15 +18,24 @@ import AttemptPage from "./AttemptPage";
 import IntroScreen from "./IntroScreen";
 
 function App() {
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState("intro");
   const [user, setUser] = useState(null);
   const [contentID, setContentID] = useState(null);
   const [attemptID, setAttemptID] = useState(null);
   const [quizID, setQuizID] = useState(null);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(null); // Initial state is null
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
+    // Check localStorage synchronously before rendering
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+    if (hasSeenIntro) {
+      setShowIntro(false);
+      setPage("login");
+    } else {
+      setShowIntro(true);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
@@ -81,7 +90,7 @@ function App() {
   const finishIntro = () => {
     localStorage.setItem("hasSeenIntro", "true");
     setShowIntro(false);
-    setPage("selection");
+    setPage(user ? "selection" : "login");
   };
 
   const renderPage = () => {
@@ -117,15 +126,23 @@ function App() {
             setPage={setPage}
           />
         );
+      case "intro":
+        return <IntroScreen onFinish={finishIntro} />;
       default:
         return null;
     }
   };
 
+  if (showIntro === null) {
+    // Return null or a loading indicator while determining the state
+    return null;
+  }
+
   return (
     <div className="App">
-      {showIntro && <IntroScreen onFinish={finishIntro} />}
-      {!showIntro && (
+      {showIntro ? (
+        <IntroScreen onFinish={finishIntro} />
+      ) : (
         <>
           <header className="app-header">
             <div className="header-top-row">
