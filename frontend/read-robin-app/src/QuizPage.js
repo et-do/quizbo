@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import "./QuizPage.css";
+import { db } from "./firebase";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+  getDoc,
+} from "firebase/firestore";
 
 function QuizPage({ user, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
@@ -7,6 +16,10 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   const [status, setStatus] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [attemptID, setAttemptID] = useState(() => {
+    const timestamp = new Date().toISOString();
+    return `${quizID}@${timestamp}`;
+  });
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -34,8 +47,41 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     setResponses(newResponses);
   };
 
+  const calculateScore = (responses) => {
+    const totalQuestions = responses.length;
+    const correctAnswers = responses.filter(
+      (response) => response.status === "Correct"
+    ).length;
+    return ((correctAnswers / totalQuestions) * 100).toFixed(2);
+  };
+
   const handleSubmitResponse = async (index, questionID) => {
     const userResponse = responses[index];
+    const questionData = questions[index];
+
+    if (status[index] !== undefined) {
+      alert("You have already submitted a response for this question.");
+      return;
+    }
+
+    // Validate that all necessary fields are defined
+    if (
+      userResponse === undefined ||
+      questionData.question === undefined ||
+      questionData.answer === undefined ||
+      questionData.reference === undefined ||
+      questionID === undefined
+    ) {
+      console.error("One or more fields are undefined", {
+        userResponse,
+        question: questionData.question,
+        answer: questionData.answer,
+        reference: questionData.reference,
+        questionID,
+      });
+      return;
+    }
+
     const payload = {
       content_id: contentID,
       quiz_id: quizID,
@@ -54,15 +100,75 @@ function QuizPage({ user, setPage, contentID, quizID }) {
           body: JSON.stringify(payload),
         }
       );
+
+      if (!res.ok) {
+        throw new Error(`Error submitting response: ${res.statusText}`);
+      }
+
       const data = await res.json();
       const newStatus = {
         ...status,
-        [index]: data.status === "PASS" ? "Correct" : "Incorrect",
+        [index]: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
       };
       setStatus(newStatus);
+
+      // Fetch the existing attempt document
+      const attemptRef = doc(
+        db,
+        "users",
+        user.uid,
+        "quizzes",
+        contentID,
+        "attempts",
+        attemptID
+      );
+      const attemptDoc = await getDoc(attemptRef);
+      let existingResponses = [];
+
+      if (attemptDoc.exists()) {
+        existingResponses = attemptDoc.data().responses || [];
+      }
+
+      // Add the new response to the existing responses
+      const updatedResponses = [
+        ...existingResponses,
+        {
+          questionID: questionID,
+          question: questionData.question,
+          answer: questionData.answer,
+          reference: questionData.reference,
+          userResponse: userResponse,
+          status: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
+        },
+      ];
+
+      // Calculate the new score
+      const score = calculateScore(updatedResponses);
+
+      // Save the user's response to Firestore along with the correct answer, question, reference, and score
+      await setDoc(
+        attemptRef,
+        {
+          attemptID: attemptID,
+          createdAt: Timestamp.now(),
+          responses: updatedResponses,
+          score: score,
+        },
+        { merge: true }
+      );
     } catch (error) {
       console.error("Error submitting response: ", error);
+      if (error.code === "permission-denied") {
+        console.error("Permission denied! Check your Firestore rules.");
+      }
     }
+  };
+
+  const handleRetakeQuiz = () => {
+    const timestamp = new Date().toISOString();
+    setAttemptID(`${quizID}_${timestamp}`); // Generate a new attempt ID
+    setResponses({});
+    setStatus({});
   };
 
   return (
@@ -102,6 +208,9 @@ function QuizPage({ user, setPage, contentID, quizID }) {
               )}
             </div>
           ))}
+          <button className="retake-button" onClick={handleRetakeQuiz}>
+            Retake Quiz
+          </button>
         </div>
       )}
     </div>

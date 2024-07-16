@@ -1,0 +1,46 @@
+.selection-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto; /* Adjust based on header height */
+  padding: 20px;
+}
+
+.selection-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensure centering horizontally */
+  justify-content: center; /* Ensure centering vertically */
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.selection-options h1 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #ffffff; /* Light text color */
+}
+
+.selection-options button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.selection-options button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.selection-options button:disabled {
+  background-color: #444444; /* Disabled button color */
+}

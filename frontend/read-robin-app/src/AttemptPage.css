@@ -1,0 +1,75 @@
+.attempt-page {
+  padding: 20px;
+  background-color: #1e1e1e; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+.back-button {
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.back-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.attempt-page h2 {
+  margin-top: 0;
+  color: #ffffff; /* Light text color */
+}
+
+.attempt-page .score-text {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: #ffffff; /* Light text color for the "Score" text */
+}
+
+.attempt-page .score-value.red {
+  color: #ff0000; /* Red color for low scores */
+}
+
+.attempt-page .score-value.green {
+  color: #00ff00; /* Green color for high scores */
+}
+
+.attempt-page .score-value {
+  font-weight: bold;
+}
+
+.attempt-page ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.attempt-page li {
+  margin-bottom: 15px;
+  color: #ffffff; /* Light text color */
+}
+
+.attempt-page .response-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.attempt-page .response-title {
+  font-weight: bold;
+  min-width: 150px; /* Adjust as necessary */
+}
+
+.attempt-page hr {
+  border: 0;
+  border-top: 1px solid #444444; /* Dark line color */
+  margin: 15px 0;
+}
+
+.attempt-page .attempt-id {
+  font-size: 0.8rem;
+  margin-top: 20px;
+  color: #bbbbbb; /* Light gray color */
+}

@@ -1,0 +1,70 @@
+.quiz-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.quiz-page h2 {
+  color: #ffffff; /* Light text color */
+}
+
+.quiz-item {
+  margin-top: 1rem;
+}
+
+.quiz-item input {
+  display: block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  background-color: #333333; /* Dark input background */
+  color: #ffffff; /* Light text color */
+  border: 1px solid #444444; /* Dark border color */
+}
+
+.quiz-item button {
+  background-color: #dd3730; /* Accent color */
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.quiz-item button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.quiz-item .correct {
+  color: green;
+}
+
+.quiz-item .incorrect {
+  color: red;
+}
+
+.response-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.back-button {
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
