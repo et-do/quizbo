@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./QuizPage.css";
 import { db } from "./firebase";
-import {
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  Timestamp,
-  getDoc,
-} from "firebase/firestore";
+import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 
 function QuizPage({ user, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
@@ -20,10 +13,17 @@ function QuizPage({ user, setPage, contentID, quizID }) {
     const timestamp = new Date().toISOString();
     return `${quizID}@${timestamp}`;
   });
+  const [quizTitle, setQuizTitle] = useState("");
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchQuizData = async () => {
       try {
+        const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
+        const quizDoc = await getDoc(quizRef);
+        if (quizDoc.exists()) {
+          setQuizTitle(quizDoc.data().title || ""); // Fetch title
+        }
+
         const res = await fetch(
           `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
         );
@@ -39,8 +39,8 @@ function QuizPage({ user, setPage, contentID, quizID }) {
         setLoading(false);
       }
     };
-    fetchQuestions();
-  }, [contentID, quizID]);
+    fetchQuizData();
+  }, [contentID, quizID, user]);
 
   const handleResponseChange = (e, index) => {
     const newResponses = { ...responses, [index]: e.target.value };
@@ -145,6 +145,15 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       // Calculate the new score
       const score = calculateScore(updatedResponses);
 
+      // Log data for debugging
+      console.log("Saving attempt with data:", {
+        attemptID,
+        createdAt: Timestamp.now(),
+        responses: updatedResponses,
+        score,
+        title: quizTitle, // Include the title field
+      });
+
       // Save the user's response to Firestore along with the correct answer, question, reference, and score
       await setDoc(
         attemptRef,
@@ -153,10 +162,11 @@ function QuizPage({ user, setPage, contentID, quizID }) {
           createdAt: Timestamp.now(),
           responses: updatedResponses,
           score: score,
-          title: questionData.title, // Include the title field
+          title: quizTitle, // Include the title field
         },
         { merge: true }
       );
+      console.log("Attempt saved successfully");
     } catch (error) {
       console.error("Error submitting response: ", error);
       if (error.code === "permission-denied") {
@@ -167,7 +177,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
 
   const handleRetakeQuiz = () => {
     const timestamp = new Date().toISOString();
-    setAttemptID(`${quizID}_${timestamp}`); // Generate a new attempt ID
+    setAttemptID(`${quizID}@${timestamp}`); // Generate a new attempt ID
     setResponses({});
     setStatus({});
   };
