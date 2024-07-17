@@ -50,8 +50,8 @@ const PersonaList = ({ user, activePersona, setActivePersona }) => {
             }`}
           >
             <div className="persona-info">
-              <strong>{persona.name}</strong> - {persona.type} -{" "}
-              {persona.difficulty}
+              <strong>{persona.name}</strong> - {persona.role} -{" "}
+              {persona.difficulty} - {persona.language}
             </div>
             <div className="persona-actions">
               <button

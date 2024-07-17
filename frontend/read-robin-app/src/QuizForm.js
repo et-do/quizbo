@@ -32,7 +32,8 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
             persona: {
               id: activePersona.id,
               name: activePersona.name,
-              type: activePersona.type,
+              role: activePersona.role,
+              language: activePersona.language,
               difficulty: activePersona.difficulty,
             },
           }),
