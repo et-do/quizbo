@@ -201,6 +201,12 @@ function App() {
       case "personas":
         return (
           <>
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
             <PersonaForm user={user} addPersona={addPersona} />
             <PersonaList
               user={user}
@@ -228,7 +234,11 @@ function App() {
         <>
           <header className="app-header">
             <div className="header-top-row">
-              <div className="logo-title" onClick={() => setPage("selection")}>
+              <div
+                className="logo-title"
+                onClick={() => setPage("selection")}
+                style={{ cursor: "pointer" }} // Add pointer cursor style
+              >
                 <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">ReadRobin</h1>
               </div>
