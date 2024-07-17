@@ -5,79 +5,12 @@ import (
 	"log"
 	"net/http"
 	"read-robin/models"
-	"read-robin/services"
-	"read-robin/utils"
 
 	"golang.org/x/net/context"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-// URLRequest is a struct to hold the URL and persona details submitted by the user
-type URLRequest struct {
-	URL     string         `json:"url"`
-	Persona models.Persona `json:"persona"`
-}
-
-// SubmitResponse is a struct to hold the response to be sent back to the user
-type SubmitResponse struct {
-	Status      string `json:"status"`
-	URL         string `json:"url"`
-	ContentID   string `json:"content_id"`
-	QuizID      string `json:"quiz_id"`
-	Title       string `json:"title"` // Add this line
-	IsFirstQuiz bool   `json:"is_first_quiz"`
-}
-
-// decodeURLRequest decodes the URL request from the HTTP request
-func decodeURLRequest(r *http.Request) (URLRequest, error) {
-	var urlRequest URLRequest
-	if r.Header.Get("Content-Type") == "application/json" {
-		err := utils.DecodeJSONBody(r, &urlRequest)
-		return urlRequest, err
-	} else {
-		err := utils.DecodeFormBody(r, "url", &urlRequest.URL)
-		return urlRequest, err
-	}
-}
-
-// normalizeAndGenerateID normalizes the URL and generates a content ID
-func normalizeAndGenerateID(url string) (string, string, error) {
-	normalizedURL, err := utils.NormalizeURL(url)
-	if err != nil {
-		return "", "", err
-	}
-	contentID := services.GenerateID(normalizedURL)
-	return normalizedURL, contentID, nil
-}
-
-// createFirestoreClient creates a new Firestore client
-func createFirestoreClient(ctx context.Context) (*services.FirestoreClient, error) {
-	return services.NewFirestoreClient(ctx)
-}
-
-// createGeminiClient creates a new Gemini client
-func createGeminiClient(ctx context.Context) (*services.GeminiClient, error) {
-	return services.NewGeminiClient(ctx)
-}
-
+// SubmitHandler handles both URL and PDF submissions.
 func SubmitHandler(w http.ResponseWriter, r *http.Request) {
-	urlRequest, err := decodeURLRequest(r)
-	if err != nil {
-		log.Printf("SubmitHandler: Unable to parse request: %v", err)
-		http.Error(w, "Unable to parse request", http.StatusBadRequest)
-		return
-	}
-
-	log.Printf("SubmitHandler: Received URL: %s", urlRequest.URL)
-
-	htmlContent, err := utils.FetchHTML(urlRequest.URL)
-	if err != nil {
-		log.Printf("SubmitHandler: Error fetching HTML content: %v", err)
-		http.Error(w, "Error fetching HTML content", http.StatusInternalServerError)
-		return
-	}
-
 	ctx := context.Background()
 
 	geminiClient, err := createGeminiClient(ctx)
@@ -94,57 +27,35 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	normalizedURL, contentID, err := normalizeAndGenerateID(urlRequest.URL)
-	if err != nil {
-		log.Printf("SubmitHandler: Error normalizing URL: %v", err)
-		http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
-		return
-	}
+	contentType := r.Header.Get("Content-Type")
+	var response models.SubmitResponse
 
-	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
-	isFirstQuiz := false
-	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			existingQuizzes = []models.Quiz{}
-			isFirstQuiz = true
-		} else {
-			log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
-			http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
+	if contentType == "application/json" {
+		urlRequest, err := decodeURLRequest(r)
+		if err != nil {
+			log.Printf("SubmitHandler: Unable to parse request: %v", err)
+			http.Error(w, "Unable to parse request", http.StatusBadRequest)
 			return
 		}
-	}
 
-	// Pass persona information to the Gemini client
-	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent, urlRequest.Persona)
-	if err != nil {
-		log.Printf("SubmitHandler: Error generating quiz content: %v", err)
-		http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
+		response, err = processURLSubmission(ctx, urlRequest, geminiClient, firestoreClient)
+		if err != nil {
+			log.Printf("SubmitHandler: Error processing URL submission: %v", err)
+			http.Error(w, "Error processing URL submission", http.StatusInternalServerError)
+			return
+		}
+
+	} else if contentType == "multipart/form-data" {
+		response, err = handleMultipartForm(r, ctx, geminiClient, firestoreClient)
+		if err != nil {
+			log.Printf("SubmitHandler: Error processing PDF submission: %v", err)
+			http.Error(w, "Error processing PDF submission", http.StatusInternalServerError)
+			return
+		}
+
+	} else {
+		http.Error(w, "Unsupported content type", http.StatusUnsupportedMediaType)
 		return
-	}
-
-	latestQuizID := services.GetLatestQuizID(existingQuizzes)
-
-	quiz, err := services.ParseQuizResponse(quizContentMap, latestQuizID)
-	if err != nil {
-		log.Printf("SubmitHandler: Error parsing quiz response: %v", err)
-		http.Error(w, "Error parsing quiz response", http.StatusInternalServerError)
-		return
-	}
-
-	err = firestoreClient.SaveQuiz(ctx, normalizedURL, title, quiz)
-	if err != nil {
-		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
-		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
-		return
-	}
-
-	response := SubmitResponse{
-		Status:      "success",
-		URL:         urlRequest.URL,
-		ContentID:   contentID,
-		QuizID:      latestQuizID,
-		Title:       title,
-		IsFirstQuiz: isFirstQuiz,
 	}
 
 	log.Printf("SubmitHandler: Response - %v\n", response)

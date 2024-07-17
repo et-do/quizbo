@@ -21,7 +21,7 @@ type ReviewResponse struct {
 	Status string `json:"status"`
 }
 
-func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
+func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 	var responseSubmission ResponseSubmission
 	if err := json.NewDecoder(r.Body).Decode(&responseSubmission); err != nil {
 		log.Printf("SubmitResponseHandler: Unable to parse request: %v", err)

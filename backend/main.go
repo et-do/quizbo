@@ -20,7 +20,7 @@ func main() {
 	r.HandleFunc("/", handlers.HomeHandler).Methods("GET")
 	r.HandleFunc("/submit", handlers.SubmitHandler).Methods("POST")
 	r.HandleFunc("/quiz/{contentID}/{quizID}", handlers.GetQuizHandler).Methods("GET")
-	r.HandleFunc("/submit-response", handlers.SubmitResponseHandler).Methods("POST") // New route for question submission
+	r.HandleFunc("/submit-response", handlers.ResponseHandler).Methods("POST") // New route for question submission
 
 	// Apply logging middleware
 	r.Use(middleware.LoggingMiddleware)
