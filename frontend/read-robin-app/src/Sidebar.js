@@ -48,7 +48,6 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
               };
             })
           );
-          console.log("Fetched quizzes with attempts:", quizzesData);
           setQuizzes(quizzesData);
           setLoading(false);
         } catch (error) {
@@ -90,6 +89,7 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
       </button>
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         <h2>Quiz History</h2>
+        {activePersona && <h3>Persona: {activePersona.name}</h3>}
         {quizzes.length === 0 ? (
           <p>No quizzes found.</p>
         ) : (

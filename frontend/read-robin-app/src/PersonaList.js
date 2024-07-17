@@ -22,8 +22,13 @@ const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
     <div className="persona-list-container">
       <h2>Your Personas</h2>
       <ul className="persona-list">
-        {personas.map((persona, index) => (
-          <li key={persona.id} className="persona-item">
+        {personas.map((persona) => (
+          <li
+            key={persona.id}
+            className={`persona-item ${
+              activePersona && activePersona.id === persona.id ? "active" : ""
+            }`}
+          >
             <div className="persona-info">
               <strong>{persona.name}</strong> - {persona.type} -{" "}
               {persona.difficulty}

@@ -39,33 +39,42 @@ const PersonaForm = ({ user }) => {
           Make your personalized quiz persona to tailor questions and difficulty
           to your goals!
         </p>
-        <p className="persona-placeholder">
-          You are a{" "}
-          <input
-            type="text"
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
-            placeholder="student, CEO, researcher"
-            required
-          />{" "}
-          looking for quizzes of{" "}
-          <input
-            type="text"
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            placeholder="ex: easy, medium, expert"
-            required
-          />{" "}
-          difficulty.
-        </p>
         <div>
-          <input
-            type="text"
-            value={personaName}
-            onChange={(e) => setPersonaName(e.target.value)}
-            placeholder="Persona Name..."
-            required
-          />
+          <label>
+            Describe yourself (e.g., student, CEO, researcher):
+            <input
+              type="text"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              placeholder="e.g., student, CEO, researcher"
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            What level of difficulty are you looking for? (e.g., easy, medium,
+            expert):
+            <input
+              type="text"
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+              placeholder="e.g., easy, medium, expert"
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Give a name to this persona:
+            <input
+              type="text"
+              value={personaName}
+              onChange={(e) => setPersonaName(e.target.value)}
+              placeholder="Persona Name..."
+              required
+            />
+          </label>
         </div>
         <button type="submit" className="persona-submit-button">
           Add Persona
