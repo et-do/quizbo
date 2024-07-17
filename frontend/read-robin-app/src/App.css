@@ -88,13 +88,12 @@ body {
   }
 }
 
-/* Custom scrollbar styles */
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: #444444; /* Dark scrollbar color */
+  background-color: #444444;
   border-radius: 4px;
 }
 
@@ -145,4 +144,31 @@ body {
 
 .back-button:hover {
   background-color: #a96a59;
+}
+
+.app-header .button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.generate-quiz-button,
+.manage-personas-button,
+.logout-button {
+  background-color: #dd3730;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.generate-quiz-button:hover,
+.manage-personas-button:hover,
+.logout-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.logo-title {
+  cursor: pointer;
 }
