@@ -11,11 +11,6 @@ import (
 	"golang.org/x/net/context"
 )
 
-type QuizResponse struct {
-	QuizID    string            `json:"quiz_id"`
-	Questions []models.Question `json:"questions"`
-}
-
 // GetQuizHandler retrieves a quiz from Firestore by contentID and quizID
 func GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -45,7 +40,7 @@ func GetQuizHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send response
-	response := QuizResponse{
+	response := models.QuizResponse{
 		QuizID:    quizID,
 		Questions: quiz.Questions,
 	}

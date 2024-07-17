@@ -54,6 +54,8 @@ const testHTML string = `<!doctype html>
 </body>
 </html>`
 
+const testPDFPath = "test_data/test_document.pdf"
+
 func TestExtractContent(t *testing.T) {
 	ctx := context.Background()
 
@@ -189,5 +191,63 @@ func TestReviewResponse(t *testing.T) {
 				t.Logf("Review Result for %s: %s", tc.name, reviewResult)
 			}
 		})
+	}
+}
+
+func TestExtractPDFContent(t *testing.T) {
+	ctx := context.Background()
+
+	// Ensure the environment variable is set for the test
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	geminiClient, err := NewGeminiClient(ctx)
+	if err != nil {
+		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
+	}
+
+	// Read the test PDF file
+	pdfBytes, err := os.ReadFile(testPDFPath)
+	if err != nil {
+		t.Fatalf("Error reading test PDF file: %v", err)
+	}
+
+	contentMap, fullPDF, err := geminiClient.ExtractPDFContent(ctx, string(pdfBytes))
+	if err != nil {
+		t.Fatalf("ExtractPDFContent: expected no error, got %v", err)
+	}
+
+	if contentMap["content"] == "" {
+		t.Errorf("ExtractPDFContent: expected extracted content, got an empty string")
+	} else {
+		t.Logf("Extracted Content: %s", contentMap["content"])
+	}
+
+	if contentMap["title"] == "" {
+		t.Errorf("ExtractPDFContent: expected generated title, got an empty string")
+	} else {
+		t.Logf("Generated Title: %s", contentMap["title"])
+	}
+
+	t.Logf("Full PDF Response: %s", fullPDF)
+}
+
+func TestSystemInstructions(t *testing.T) {
+	// Ensure the system instructions are loaded correctly
+	expectedInstructions := []string{
+		instructions.QuizModelSystemInstructions,
+		instructions.WebscrapeModelSystemInstructions,
+		instructions.PDFModelSystemInstructions,
+		instructions.ReviewModelSystemInstructions,
+	}
+
+	for _, instruction := range expectedInstructions {
+		if instruction == "" {
+			t.Errorf("System instruction not loaded correctly: got an empty string")
+		} else {
+			t.Logf("Loaded System Instruction: %s", instruction)
+		}
 	}
 }

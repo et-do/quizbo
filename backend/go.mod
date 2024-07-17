@@ -5,6 +5,7 @@ go 1.22.4
 require (
 	cloud.google.com/go/firestore v1.15.0
 	cloud.google.com/go/vertexai v0.12.0
+	github.com/BurntSushi/toml v0.3.1
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.0
 	github.com/ramya-rao-a/go-outline v0.0.0-20210608161538-9736a4bde949

@@ -5,21 +5,11 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-python.python",
+        "golang.go",
+        "premparihar.gotestexplorer",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "ms-python.black-formatter",
-        "ms-python.vscode-pylance",  // For better Python support
-        "littlefoxteam.vscode-python-test-adapter"  // For running tests
-      ],
-      "settings": {
-        "python.testing.pytestEnabled": true,
-        "python.testing.unittestEnabled": false,
-        "python.testing.nosetestsEnabled": false,
-        "python.testing.pytestArgs": [
-          "tests"  // Assuming your tests are in the 'tests' directory
-        ]
-      }
+        "tamasfe.even-better-toml"
+      ]
     }
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",

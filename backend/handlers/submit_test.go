@@ -63,7 +63,7 @@ func TestSubmitHandler(t *testing.T) {
 	}
 
 	// Parse the response body into SubmitResponse struct
-	var submitResponse SubmitResponse
+	var submitResponse models.SubmitResponse
 	if err := json.NewDecoder(responseRecorder.Body).Decode(&submitResponse); err != nil {
 		t.Fatalf("failed to parse response body: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestSubmitHandler(t *testing.T) {
 	}
 
 	// Parse the response body into QuizResponse struct
-	var quizResponse QuizResponse
+	var quizResponse models.QuizResponse
 	if err := json.NewDecoder(getResponseRecorder.Body).Decode(&quizResponse); err != nil {
 		t.Fatalf("failed to parse response body: %v", err)
 	}
