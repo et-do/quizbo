@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { v4 as uuidv4 } from "uuid"; // Add UUID for unique IDs
 import "./PersonaForm.css";
@@ -13,18 +13,16 @@ const PersonaForm = ({ user }) => {
     event.preventDefault();
     if (!user) return;
 
-    const userRef = doc(db, "users", user.uid);
-
+    const personaId = uuidv4(); // Create a unique ID
     const newPersona = {
-      id: uuidv4(), // Add a unique ID
+      id: personaId,
       name: personaName,
       type: userType,
       difficulty: difficulty,
     };
 
-    await updateDoc(userRef, {
-      personas: arrayUnion(newPersona),
-    });
+    const personaRef = doc(db, "users", user.uid, "personas", personaId);
+    await setDoc(personaRef, newPersona);
 
     setPersonaName("");
     setUserType("");
