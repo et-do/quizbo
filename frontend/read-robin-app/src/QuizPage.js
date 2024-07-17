@@ -37,21 +37,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
         }
 
         const res = await fetch(
-          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              persona: {
-                id: activePersona.id,
-                name: activePersona.name,
-                type: activePersona.type,
-                difficulty: activePersona.difficulty,
-              },
-            }),
-          }
+          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
         );
         const data = await res.json();
         if (data.questions) {

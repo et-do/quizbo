@@ -42,7 +42,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </p>
         <div>
           <label>
-            Describe yourself (e.g., student, CEO, researcher):
+            Describe yourself:
             <input
               type="text"
               value={userType}
@@ -54,8 +54,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </div>
         <div>
           <label>
-            What level of difficulty are you looking for? (e.g., easy, medium,
-            expert):
+            What level of difficulty are you looking for?:
             <input
               type="text"
               value={difficulty}
