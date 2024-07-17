@@ -27,7 +27,15 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({
+            url,
+            persona: {
+              id: activePersona.id,
+              name: activePersona.name,
+              type: activePersona.type,
+              difficulty: activePersona.difficulty,
+            },
+          }),
         }
       );
 
