@@ -201,18 +201,13 @@ function App() {
       case "personas":
         return (
           <>
-            <button
-              className="back-button"
-              onClick={() => setPage("selection")}
-            >
-              Back
-            </button>
             <PersonaForm user={user} addPersona={addPersona} />
             <PersonaList
               user={user}
               personas={personas}
               activePersona={activePersona}
               setActivePersona={handleSetActivePersona}
+              setPage={setPage} // Add this line to pass the setPage function
             />
           </>
         );
@@ -255,15 +250,23 @@ function App() {
                     - {activePersona.difficulty}
                   </p>
                 )}
-                <button className="logout-button" onClick={logout}>
-                  Logout
-                </button>
-                <button
-                  className="manage-personas-button"
-                  onClick={() => setPage("personas")}
-                >
-                  Manage Personas
-                </button>
+                <div className="button-container">
+                  <button
+                    className="generate-quiz-button"
+                    onClick={() => setPage("selection")}
+                  >
+                    Generate Quiz
+                  </button>
+                  <button
+                    className="manage-personas-button"
+                    onClick={() => setPage("personas")}
+                  >
+                    Manage Personas
+                  </button>
+                  <button className="logout-button" onClick={logout}>
+                    Logout
+                  </button>
+                </div>
               </div>
             )}
           </header>
