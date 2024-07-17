@@ -3,7 +3,7 @@ import "./QuizForm.css";
 import { db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 
-function QuizForm({ user, setPage, setContentID, setQuizID }) {
+function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +14,10 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
     setLoading(true);
 
     try {
+      if (!activePersona) {
+        throw new Error("No active persona selected");
+      }
+
       const idToken = await user.getIdToken();
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
@@ -35,8 +39,16 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
 
-      // Save quiz metadata to Firestore, including the title field
-      const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
+      // Save quiz metadata to Firestore, including the title field under the active persona
+      const quizRef = doc(
+        db,
+        "users",
+        user.uid,
+        "personas",
+        activePersona.id,
+        "quizzes",
+        data.content_id
+      );
       await setDoc(quizRef, {
         contentID: data.content_id,
         url: url,

@@ -13,7 +13,7 @@ const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
       personas: arrayRemove(persona),
     });
 
-    if (activePersona && activePersona.name === persona.name) {
+    if (activePersona && activePersona.id === persona.id) {
       setActivePersona(null);
     }
   };
@@ -23,7 +23,7 @@ const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
       <h2>Your Personas</h2>
       <ul className="persona-list">
         {personas.map((persona, index) => (
-          <li key={index} className="persona-item">
+          <li key={persona.id} className="persona-item">
             <div className="persona-info">
               <strong>{persona.name}</strong> - {persona.type} -{" "}
               {persona.difficulty}

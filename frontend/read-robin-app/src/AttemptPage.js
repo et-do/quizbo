@@ -3,15 +3,23 @@ import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
 import "./AttemptPage.css";
 
-function AttemptPage({ user, contentID, attemptID, setPage }) {
+function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quizTitle, setQuizTitle] = useState("");
 
   useEffect(() => {
     const fetchAttempt = async () => {
-      if (user && contentID && attemptID) {
-        const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
+      if (user && activePersona && contentID && attemptID) {
+        const quizRef = doc(
+          db,
+          "users",
+          user.uid,
+          "personas",
+          activePersona.id,
+          "quizzes",
+          contentID
+        );
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
           setQuizTitle(quizDoc.data().title || quizDoc.data().url);
@@ -21,6 +29,8 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
           db,
           "users",
           user.uid,
+          "personas",
+          activePersona.id,
           "quizzes",
           contentID,
           "attempts",
@@ -36,7 +46,7 @@ function AttemptPage({ user, contentID, attemptID, setPage }) {
       }
     };
     fetchAttempt();
-  }, [user, contentID, attemptID]);
+  }, [user, activePersona, contentID, attemptID]);
 
   const getScoreClass = (score) => {
     if (score <= 50) return "red";
