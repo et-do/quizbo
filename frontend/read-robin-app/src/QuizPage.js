@@ -3,7 +3,7 @@ import "./QuizPage.css";
 import { db } from "./firebase";
 import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 
-function QuizPage({ user, setPage, contentID, quizID }) {
+function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [status, setStatus] = useState({});
@@ -18,7 +18,19 @@ function QuizPage({ user, setPage, contentID, quizID }) {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const quizRef = doc(db, "users", user.uid, "quizzes", contentID);
+        if (!user || !activePersona || !activePersona.id) {
+          throw new Error("User or active persona is not defined");
+        }
+
+        const quizRef = doc(
+          db,
+          "users",
+          user.uid,
+          "personas",
+          activePersona.id,
+          "quizzes",
+          contentID
+        );
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
           setQuizTitle(quizDoc.data().title || ""); // Fetch title
@@ -40,7 +52,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       }
     };
     fetchQuizData();
-  }, [contentID, quizID, user]);
+  }, [contentID, quizID, user, activePersona]);
 
   const handleResponseChange = (e, index) => {
     const newResponses = { ...responses, [index]: e.target.value };
@@ -64,7 +76,6 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       return;
     }
 
-    // Validate that all necessary fields are defined
     if (
       userResponse === undefined ||
       questionData.question === undefined ||
@@ -87,6 +98,13 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       quiz_id: quizID,
       question_id: questionID,
       user_response: userResponse,
+      persona: {
+        id: activePersona.id,
+        name: activePersona.name,
+        role: activePersona.role,
+        language: activePersona.language,
+        difficulty: activePersona.difficulty,
+      },
     };
 
     try {
@@ -112,11 +130,12 @@ function QuizPage({ user, setPage, contentID, quizID }) {
       };
       setStatus(newStatus);
 
-      // Fetch the existing attempt document
       const attemptRef = doc(
         db,
         "users",
         user.uid,
+        "personas",
+        activePersona.id,
         "quizzes",
         contentID,
         "attempts",
@@ -129,7 +148,6 @@ function QuizPage({ user, setPage, contentID, quizID }) {
         existingResponses = attemptDoc.data().responses || [];
       }
 
-      // Add the new response to the existing responses
       const updatedResponses = [
         ...existingResponses,
         {
@@ -142,19 +160,8 @@ function QuizPage({ user, setPage, contentID, quizID }) {
         },
       ];
 
-      // Calculate the new score
       const score = calculateScore(updatedResponses);
 
-      // Log data for debugging
-      console.log("Saving attempt with data:", {
-        attemptID,
-        createdAt: Timestamp.now(),
-        responses: updatedResponses,
-        score,
-        title: quizTitle, // Include the title field
-      });
-
-      // Save the user's response to Firestore along with the correct answer, question, reference, and score
       await setDoc(
         attemptRef,
         {
@@ -162,11 +169,10 @@ function QuizPage({ user, setPage, contentID, quizID }) {
           createdAt: Timestamp.now(),
           responses: updatedResponses,
           score: score,
-          title: quizTitle, // Include the title field
+          title: quizTitle,
         },
         { merge: true }
       );
-      console.log("Attempt saved successfully");
     } catch (error) {
       console.error("Error submitting response: ", error);
       if (error.code === "permission-denied") {
@@ -177,7 +183,7 @@ function QuizPage({ user, setPage, contentID, quizID }) {
 
   const handleRetakeQuiz = () => {
     const timestamp = new Date().toISOString();
-    setAttemptID(`${quizID}@${timestamp}`); // Generate a new attempt ID
+    setAttemptID(`${quizID}@${timestamp}`);
     setResponses({});
     setStatus({});
   };

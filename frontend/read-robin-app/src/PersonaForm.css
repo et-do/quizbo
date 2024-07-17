@@ -1,0 +1,71 @@
+.persona-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #1e1e1e; /* Darker background */
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.persona-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  color: #ffffff; /* Light text color */
+}
+
+.persona-form h2 {
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.persona-placeholder {
+  font-size: 1rem;
+  color: #bbbbbb; /* Light gray for placeholder text */
+  margin-bottom: 1rem;
+}
+
+.persona-form input[type="text"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #444444; /* Dark border color */
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  background-color: #333333; /* Dark input background */
+  color: #ffffff; /* Light text color */
+}
+
+.persona-submit-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #dd3730;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.persona-submit-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.persona-submit-button.submitting {
+  background-color: #4caf50; /* Green color to indicate success */
+  cursor: not-allowed;
+  animation: fadeOut 1s forwards; /* Animation to fade out */
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

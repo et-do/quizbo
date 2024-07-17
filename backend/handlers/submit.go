@@ -13,9 +13,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// URLRequest is a struct to hold the URL submitted by the user
+// URLRequest is a struct to hold the URL and persona details submitted by the user
 type URLRequest struct {
-	URL string `json:"url"`
+	URL     string         `json:"url"`
+	Persona models.Persona `json:"persona"`
 }
 
 // SubmitResponse is a struct to hold the response to be sent back to the user
@@ -104,18 +105,17 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	isFirstQuiz := false
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
-			// If the document is not found, proceed as if there are no existing quizzes
 			existingQuizzes = []models.Quiz{}
 			isFirstQuiz = true
 		} else {
-			// If there's another error, log and return it
 			log.Printf("SubmitHandler: Error fetching existing quizzes: %v", err)
 			http.Error(w, "Error fetching existing quizzes", http.StatusInternalServerError)
 			return
 		}
 	}
 
-	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent)
+	// Pass persona information to the Gemini client
+	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent, urlRequest.Persona)
 	if err != nil {
 		log.Printf("SubmitHandler: Error generating quiz content: %v", err)
 		http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
@@ -143,7 +143,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		URL:         urlRequest.URL,
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
-		Title:       title, // Add this line
+		Title:       title,
 		IsFirstQuiz: isFirstQuiz,
 	}
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"read-robin/models"
 	"strings"
 
 	"cloud.google.com/go/vertexai/genai"
@@ -13,7 +14,7 @@ import (
 const (
 	location                    = "northamerica-northeast1"
 	modelName                   = "gemini-1.5-pro"
-	quizModelSystemInstructions = `You are a highly skilled model that generates quiz questions and answers from summarized content. Your task is to generate questions and answers based on the summarized content provided. You should also generate a small piece of reference text that was used to create your question/answer pair. Omit any backticks or format reference. Return everything in a JSON dictionary with 'quiz' being an array of objects containing 'question', 'answer', and 'reference' strings. The structure should look like this:
+	quizModelSystemInstructions = `You are a highly skilled model that generates quiz questions and answers from summarized content tailored for a specific user persona. The persona details include Name, Role (profession, age, etc.), Language, and Difficulty (beginner, intermediate, expert). Your task is to generate questions and answers based on the summarized content provided, considering the persona details. You should also generate a small piece of reference text that was used to create your question/answer pair. Omit any backticks or format reference. Return everything in a JSON dictionary with 'quiz' being an array of objects containing 'question', 'answer', and 'reference' strings. The structure should look like this:
 {
 	"quiz": [
 		{
@@ -124,18 +125,19 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (ma
 }
 
 // GenerateQuiz generates quiz questions and answers from the summarized content
-func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent string) (string, string, error) {
-	return gc.generateContent(ctx, quizModelSystemInstructions, summarizedContent)
+func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent, personaName, personaRole, personaLanguage, personaDifficulty string) (string, string, error) {
+	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, summarizedContent)
+	return gc.generateContent(ctx, quizModelSystemInstructions, promptText)
 }
 
 // ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent string) (map[string]interface{}, string, error) {
+func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent string, persona models.Persona) (map[string]interface{}, string, error) {
 	contentMap, _, err := gc.ExtractContent(ctx, htmlContent)
 	if err != nil {
 		return nil, "", err
 	}
 
-	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"])
+	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona.Name, persona.Role, persona.Language, persona.Difficulty)
 	if err != nil {
 		return nil, "", err
 	}

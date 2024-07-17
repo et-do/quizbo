@@ -25,3 +25,11 @@ type Content struct {
 	Title     string    `json:"title" firestore:"title"` // Add this line
 	Quizzes   []Quiz    `json:"quizzes" firestore:"quizzes"`
 }
+
+type Persona struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Role       string `json:"role"`
+	Language   string `json:"language"`
+	Difficulty string `json:"difficulty"`
+}

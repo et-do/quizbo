@@ -3,7 +3,7 @@ import "./QuizForm.css";
 import { db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 
-function QuizForm({ user, setPage, setContentID, setQuizID }) {
+function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +14,10 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
     setLoading(true);
 
     try {
+      if (!user || !activePersona || !activePersona.id) {
+        throw new Error("User or active persona is not defined");
+      }
+
       const idToken = await user.getIdToken();
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
@@ -23,7 +27,16 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({ url }),
+          body: JSON.stringify({
+            url,
+            persona: {
+              id: activePersona.id,
+              name: activePersona.name,
+              role: activePersona.role,
+              language: activePersona.language,
+              difficulty: activePersona.difficulty,
+            },
+          }),
         }
       );
 
@@ -35,8 +48,15 @@ function QuizForm({ user, setPage, setContentID, setQuizID }) {
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
 
-      // Save quiz metadata to Firestore, including the title field
-      const quizRef = doc(db, "users", user.uid, "quizzes", data.content_id);
+      const quizRef = doc(
+        db,
+        "users",
+        user.uid,
+        "personas",
+        activePersona.id,
+        "quizzes",
+        data.content_id
+      );
       await setDoc(quizRef, {
         contentID: data.content_id,
         url: url,
