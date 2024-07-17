@@ -1,6 +1,7 @@
 import React from "react";
 import { doc, updateDoc, arrayRemove } from "firebase/firestore";
 import { db } from "./firebase";
+import "./PersonaList.css";
 
 const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
   const handleDelete = async (persona) => {
@@ -18,16 +19,29 @@ const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
   };
 
   return (
-    <div>
+    <div className="persona-list-container">
       <h2>Your Personas</h2>
-      <ul>
+      <ul className="persona-list">
         {personas.map((persona, index) => (
-          <li key={index}>
-            {persona.name} - {persona.type} - {persona.difficulty}
-            <button onClick={() => setActivePersona(persona)}>
-              Set Active
-            </button>
-            <button onClick={() => handleDelete(persona)}>Delete</button>
+          <li key={index} className="persona-item">
+            <div className="persona-info">
+              <strong>{persona.name}</strong> - {persona.type} -{" "}
+              {persona.difficulty}
+            </div>
+            <div className="persona-actions">
+              <button
+                className="persona-button"
+                onClick={() => setActivePersona(persona)}
+              >
+                Set Active
+              </button>
+              <button
+                className="persona-button delete-button"
+                onClick={() => handleDelete(persona)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
