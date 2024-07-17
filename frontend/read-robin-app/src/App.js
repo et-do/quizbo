@@ -8,7 +8,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { createUserProfile } from "./UserProfile";
-import { doc, getDoc, updateDoc } from "firebase/firestore"; // Add updateDoc here
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
