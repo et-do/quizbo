@@ -12,8 +12,8 @@ function SelectionPage({ setPage }) {
         >
           Webpage
         </button>
-        <button className="selection-button" disabled>
-          PDF (Coming Soon)
+        <button className="selection-button" onClick={() => setPage("pdfForm")}>
+          PDF
         </button>
         <button className="selection-button" disabled>
           Audio (Coming Soon)
