@@ -112,11 +112,12 @@ func TestGenerateQuiz(t *testing.T) {
 	testPersona := models.Persona{
 		ID:         "test_persona_id",
 		Name:       "Test User",
-		Type:       "Student",
+		Role:       "Student",
+		Language:   "English",
 		Difficulty: "Intermediate",
 	}
 
-	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, contentMap["content"], testPersona.Name, testPersona.Type, testPersona.Difficulty)
+	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, contentMap["content"], testPersona.Name, testPersona.Role, testPersona.Language, testPersona.Difficulty)
 	if err != nil {
 		t.Fatalf("GenerateQuiz: expected no error, got %v", err)
 	}

@@ -4,7 +4,8 @@ import { db } from "./firebase";
 import { v4 as uuidv4 } from "uuid"; // Add UUID for unique IDs
 import "./PersonaForm.css";
 
-const PersonaForm = ({ user }) => {
+const PersonaForm = ({ user, addPersona }) => {
+  // Add addPersona prop
   const [personaName, setPersonaName] = useState("");
   const [userType, setUserType] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -24,6 +25,8 @@ const PersonaForm = ({ user }) => {
     const personaRef = doc(db, "users", user.uid, "personas", personaId);
     await setDoc(personaRef, newPersona);
 
+    addPersona(newPersona); // Update the state in the parent component
+
     setPersonaName("");
     setUserType("");
     setDifficulty("");
@@ -39,7 +42,7 @@ const PersonaForm = ({ user }) => {
         </p>
         <div>
           <label>
-            Describe yourself (e.g., student, CEO, researcher):
+            Describe yourself:
             <input
               type="text"
               value={userType}
@@ -51,8 +54,7 @@ const PersonaForm = ({ user }) => {
         </div>
         <div>
           <label>
-            What level of difficulty are you looking for? (e.g., easy, medium,
-            expert):
+            What level of difficulty are you looking for?:
             <input
               type="text"
               value={difficulty}

@@ -88,13 +88,12 @@ body {
   }
 }
 
-/* Custom scrollbar styles */
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: #444444; /* Dark scrollbar color */
+  background-color: #444444;
   border-radius: 4px;
 }
 
@@ -145,4 +144,59 @@ body {
 
 .back-button:hover {
   background-color: #a96a59;
+}
+
+.app-header .button-container {
+  display: flex;
+  gap: 10px;
+}
+.active-persona-card {
+  background-color: #333333; /* Dark background */
+  color: #ffffff; /* Light text */
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center the text */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+}
+
+.active-persona-details {
+  margin-top: 10px;
+}
+
+.active-persona-details p {
+  margin: 5px 0;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center; /* Center the buttons */
+}
+
+.generate-quiz-button,
+.manage-personas-button,
+.logout-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.generate-quiz-button:hover,
+.manage-personas-button:hover,
+.logout-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.logo-title {
+  cursor: pointer; /* Pointer cursor on hover */
 }

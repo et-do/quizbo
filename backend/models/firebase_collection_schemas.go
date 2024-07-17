@@ -29,6 +29,7 @@ type Content struct {
 type Persona struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
-	Type       string `json:"type"`
+	Role       string `json:"role"`
+	Language   string `json:"language"`
 	Difficulty string `json:"difficulty"`
 }

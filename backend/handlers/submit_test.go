@@ -29,7 +29,8 @@ func TestSubmitHandler(t *testing.T) {
 		Persona: models.Persona{
 			ID:         "test_persona_id",
 			Name:       "Test User",
-			Type:       "Student",
+			Role:       "Student",
+			Language:   "Japanese",
 			Difficulty: "Intermediate",
 		},
 	}
