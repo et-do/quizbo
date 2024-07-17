@@ -33,6 +33,10 @@ const PersonaForm = ({ user }) => {
     <div className="persona-form-container">
       <form onSubmit={handleSubmit} className="persona-form">
         <h2>Create a Persona</h2>
+        <p className="persona-subtext">
+          Make your personalized quiz persona to tailor questions and difficulty
+          to your goals!
+        </p>
         <p className="persona-placeholder">
           You are a{" "}
           <input
@@ -53,15 +57,13 @@ const PersonaForm = ({ user }) => {
           difficulty.
         </p>
         <div>
-          <label>
-            Persona Name:
-            <input
-              type="text"
-              value={personaName}
-              onChange={(e) => setPersonaName(e.target.value)}
-              required
-            />
-          </label>
+          <input
+            type="text"
+            value={personaName}
+            onChange={(e) => setPersonaName(e.target.value)}
+            placeholder="Persona Name..."
+            required
+          />
         </div>
         <button type="submit" className="persona-submit-button">
           Add Persona

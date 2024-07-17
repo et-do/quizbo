@@ -38,12 +38,13 @@
 }
 
 .persona-button {
+  padding: 10px 20px;
+  font-size: 1rem;
   background-color: #dd3730; /* Accent color */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 5px 10px;
 }
 
 .persona-button:hover {
