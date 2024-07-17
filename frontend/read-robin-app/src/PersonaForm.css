@@ -40,15 +40,32 @@
 }
 
 .persona-submit-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #dd3730;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
 .persona-submit-button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.persona-submit-button.submitting {
+  background-color: #4caf50; /* Green color to indicate success */
+  cursor: not-allowed;
+  animation: fadeOut 1s forwards; /* Animation to fade out */
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

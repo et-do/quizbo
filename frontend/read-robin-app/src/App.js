@@ -255,13 +255,16 @@ function App() {
                     <h3>Active Persona</h3>
                     <div className="active-persona-details">
                       <p>
-                        <strong>Name:</strong> {activePersona.name}
+                        <strong>Name: </strong> {activePersona.name}
                       </p>
                       <p>
-                        <strong>Role:</strong> {activePersona.type}
+                        <strong>Role: </strong> {activePersona.role}
                       </p>
                       <p>
-                        <strong>Difficulty:</strong> {activePersona.difficulty}
+                        <strong>Language: </strong> {activePersona.language}
+                      </p>
+                      <p>
+                        <strong>Difficulty: </strong> {activePersona.difficulty}
                       </p>
                     </div>
                   </div>

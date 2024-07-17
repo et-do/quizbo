@@ -1,35 +1,42 @@
 import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { v4 as uuidv4 } from "uuid"; // Add UUID for unique IDs
+import { v4 as uuidv4 } from "uuid";
 import "./PersonaForm.css";
 
 const PersonaForm = ({ user, addPersona }) => {
-  // Add addPersona prop
   const [personaName, setPersonaName] = useState("");
-  const [userType, setUserType] = useState("");
+  const [userRole, setUserRole] = useState("");
+  const [language, setLanguage] = useState("");
   const [difficulty, setDifficulty] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!user) return;
 
-    const personaId = uuidv4(); // Create a unique ID
+    setIsSubmitting(true); // Start animation
+
+    const personaId = uuidv4();
     const newPersona = {
       id: personaId,
       name: personaName,
-      type: userType,
+      role: userRole,
+      language: language,
       difficulty: difficulty,
     };
 
     const personaRef = doc(db, "users", user.uid, "personas", personaId);
     await setDoc(personaRef, newPersona);
 
-    addPersona(newPersona); // Update the state in the parent component
+    addPersona(newPersona);
 
     setPersonaName("");
-    setUserType("");
+    setUserRole("");
     setDifficulty("");
+    setLanguage("");
+
+    setTimeout(() => setIsSubmitting(false), 1000); // End animation after 1 second
   };
 
   return (
@@ -45,8 +52,8 @@ const PersonaForm = ({ user, addPersona }) => {
             Describe yourself:
             <input
               type="text"
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              value={userRole}
+              onChange={(e) => setUserRole(e.target.value)}
               placeholder="e.g., student, CEO, researcher"
               required
             />
@@ -66,6 +73,18 @@ const PersonaForm = ({ user, addPersona }) => {
         </div>
         <div>
           <label>
+            What language do you want the questions to be in?:
+            <input
+              type="text"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              placeholder="e.g., english, japanese, spanish"
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
             Give a name to this persona:
             <input
               type="text"
@@ -76,8 +95,13 @@ const PersonaForm = ({ user, addPersona }) => {
             />
           </label>
         </div>
-        <button type="submit" className="persona-submit-button">
-          Add Persona
+        <button
+          type="submit"
+          className={`persona-submit-button ${
+            isSubmitting ? "submitting" : ""
+          }`}
+        >
+          {isSubmitting ? "Adding..." : "Add Persona"}
         </button>
       </form>
     </div>

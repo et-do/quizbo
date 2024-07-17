@@ -5,31 +5,31 @@ import logo from "./logo.png"; // Import the logo
 const slides = [
   {
     title: "👋 Welcome to ReadRobin!",
-    text: "Your AI Companion for Smarter Personalized Comprehension.",
+    text: "Your AI Companion for Smarter, Personalized Comprehension.",
   },
   {
     title: "📝 Generate Personalized Quizzes",
-    text: "Turn any content—websites, PDFs, podcasts, and videos—into quizzes tailored to your unique needs and goals.",
+    text: "Turn any content—websites, PDFs, podcasts, and videos—into quizzes tailored to your unique needs, preferred language, and difficulty level.",
   },
   {
     title: "📈 Track Your Progress",
-    text: "See your quiz history, track your progress, and improve over time with detailed analytics and insights.",
+    text: "Monitor your quiz history, track your progress, and improve over time with detailed analytics and insights.",
   },
   {
     title: "💡 Tailored Learning Experience",
-    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your learning style and objectives.",
+    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, learning style, and objectives.",
   },
   {
     title: "🤝 Simplify Onboarding",
-    text: "Make onboarding easier by maintaining a set of quizzes based on your most up-to-date content, ensuring new team members get up to speed quickly.",
+    text: "Make onboarding easier by maintaining a set of quizzes based on your most up-to-date content, ensuring new team members get up to speed quickly in their preferred language and difficulty level.",
   },
   {
     title: "🌐 Diverse Content Sources",
-    text: "Easily create quizzes from a variety of content sources, ensuring a comprehensive and adaptable learning experience.",
+    text: "Easily create quizzes from a variety of content sources, ensuring a comprehensive and adaptable learning experience in your chosen language.",
   },
   {
     title: "🚀 Get Started!",
-    text: "Join now and enhance your learning journey with ReadRobin today! Start achieving your comprehension goals.",
+    text: "Join now and enhance your learning journey with ReadRobin today! Start achieving your comprehension goals with quizzes tailored just for you.",
   },
 ];
 
