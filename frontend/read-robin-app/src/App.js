@@ -165,6 +165,12 @@ function App() {
       case "personas":
         return (
           <>
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
             <PersonaForm user={user} />
             <PersonaList
               user={user}
@@ -193,7 +199,13 @@ function App() {
           <header className="app-header">
             <div className="header-top-row">
               <div className="logo-title">
-                <img src={logo} alt="Logo" className="logo" />
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="logo"
+                  onClick={() => setPage("selection")}
+                  style={{ cursor: "pointer" }}
+                />
                 <h1 className="app-title">ReadRobin</h1>
               </div>
               <h2 className="tagline">
@@ -212,7 +224,10 @@ function App() {
                 <button className="logout-button" onClick={logout}>
                   Logout
                 </button>
-                <button onClick={() => setPage("personas")}>
+                <button
+                  className="manage-personas-button"
+                  onClick={() => setPage("personas")}
+                >
                   Manage Personas
                 </button>
               </div>
@@ -222,6 +237,7 @@ function App() {
             {user && (
               <Sidebar
                 user={user}
+                activePersona={activePersona}
                 setContentID={setContentID}
                 setAttemptID={setAttemptID}
                 setPage={setPage}

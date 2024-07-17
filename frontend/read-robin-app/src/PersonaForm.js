@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "./firebase";
+import { v4 as uuidv4 } from "uuid"; // Add UUID for unique IDs
 import "./PersonaForm.css";
 
 const PersonaForm = ({ user }) => {
@@ -15,6 +16,7 @@ const PersonaForm = ({ user }) => {
     const userRef = doc(db, "users", user.uid);
 
     const newPersona = {
+      id: uuidv4(), // Add a unique ID
       name: personaName,
       type: userType,
       difficulty: difficulty,
@@ -43,7 +45,7 @@ const PersonaForm = ({ user }) => {
             type="text"
             value={userType}
             onChange={(e) => setUserType(e.target.value)}
-            placeholder="(profession, age, etc)"
+            placeholder="student, CEO, researcher"
             required
           />{" "}
           looking for quizzes of{" "}
@@ -51,7 +53,7 @@ const PersonaForm = ({ user }) => {
             type="text"
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
-            placeholder="(beginner, intermediate, expert)"
+            placeholder="ex: easy, medium, expert"
             required
           />{" "}
           difficulty.
