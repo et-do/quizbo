@@ -13,7 +13,7 @@
 }
 
 .persona-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
   width: 100%;
 }
@@ -22,14 +22,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2e2e2e; /* Slightly lighter background for items */
   padding: 10px;
-  margin-bottom: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.persona-item.active {
+  background-color: #444;
+  color: #fff;
 }
 
 .persona-info {
-  color: #ffffff; /* Light text color */
+  flex-grow: 1;
 }
 
 .persona-actions {
@@ -38,23 +43,22 @@
 }
 
 .persona-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  background-color: #dd3730;
+  color: #fff;
+}
+
+.persona-button.delete-button {
+  background-color: #a96a59;
 }
 
 .persona-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #a96a59;
 }
 
-.delete-button {
-  background-color: #444444; /* Darker color for delete button */
-}
-
-.delete-button:hover {
-  background-color: #222222; /* Even darker on hover */
+.persona-button.delete-button:hover {
+  background-color: #dd3730;
 }

@@ -131,3 +131,18 @@ body {
 .manage-personas-button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
+
+.back-button {
+  margin-right: 10px;
+  margin-top: 10px;
+  background-color: #dd3730;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #a96a59;
+}
