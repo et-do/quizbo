@@ -14,8 +14,8 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
     setLoading(true);
 
     try {
-      if (!activePersona) {
-        throw new Error("No active persona selected");
+      if (!user || !activePersona || !activePersona.id) {
+        throw new Error("User or active persona is not defined");
       }
 
       const idToken = await user.getIdToken();
@@ -39,7 +39,6 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
 
-      // Save quiz metadata to Firestore, including the title field under the active persona
       const quizRef = doc(
         db,
         "users",
