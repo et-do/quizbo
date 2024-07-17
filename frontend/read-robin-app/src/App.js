@@ -209,6 +209,12 @@ function App() {
               setActivePersona={handleSetActivePersona}
               setPage={setPage} // Add this line to pass the setPage function
             />
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
           </>
         );
       default:
@@ -245,10 +251,20 @@ function App() {
               <div className="user-info">
                 <p>Welcome, {user.displayName}</p>
                 {activePersona && (
-                  <p>
-                    Active Persona: {activePersona.name} - {activePersona.type}{" "}
-                    - {activePersona.difficulty}
-                  </p>
+                  <div className="active-persona-card">
+                    <h3>Active Persona</h3>
+                    <div className="active-persona-details">
+                      <p>
+                        <strong>Name:</strong> {activePersona.name}
+                      </p>
+                      <p>
+                        <strong>Role:</strong> {activePersona.type}
+                      </p>
+                      <p>
+                        <strong>Difficulty:</strong> {activePersona.difficulty}
+                      </p>
+                    </div>
+                  </div>
                 )}
                 <div className="button-container">
                   <button
