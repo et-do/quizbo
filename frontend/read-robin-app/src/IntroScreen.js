@@ -20,12 +20,16 @@ const slides = [
     text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your learning style and objectives.",
   },
   {
+    title: "🤝 Simplify Onboarding",
+    text: "Make onboarding easier by maintaining a set of quizzes based on your most up-to-date content, ensuring new team members get up to speed quickly.",
+  },
+  {
     title: "🌐 Diverse Content Sources",
     text: "Easily create quizzes from a variety of content sources, ensuring a comprehensive and adaptable learning experience.",
   },
   {
     title: "🚀 Get Started!",
-    text: "Join now and enhance your learning journey with ReadRobin today!",
+    text: "Join now and enhance your learning journey with ReadRobin today! Start achieving your comprehension goals.",
   },
 ];
 
@@ -37,7 +41,7 @@ const IntroScreen = ({ onFinish }) => {
     if (currentSlide < slides.length) {
       const timer = setTimeout(() => {
         setCurrentSlide((prev) => prev + 1);
-      }, 5000); // Adjust the timeout as needed
+      }, 4500); // Adjust the timeout as needed
       return () => clearTimeout(timer);
     } else {
       const fadeTimer = setTimeout(() => {

@@ -8,6 +8,8 @@ import (
 	"os"
 	"testing"
 
+	"read-robin/models"
+
 	"github.com/gorilla/mux"
 )
 
@@ -18,8 +20,19 @@ func TestSubmitHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Create a URLRequest payload to be sent in the POST request
-	urlRequestPayload := URLRequest{URL: "http://www.example.com"}
+	// Create a URLRequest payload with persona details to be sent in the POST request
+	urlRequestPayload := struct {
+		URL     string         `json:"url"`
+		Persona models.Persona `json:"persona"`
+	}{
+		URL: "http://www.example.com",
+		Persona: models.Persona{
+			ID:         "test_persona_id",
+			Name:       "Test User",
+			Type:       "Student",
+			Difficulty: "Intermediate",
+		},
+	}
 	// Marshal the payload into JSON format
 	urlRequestPayloadBytes, err := json.Marshal(urlRequestPayload)
 	if err != nil {

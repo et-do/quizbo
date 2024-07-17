@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"read-robin/models"
 	"testing"
 )
 
@@ -107,7 +108,15 @@ func TestGenerateQuiz(t *testing.T) {
 		t.Fatalf("ExtractContent: expected no error, got %v", err)
 	}
 
-	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, contentMap["content"])
+	// Define a test persona
+	testPersona := models.Persona{
+		ID:         "test_persona_id",
+		Name:       "Test User",
+		Type:       "Student",
+		Difficulty: "Intermediate",
+	}
+
+	quiz, fullQuiz, err := geminiClient.GenerateQuiz(ctx, contentMap["content"], testPersona.Name, testPersona.Type, testPersona.Difficulty)
 	if err != nil {
 		t.Fatalf("GenerateQuiz: expected no error, got %v", err)
 	}

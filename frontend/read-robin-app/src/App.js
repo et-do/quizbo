@@ -7,7 +7,9 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import { createUserProfile } from "./UserProfile"; // Import the function
+import { createUserProfile } from "./UserProfile";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
 import QuizForm from "./QuizForm";
@@ -16,18 +18,21 @@ import Login from "./Login";
 import Sidebar from "./Sidebar";
 import AttemptPage from "./AttemptPage";
 import IntroScreen from "./IntroScreen";
+import PersonaForm from "./PersonaForm";
+import PersonaList from "./PersonaList";
 
 function App() {
   const [page, setPage] = useState("intro");
   const [user, setUser] = useState(null);
+  const [personas, setPersonas] = useState([]);
+  const [activePersona, setActivePersona] = useState(null); // State for active persona
   const [contentID, setContentID] = useState(null);
   const [attemptID, setAttemptID] = useState(null);
   const [quizID, setQuizID] = useState(null);
-  const [showIntro, setShowIntro] = useState(null); // Initial state is null
+  const [showIntro, setShowIntro] = useState(null);
   const provider = new GoogleAuthProvider();
 
   useEffect(() => {
-    // Check localStorage synchronously before rendering
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
     if (hasSeenIntro) {
       setShowIntro(false);
@@ -39,10 +44,19 @@ function App() {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        await createUserProfile(user); // Create/update the user profile
+        await createUserProfile(user);
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setPersonas(userData.personas || []);
+          setActivePersona(userData.activePersona || null); // Load active persona
+        }
+
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-        console.log("User logged in:", user); // Debugging log
-        console.log("Has seen intro:", hasSeenIntro); // Debugging log
+        console.log("User logged in:", user);
+        console.log("Has seen intro:", hasSeenIntro);
         if (!hasSeenIntro) {
           setShowIntro(true);
         } else {
@@ -61,10 +75,17 @@ function App() {
     signInWithPopup(auth, provider)
       .then(async (result) => {
         setUser(result.user);
-        await createUserProfile(result.user); // Create/update the user profile
+        await createUserProfile(result.user);
+        const userRef = doc(db, "users", result.user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setPersonas(userData.personas || []);
+          setActivePersona(userData.activePersona || null);
+        }
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-        console.log("User signed in:", result.user); // Debugging log
-        console.log("Has seen intro:", hasSeenIntro); // Debugging log
+        console.log("User signed in:", result.user);
+        console.log("Has seen intro:", hasSeenIntro);
         if (!hasSeenIntro) {
           setShowIntro(true);
         } else {
@@ -93,6 +114,16 @@ function App() {
     setPage(user ? "selection" : "login");
   };
 
+  const handleSetActivePersona = async (persona) => {
+    setActivePersona(persona);
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        activePersona: persona,
+      });
+    }
+  };
+
   const renderPage = () => {
     switch (page) {
       case "login":
@@ -103,6 +134,7 @@ function App() {
         return (
           <QuizForm
             user={user}
+            activePersona={activePersona}
             setPage={setPage}
             setContentID={setContentID}
             setQuizID={setQuizID}
@@ -112,6 +144,7 @@ function App() {
         return (
           <QuizPage
             user={user}
+            activePersona={activePersona}
             setPage={setPage}
             contentID={contentID}
             quizID={quizID}
@@ -121,6 +154,7 @@ function App() {
         return (
           <AttemptPage
             user={user}
+            activePersona={activePersona}
             contentID={contentID}
             attemptID={attemptID}
             setPage={setPage}
@@ -128,6 +162,24 @@ function App() {
         );
       case "intro":
         return <IntroScreen onFinish={finishIntro} />;
+      case "personas":
+        return (
+          <>
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
+            <PersonaForm user={user} />
+            <PersonaList
+              user={user}
+              personas={personas}
+              activePersona={activePersona}
+              setActivePersona={handleSetActivePersona}
+            />
+          </>
+        );
       default:
         return null;
     }
@@ -147,7 +199,13 @@ function App() {
           <header className="app-header">
             <div className="header-top-row">
               <div className="logo-title">
-                <img src={logo} alt="Logo" className="logo" />
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="logo"
+                  onClick={() => setPage("selection")}
+                  style={{ cursor: "pointer" }}
+                />
                 <h1 className="app-title">ReadRobin</h1>
               </div>
               <h2 className="tagline">
@@ -157,8 +215,20 @@ function App() {
             {user && (
               <div className="user-info">
                 <p>Welcome, {user.displayName}</p>
+                {activePersona && (
+                  <p>
+                    Active Persona: {activePersona.name} - {activePersona.type}{" "}
+                    - {activePersona.difficulty}
+                  </p>
+                )}
                 <button className="logout-button" onClick={logout}>
                   Logout
+                </button>
+                <button
+                  className="manage-personas-button"
+                  onClick={() => setPage("personas")}
+                >
+                  Manage Personas
                 </button>
               </div>
             )}
@@ -167,6 +237,7 @@ function App() {
             {user && (
               <Sidebar
                 user={user}
+                activePersona={activePersona}
                 setContentID={setContentID}
                 setAttemptID={setAttemptID}
                 setPage={setPage}
