@@ -18,6 +18,10 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
+        if (!user || !activePersona || !activePersona.id) {
+          throw new Error("User or active persona is not defined");
+        }
+
         const quizRef = doc(
           db,
           "users",
@@ -33,7 +37,21 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
         }
 
         const res = await fetch(
-          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`
+          `https://read-robin-dev-6yudia4zva-nn.a.run.app/quiz/${contentID}/${quizID}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              persona: {
+                id: activePersona.id,
+                name: activePersona.name,
+                type: activePersona.type,
+                difficulty: activePersona.difficulty,
+              },
+            }),
+          }
         );
         const data = await res.json();
         if (data.questions) {
@@ -94,6 +112,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
       quiz_id: quizID,
       question_id: questionID,
       user_response: userResponse,
+      persona: {
+        id: activePersona.id,
+        name: activePersona.name,
+        type: activePersona.type,
+        difficulty: activePersona.difficulty,
+      },
     };
 
     try {
