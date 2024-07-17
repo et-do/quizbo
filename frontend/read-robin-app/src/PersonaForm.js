@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { v4 as uuidv4 } from "uuid"; // Add UUID for unique IDs
+import { v4 as uuidv4 } from "uuid";
 import "./PersonaForm.css";
 
 const PersonaForm = ({ user, addPersona }) => {
-  // Add addPersona prop
   const [personaName, setPersonaName] = useState("");
   const [userRole, setUserRole] = useState("");
   const [language, setLanguage] = useState("");
   const [difficulty, setDifficulty] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add submitting state
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!user) return;
+
+    setIsSubmitting(true); // Start animation
 
     const personaId = uuidv4();
     const newPersona = {
@@ -27,12 +29,14 @@ const PersonaForm = ({ user, addPersona }) => {
     const personaRef = doc(db, "users", user.uid, "personas", personaId);
     await setDoc(personaRef, newPersona);
 
-    addPersona(newPersona); // Update the state in the parent component
+    addPersona(newPersona);
 
     setPersonaName("");
     setUserRole("");
     setDifficulty("");
     setLanguage("");
+
+    setTimeout(() => setIsSubmitting(false), 1000); // End animation after 1 second
   };
 
   return (
@@ -91,8 +95,13 @@ const PersonaForm = ({ user, addPersona }) => {
             />
           </label>
         </div>
-        <button type="submit" className="persona-submit-button">
-          Add Persona
+        <button
+          type="submit"
+          className={`persona-submit-button ${
+            isSubmitting ? "submitting" : ""
+          }`}
+        >
+          {isSubmitting ? "Adding..." : "Add Persona"}
         </button>
       </form>
     </div>
