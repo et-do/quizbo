@@ -8,7 +8,13 @@ import {
   signOut,
 } from "firebase/auth";
 import { createUserProfile } from "./UserProfile";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore"; // Add updateDoc here
 import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
@@ -52,6 +58,19 @@ function App() {
           const userData = userSnap.data();
           setPersonas(userData.personas || []);
           setActivePersona(userData.activePersona || null); // Load active persona
+
+          const personaCollection = collection(
+            db,
+            "users",
+            user.uid,
+            "personas"
+          );
+          const personaSnapshot = await getDocs(personaCollection);
+          const personaList = personaSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setPersonas(personaList);
         }
 
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
@@ -82,6 +101,19 @@ function App() {
           const userData = userSnap.data();
           setPersonas(userData.personas || []);
           setActivePersona(userData.activePersona || null);
+
+          const personaCollection = collection(
+            db,
+            "users",
+            result.user.uid,
+            "personas"
+          );
+          const personaSnapshot = await getDocs(personaCollection);
+          const personaList = personaSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setPersonas(personaList);
         }
         const hasSeenIntro = localStorage.getItem("hasSeenIntro");
         console.log("User signed in:", result.user);
@@ -122,6 +154,10 @@ function App() {
         activePersona: persona,
       });
     }
+  };
+
+  const addPersona = (newPersona) => {
+    setPersonas((prevPersonas) => [...prevPersonas, newPersona]);
   };
 
   const renderPage = () => {
@@ -165,13 +201,7 @@ function App() {
       case "personas":
         return (
           <>
-            <button
-              className="back-button"
-              onClick={() => setPage("selection")}
-            >
-              Back
-            </button>
-            <PersonaForm user={user} />
+            <PersonaForm user={user} addPersona={addPersona} />
             <PersonaList
               user={user}
               personas={personas}
@@ -198,14 +228,8 @@ function App() {
         <>
           <header className="app-header">
             <div className="header-top-row">
-              <div className="logo-title">
-                <img
-                  src={logo}
-                  alt="Logo"
-                  className="logo"
-                  onClick={() => setPage("selection")}
-                  style={{ cursor: "pointer" }}
-                />
+              <div className="logo-title" onClick={() => setPage("selection")}>
+                <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">ReadRobin</h1>
               </div>
               <h2 className="tagline">

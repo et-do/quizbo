@@ -1,17 +1,37 @@
-import React from "react";
-import { doc, updateDoc, arrayRemove } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import "./PersonaList.css";
 
-const PersonaList = ({ user, personas, activePersona, setActivePersona }) => {
+const PersonaList = ({ user, activePersona, setActivePersona }) => {
+  const [personas, setPersonas] = useState([]);
+
+  useEffect(() => {
+    const fetchPersonas = async () => {
+      if (!user) return;
+
+      const personaCollection = collection(db, "users", user.uid, "personas");
+      const personaSnapshot = await getDocs(personaCollection);
+
+      const personaList = personaSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPersonas(personaList);
+    };
+
+    fetchPersonas();
+  }, [user]);
+
   const handleDelete = async (persona) => {
     if (!user) return;
 
-    const userRef = doc(db, "users", user.uid);
+    const personaRef = doc(db, "users", user.uid, "personas", persona.id);
+    await deleteDoc(personaRef);
 
-    await updateDoc(userRef, {
-      personas: arrayRemove(persona),
-    });
+    setPersonas((prevPersonas) =>
+      prevPersonas.filter((p) => p.id !== persona.id)
+    );
 
     if (activePersona && activePersona.id === persona.id) {
       setActivePersona(null);
