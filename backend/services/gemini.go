@@ -3,7 +3,9 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"os"
 	"read-robin/models"
 	"strings"
@@ -113,57 +115,6 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (ma
 	return contentMap, fullResponse, nil
 }
 
-// ExtractPDFContent extracts the given PDF text using the Gemini model and returns both the content and title
-func (gc *GeminiClient) ExtractPDFContent(ctx context.Context, pdfURI string) (map[string]string, string, error) {
-	fmt.Printf("Extracting PDF content from: %s\n", pdfURI) // Debug log
-
-	// Define the FileData part for the PDF
-	part := genai.FileData{
-		MIMEType: "application/pdf",
-		FileURI:  pdfURI,
-	}
-
-	// Use the PDF system instructions
-	promptText := instructions.PDFModelSystemInstructions
-
-	// Initialize the model
-	model := gc.client.GenerativeModel(modelName)
-
-	// Generate the content using the PDF and instructions
-	resp, err := model.GenerateContent(ctx, part, genai.Text(promptText))
-	if err != nil {
-		return nil, "", fmt.Errorf("error extracting content: %w", err)
-	}
-
-	// Extract the full response as JSON
-	fullResponse, err := json.MarshalIndent(resp, "", "  ")
-	if err != nil {
-		return nil, "", fmt.Errorf("json.MarshalIndent: %w", err)
-	}
-
-	// Debug: Print the full response structure
-	fmt.Printf("Full PDF response: %s\n", fullResponse)
-
-	// Extract the text from the parts
-	var partContent strings.Builder
-	for _, cand := range resp.Candidates {
-		if cand.Content != nil {
-			for _, part := range cand.Content.Parts {
-				partContent.WriteString(fmt.Sprintf("%s", part))
-			}
-		}
-	}
-
-	fmt.Printf("Extracted PDF content: %s\n", partContent.String()) // Debug log
-
-	var contentMap map[string]string
-	if err := json.Unmarshal([]byte(partContent.String()), &contentMap); err != nil {
-		return nil, "", fmt.Errorf("json.Unmarshal: %w", err)
-	}
-
-	return contentMap, string(fullResponse), nil
-}
-
 // GenerateQuiz generates quiz questions and answers from the summarized content
 func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent, personaName, personaRole, personaLanguage, personaDifficulty string) (string, string, error) {
 	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, summarizedContent)
@@ -189,25 +140,6 @@ func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent 
 	return quizContentMap, contentMap["title"], nil
 }
 
-// ExtractAndGeneratePDFQuiz extracts content from a PDF and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGeneratePDFQuiz(ctx context.Context, pdfURI string, persona models.Persona) (map[string]interface{}, string, error) {
-	contentMap, _, err := gc.ExtractPDFContent(ctx, pdfURI)
-	if err != nil {
-		return nil, "", err
-	}
-
-	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona.Name, persona.Role, persona.Language, persona.Difficulty)
-	if err != nil {
-		return nil, "", err
-	}
-	var quizContentMap map[string]interface{}
-	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		return nil, "", err
-	}
-
-	return quizContentMap, contentMap["title"], nil
-}
-
 // ReviewResponse reviews the user's response using the Gemini model
 func (gc *GeminiClient) ReviewResponse(ctx context.Context, reviewData string) (string, error) {
 	reviewResult, _, err := gc.generateContent(ctx, instructions.ReviewModelSystemInstructions, reviewData)
@@ -216,3 +148,60 @@ func (gc *GeminiClient) ReviewResponse(ctx context.Context, reviewData string) (
 	}
 	return strings.TrimSpace(reviewResult), nil
 }
+
+type pdfPrompt struct {
+	// pdfPath is a Google Cloud Storage path starting with "gs://"
+	pdfPath string
+	// question asked to the model
+	question string
+}
+
+// GenerateContentFromPDF generates a response based on the provided PDF asset and question
+func (gc *GeminiClient) generateContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (genai.Part, error) {
+	model := gc.client.GenerativeModel(modelName)
+
+	part := genai.FileData{
+		MIMEType: "application/pdf",
+		FileURI:  prompt.pdfPath,
+	}
+
+	res, err := model.GenerateContent(ctx, part, genai.Text(prompt.question))
+	if err != nil {
+		return res.Candidates[0].Content.Parts[0], fmt.Errorf("unable to generate contents: %w", err)
+	}
+
+	if len(res.Candidates) == 0 ||
+		len(res.Candidates[0].Content.Parts) == 0 {
+		return res.Candidates[0].Content.Parts[0], errors.New("empty response from model")
+	}
+
+	fmt.Fprintf(w, "generated response: %s\n", res.Candidates[0].Content.Parts[0])
+	content := res.Candidates[0].Content.Parts[0]
+
+	return content, nil
+}
+
+// // GenerateQuizFromPDF extracts content from a PDF and generates quiz questions
+// func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath, question, personaName, personaRole, personaLanguage, personaDifficulty string) (string, error) {
+// 	// Create a pdfPrompt object
+// 	prompt := pdfPrompt{
+// 		pdfPath:  pdfPath,
+// 		question: question,
+// 	}
+
+// 	// Use an io.Writer to capture the output
+// 	var output strings.Builder
+
+// 	content, err := gc.generateContentFromPDF(ctx, &output, prompt, os.Getenv("GCP_PROJECT"), location, modelName)
+// 	if err != nil {
+// 		return "", fmt.Errorf("error generating content from PDF: %w", err)
+// 	}
+
+// 	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, content.String())
+// 	quizContent, _, err := gc.generateContent(ctx, instructions.QuizModelSystemInstructions, promptText)
+// 	if err != nil {
+// 		return "", fmt.Errorf("error generating quiz: %w", err)
+// 	}
+
+// 	return quizContent, nil
+// }

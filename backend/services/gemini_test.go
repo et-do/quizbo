@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"os"
@@ -52,7 +53,7 @@ const testHTML string = `<!doctype html>
 </body>
 </html>`
 
-const testPDFURI = "gs://read-robin-testing/test_document.pdf"
+const testPDFPath = "gs://read-robin-testing/test_document.pdf"
 
 func TestExtractContent(t *testing.T) {
 	ctx := context.Background()
@@ -192,40 +193,6 @@ func TestReviewResponse(t *testing.T) {
 	}
 }
 
-func TestExtractPDFContent(t *testing.T) {
-	ctx := context.Background()
-
-	// Ensure the environment variable is set for the test
-	projectID := os.Getenv("GCP_PROJECT")
-	if projectID == "" {
-		t.Fatal("GCP_PROJECT environment variable not set")
-	}
-
-	geminiClient, err := NewGeminiClient(ctx)
-	if err != nil {
-		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
-	}
-
-	contentMap, fullPDF, err := geminiClient.ExtractPDFContent(ctx, testPDFURI)
-	if err != nil {
-		t.Fatalf("ExtractPDFContent: expected no error, got %v", err)
-	}
-
-	if contentMap["content"] == "" {
-		t.Errorf("ExtractPDFContent: expected extracted content, got an empty string")
-	} else {
-		t.Logf("Extracted Content: %s", contentMap["content"])
-	}
-
-	if contentMap["title"] == "" {
-		t.Errorf("ExtractPDFContent: expected generated title, got an empty string")
-	} else {
-		t.Logf("Generated Title: %s", contentMap["title"])
-	}
-
-	t.Logf("Full PDF Response: %s", fullPDF)
-}
-
 func TestSystemInstructions(t *testing.T) {
 	if instructions.QuizModelSystemInstructions == "" {
 		t.Error("QuizModelSystemInstructions not loaded")
@@ -240,4 +207,37 @@ func TestSystemInstructions(t *testing.T) {
 		t.Error("ReviewModelSystemInstructions not loaded")
 	}
 	t.Log("All system instructions loaded successfully")
+}
+
+func TestGenerateContentFromPDF(t *testing.T) {
+	ctx := context.Background()
+
+	// Ensure the environment variable is set for the test
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	geminiClient, err := NewGeminiClient(ctx)
+	if err != nil {
+		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
+	}
+
+	prompt := pdfPrompt{
+		pdfPath:  testPDFPath,
+		question: "Please summarize the given document.",
+	}
+
+	var output bytes.Buffer
+	content, err := geminiClient.generateContentFromPDF(ctx, &output, prompt, modelName)
+	if err != nil {
+		t.Fatalf("generateContentFromPDF: expected no error, got %v", err)
+	}
+
+	// // Check if content is not empty
+	// if content == "" {
+	// 	t.Error("generateContentFromPDF: expected non-empty content, got empty string")
+	// }
+
+	t.Logf("Generated Content: %s", content)
 }
