@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./PdfForm.css";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [file, setFile] = useState(null);
@@ -22,9 +23,16 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         throw new Error("User or active persona is not defined");
       }
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("persona", JSON.stringify(activePersona));
+      // Upload file to Firebase Storage
+      const storageRef = ref(storage, `pdfs/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const fileURL = await getDownloadURL(storageRef);
+
+      // Prepare payload for submission
+      const payload = {
+        persona: activePersona,
+        pdf_url: fileURL,
+      };
 
       const idToken = await user.getIdToken();
       const res = await fetch(
@@ -33,8 +41,9 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
           method: "POST",
           headers: {
             Authorization: `Bearer ${idToken}`,
+            "Content-Type": "application/json",
           },
-          body: formData,
+          body: JSON.stringify(payload),
         }
       );
 

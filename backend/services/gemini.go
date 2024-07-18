@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"read-robin/models"
+	"read-robin/utils"
 	"strings"
 
 	"cloud.google.com/go/vertexai/genai"
@@ -28,19 +29,32 @@ type SystemInstructions struct {
 
 var instructions SystemInstructions
 
-func init() {
-	configFile := "gemini_system_instructions.toml"
+// Needs to be global for handler tests to work
+func LoadSystemInstructions() {
+	configFile, err := utils.FindConfigFile("gemini_system_instructions.toml")
+	if err != nil {
+		fmt.Printf("Error locating config file: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Reading config file: %s\n", configFile)
 	configData, err := os.ReadFile(configFile)
 	if err != nil {
 		fmt.Printf("Error reading config file: %v\n", err)
 		os.Exit(1)
 	}
 
+	fmt.Println("Unmarshaling config data")
 	err = toml.Unmarshal(configData, &instructions)
 	if err != nil {
 		fmt.Printf("Error unmarshaling config file: %v\n", err)
 		os.Exit(1)
 	}
+	fmt.Print("Loaded system instructions")
+}
+
+func init() {
+	LoadSystemInstructions()
 }
 
 // GeminiClient is a wrapper around the Vertex AI GenAI client
@@ -152,7 +166,7 @@ type pdfPrompt struct {
 }
 
 // GenerateContentFromPDF generates a response based on the provided PDF asset and question
-func (gc *GeminiClient) generateContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (string, error) {
+func (gc *GeminiClient) extractContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (string, error) {
 	model := gc.client.GenerativeModel(modelName)
 
 	part := genai.FileData{
@@ -189,7 +203,7 @@ func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath, questi
 	// Use an io.Writer to capture the output
 	var output strings.Builder
 
-	content, err := gc.generateContentFromPDF(ctx, &output, prompt, modelName)
+	content, err := gc.extractContentFromPDF(ctx, &output, prompt, modelName)
 	if err != nil {
 		return "", fmt.Errorf("error generating content from PDF: %w", err)
 	}
