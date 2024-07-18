@@ -38,6 +38,9 @@ COPY . .
 ENV GCP_PROJECT=read-robin-2e150
 ENV GCP_PROJECT_NUMBER=31059740280
 ENV ENV=development
+ENV GOLANG_SAMPLES_PROJECT_ID=read-robin-2e150
+ENV GOPROXY=https://proxy.golang.org,direct
+
 
 RUN gcloud config set project $GCP_PROJECT
 

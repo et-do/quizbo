@@ -12,7 +12,6 @@ const testHTML string = `<!doctype html>
 <html>
 <head>
     <title>Example Domain</title>
-
     <meta charset="utf-8" />
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,7 +42,6 @@ const testHTML string = `<!doctype html>
     }
     </style>
 </head>
-
 <body>
 <div>
     <h1>Example Domain</h1>
@@ -54,7 +52,7 @@ const testHTML string = `<!doctype html>
 </body>
 </html>`
 
-const testPDFPath = "test_data/test_document.pdf"
+const testPDFURI = "gs://read-robin-testing/test_document.pdf"
 
 func TestExtractContent(t *testing.T) {
 	ctx := context.Background()
@@ -208,13 +206,7 @@ func TestExtractPDFContent(t *testing.T) {
 		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
 	}
 
-	// Read the test PDF file
-	pdfBytes, err := os.ReadFile(testPDFPath)
-	if err != nil {
-		t.Fatalf("Error reading test PDF file: %v", err)
-	}
-
-	contentMap, fullPDF, err := geminiClient.ExtractPDFContent(ctx, string(pdfBytes))
+	contentMap, fullPDF, err := geminiClient.ExtractPDFContent(ctx, testPDFURI)
 	if err != nil {
 		t.Fatalf("ExtractPDFContent: expected no error, got %v", err)
 	}
@@ -235,19 +227,17 @@ func TestExtractPDFContent(t *testing.T) {
 }
 
 func TestSystemInstructions(t *testing.T) {
-	// Ensure the system instructions are loaded correctly
-	expectedInstructions := []string{
-		instructions.QuizModelSystemInstructions,
-		instructions.WebscrapeModelSystemInstructions,
-		instructions.PDFModelSystemInstructions,
-		instructions.ReviewModelSystemInstructions,
+	if instructions.QuizModelSystemInstructions == "" {
+		t.Error("QuizModelSystemInstructions not loaded")
 	}
-
-	for _, instruction := range expectedInstructions {
-		if instruction == "" {
-			t.Errorf("System instruction not loaded correctly: got an empty string")
-		} else {
-			t.Logf("Loaded System Instruction: %s", instruction)
-		}
+	if instructions.WebscrapeModelSystemInstructions == "" {
+		t.Error("WebscrapeModelSystemInstructions not loaded")
 	}
+	if instructions.PDFModelSystemInstructions == "" {
+		t.Error("PDFModelSystemInstructions not loaded")
+	}
+	if instructions.ReviewModelSystemInstructions == "" {
+		t.Error("ReviewModelSystemInstructions not loaded")
+	}
+	t.Log("All system instructions loaded successfully")
 }
