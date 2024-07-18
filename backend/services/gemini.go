@@ -114,18 +114,54 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (ma
 }
 
 // ExtractPDFContent extracts the given PDF text using the Gemini model and returns both the content and title
-func (gc *GeminiClient) ExtractPDFContent(ctx context.Context, pdfText string) (map[string]string, string, error) {
-	extractedContent, fullResponse, err := gc.generateContent(ctx, instructions.PDFModelSystemInstructions, pdfText)
+func (gc *GeminiClient) ExtractPDFContent(ctx context.Context, pdfURI string) (map[string]string, string, error) {
+	fmt.Printf("Extracting PDF content from: %s\n", pdfURI) // Debug log
+
+	// Define the FileData part for the PDF
+	part := genai.FileData{
+		MIMEType: "application/pdf",
+		FileURI:  pdfURI,
+	}
+
+	// Use the PDF system instructions
+	promptText := instructions.PDFModelSystemInstructions
+
+	// Initialize the model
+	model := gc.client.GenerativeModel(modelName)
+
+	// Generate the content using the PDF and instructions
+	resp, err := model.GenerateContent(ctx, part, genai.Text(promptText))
 	if err != nil {
 		return nil, "", fmt.Errorf("error extracting content: %w", err)
 	}
 
+	// Extract the full response as JSON
+	fullResponse, err := json.MarshalIndent(resp, "", "  ")
+	if err != nil {
+		return nil, "", fmt.Errorf("json.MarshalIndent: %w", err)
+	}
+
+	// Debug: Print the full response structure
+	fmt.Printf("Full PDF response: %s\n", fullResponse)
+
+	// Extract the text from the parts
+	var partContent strings.Builder
+	for _, cand := range resp.Candidates {
+		if cand.Content != nil {
+			for _, part := range cand.Content.Parts {
+				partContent.WriteString(fmt.Sprintf("%s", part))
+			}
+		}
+	}
+
+	fmt.Printf("Extracted PDF content: %s\n", partContent.String()) // Debug log
+
 	var contentMap map[string]string
-	if err := json.Unmarshal([]byte(extractedContent), &contentMap); err != nil {
+	if err := json.Unmarshal([]byte(partContent.String()), &contentMap); err != nil {
 		return nil, "", fmt.Errorf("json.Unmarshal: %w", err)
 	}
 
-	return contentMap, fullResponse, nil
+	return contentMap, string(fullResponse), nil
 }
 
 // GenerateQuiz generates quiz questions and answers from the summarized content
@@ -154,8 +190,8 @@ func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent 
 }
 
 // ExtractAndGeneratePDFQuiz extracts content from a PDF and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGeneratePDFQuiz(ctx context.Context, pdfContent string, persona models.Persona) (map[string]interface{}, string, error) {
-	contentMap, _, err := gc.ExtractPDFContent(ctx, pdfContent)
+func (gc *GeminiClient) ExtractAndGeneratePDFQuiz(ctx context.Context, pdfURI string, persona models.Persona) (map[string]interface{}, string, error) {
+	contentMap, _, err := gc.ExtractPDFContent(ctx, pdfURI)
 	if err != nil {
 		return nil, "", err
 	}
