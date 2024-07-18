@@ -41,7 +41,6 @@ func init() {
 		fmt.Printf("Error unmarshaling config file: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Loaded System Instructions: %+v\n", instructions) // Debug log
 }
 
 // GeminiClient is a wrapper around the Vertex AI GenAI client
@@ -65,7 +64,6 @@ func NewGeminiClient(ctx context.Context) (*GeminiClient, error) {
 
 // Helper function to generate content using Gemini model
 func (gc *GeminiClient) generateContent(ctx context.Context, systemInstructions, promptText string) (string, string, error) {
-	fmt.Printf("Generating content with system instructions: %s\n", systemInstructions) // Debug log
 	geminiModel := gc.client.GenerativeModel(modelName)
 	geminiModel.SystemInstruction = &genai.Content{
 		Parts: []genai.Part{genai.Text(systemInstructions)},
@@ -83,9 +81,6 @@ func (gc *GeminiClient) generateContent(ctx context.Context, systemInstructions,
 	if err != nil {
 		return "", "", fmt.Errorf("json.MarshalIndent: %w", err)
 	}
-
-	// Debug: Print the full response structure
-	fmt.Printf("Full response: %s\n", fullResponse)
 
 	// Extract the text from the parts
 	var partContent strings.Builder
@@ -157,7 +152,7 @@ type pdfPrompt struct {
 }
 
 // GenerateContentFromPDF generates a response based on the provided PDF asset and question
-func (gc *GeminiClient) generateContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (genai.Part, error) {
+func (gc *GeminiClient) generateContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (string, error) {
 	model := gc.client.GenerativeModel(modelName)
 
 	part := genai.FileData{
@@ -167,41 +162,43 @@ func (gc *GeminiClient) generateContentFromPDF(ctx context.Context, w io.Writer,
 
 	res, err := model.GenerateContent(ctx, part, genai.Text(prompt.question))
 	if err != nil {
-		return res.Candidates[0].Content.Parts[0], fmt.Errorf("unable to generate contents: %w", err)
+		return "", fmt.Errorf("unable to generate contents: %w", err)
 	}
 
-	if len(res.Candidates) == 0 ||
-		len(res.Candidates[0].Content.Parts) == 0 {
-		return res.Candidates[0].Content.Parts[0], errors.New("empty response from model")
+	if len(res.Candidates) == 0 || len(res.Candidates[0].Content.Parts) == 0 {
+		return "", errors.New("empty response from model")
 	}
 
 	fmt.Fprintf(w, "generated response: %s\n", res.Candidates[0].Content.Parts[0])
 	content := res.Candidates[0].Content.Parts[0]
 
-	return content, nil
+	// Use fmt.Sprintf to convert genai.Part to string
+	contentText := fmt.Sprintf("%s", content)
+
+	return contentText, nil
 }
 
-// // GenerateQuizFromPDF extracts content from a PDF and generates quiz questions
-// func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath, question, personaName, personaRole, personaLanguage, personaDifficulty string) (string, error) {
-// 	// Create a pdfPrompt object
-// 	prompt := pdfPrompt{
-// 		pdfPath:  pdfPath,
-// 		question: question,
-// 	}
+// GenerateQuizFromPDF extracts content from a PDF and generates quiz questions
+func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath, question, personaName, personaRole, personaLanguage, personaDifficulty string) (string, error) {
+	// Create a pdfPrompt object
+	prompt := pdfPrompt{
+		pdfPath:  pdfPath,
+		question: question,
+	}
 
-// 	// Use an io.Writer to capture the output
-// 	var output strings.Builder
+	// Use an io.Writer to capture the output
+	var output strings.Builder
 
-// 	content, err := gc.generateContentFromPDF(ctx, &output, prompt, os.Getenv("GCP_PROJECT"), location, modelName)
-// 	if err != nil {
-// 		return "", fmt.Errorf("error generating content from PDF: %w", err)
-// 	}
+	content, err := gc.generateContentFromPDF(ctx, &output, prompt, modelName)
+	if err != nil {
+		return "", fmt.Errorf("error generating content from PDF: %w", err)
+	}
 
-// 	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, content.String())
-// 	quizContent, _, err := gc.generateContent(ctx, instructions.QuizModelSystemInstructions, promptText)
-// 	if err != nil {
-// 		return "", fmt.Errorf("error generating quiz: %w", err)
-// 	}
+	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, content)
+	quizContent, _, err := gc.generateContent(ctx, instructions.QuizModelSystemInstructions, promptText)
+	if err != nil {
+		return "", fmt.Errorf("error generating quiz: %w", err)
+	}
 
-// 	return quizContent, nil
-// }
+	return quizContent, nil
+}

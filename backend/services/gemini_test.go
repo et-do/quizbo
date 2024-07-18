@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"read-robin/models"
+	"strings"
 	"testing"
 )
 
@@ -234,10 +235,44 @@ func TestGenerateContentFromPDF(t *testing.T) {
 		t.Fatalf("generateContentFromPDF: expected no error, got %v", err)
 	}
 
-	// // Check if content is not empty
-	// if content == "" {
-	// 	t.Error("generateContentFromPDF: expected non-empty content, got empty string")
-	// }
+	// Check if content is not empty
+	if strings.TrimSpace(content) == "" {
+		t.Error("generateContentFromPDF: expected non-empty content, got empty string")
+	}
 
 	t.Logf("Generated Content: %s", content)
+}
+
+func TestGenerateQuizFromPDF(t *testing.T) {
+	ctx := context.Background()
+
+	// Ensure the environment variable is set for the test
+	projectID := os.Getenv("GCP_PROJECT")
+	if projectID == "" {
+		t.Fatal("GCP_PROJECT environment variable not set")
+	}
+
+	geminiClient, err := NewGeminiClient(ctx)
+	if err != nil {
+		t.Fatalf("NewGeminiClient: expected no error, got %v", err)
+	}
+
+	pdfPath := testPDFPath
+	question := "Please summarize the given document."
+	personaName := "Test User"
+	personaRole := "Student"
+	personaLanguage := "English"
+	personaDifficulty := "Intermediate"
+
+	quizContent, err := geminiClient.GenerateQuizFromPDF(ctx, pdfPath, question, personaName, personaRole, personaLanguage, personaDifficulty)
+	if err != nil {
+		t.Fatalf("GenerateQuizFromPDF: expected no error, got %v", err)
+	}
+
+	// Check if quiz content is not empty
+	if strings.TrimSpace(quizContent) == "" {
+		t.Error("GenerateQuizFromPDF: expected non-empty quiz content, got empty string")
+	}
+
+	t.Logf("Generated Quiz Content: %s", quizContent)
 }
