@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"read-robin/models"
-	"strings"
 
 	"golang.org/x/net/context"
 )
@@ -32,28 +31,29 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	var response models.SubmitResponse
 
 	if contentType == "application/json" {
-		urlRequest, err := decodeURLRequest(r)
-		if err != nil {
-			log.Printf("SubmitHandler: Unable to parse request: %v", err)
-			http.Error(w, "Unable to parse request", http.StatusBadRequest)
-			return
-		}
+		var pdfRequest models.PDFRequest
+		if err := json.NewDecoder(r.Body).Decode(&pdfRequest); err == nil && pdfRequest.PDFURL != "" {
+			response, err = processPDFSubmission(ctx, pdfRequest.PDFURL, pdfRequest.Persona, geminiClient, firestoreClient)
+			if err != nil {
+				log.Printf("SubmitHandler: Error processing PDF submission: %v", err)
+				http.Error(w, "Error processing PDF submission", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			urlRequest, err := decodeURLRequest(r)
+			if err != nil {
+				log.Printf("SubmitHandler: Unable to parse URL request: %v", err)
+				http.Error(w, "Unable to parse URL request", http.StatusBadRequest)
+				return
+			}
 
-		response, err = processURLSubmission(ctx, urlRequest, geminiClient, firestoreClient)
-		if err != nil {
-			log.Printf("SubmitHandler: Error processing URL submission: %v", err)
-			http.Error(w, "Error processing URL submission", http.StatusInternalServerError)
-			return
+			response, err = processURLSubmission(ctx, urlRequest, geminiClient, firestoreClient)
+			if err != nil {
+				log.Printf("SubmitHandler: Error processing URL submission: %v", err)
+				http.Error(w, "Error processing URL submission", http.StatusInternalServerError)
+				return
+			}
 		}
-
-	} else if strings.Contains(contentType, "multipart/form-data") {
-		response, err = handleMultipartForm(r, ctx, geminiClient, firestoreClient)
-		if err != nil {
-			log.Printf("SubmitHandler: Error processing PDF submission: %v", err)
-			http.Error(w, "Error processing PDF submission", http.StatusInternalServerError)
-			return
-		}
-
 	} else {
 		http.Error(w, "Unsupported content type", http.StatusUnsupportedMediaType)
 		return

@@ -30,7 +30,13 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
 
       // Prepare payload for submission
       const payload = {
-        persona: activePersona,
+        persona: {
+          id: activePersona.id,
+          name: activePersona.name,
+          role: activePersona.role,
+          language: activePersona.language,
+          difficulty: activePersona.difficulty,
+        },
         pdf_url: fileURL,
       };
 
@@ -66,6 +72,7 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       );
       await setDoc(quizRef, {
         contentID: data.content_id,
+        pdf_url: fileURL,
         title: data.title,
       });
 

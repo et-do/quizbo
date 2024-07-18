@@ -3,9 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"io"
-	"log"
-	"mime/multipart"
 	"net/http"
 	"read-robin/models"
 	"read-robin/services"
@@ -21,36 +18,10 @@ func decodeURLRequest(r *http.Request) (models.URLRequest, error) {
 	return urlRequest, err
 }
 
-func handlePDFUpload(file multipart.File) ([]byte, error) {
-	fileBytes, err := io.ReadAll(file)
-	if err != nil {
-		return nil, err
-	}
-
-	// Log the size of the file content for debugging purposes
-	log.Printf("PDF file size: %d bytes", len(fileBytes))
-
-	return fileBytes, nil
-}
-
-func handleMultipartForm(r *http.Request, ctx context.Context, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
-	err := r.ParseMultipartForm(10 << 20) // 10 MB limit
-	if err != nil {
-		return models.SubmitResponse{}, err
-	}
-
-	file, _, err := r.FormFile("file")
-	if err != nil {
-		return models.SubmitResponse{}, err
-	}
-	defer file.Close()
-
-	var persona models.Persona
-	if err := json.Unmarshal([]byte(r.FormValue("persona")), &persona); err != nil {
-		return models.SubmitResponse{}, err
-	}
-
-	return processPDFSubmission(ctx, file, persona, geminiClient, firestoreClient)
+func decodePDFRequest(r *http.Request) (models.PDFRequest, error) {
+	var pdfRequest models.PDFRequest
+	err := utils.DecodeJSONBody(r, &pdfRequest)
+	return pdfRequest, err
 }
 
 func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
@@ -102,13 +73,8 @@ func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, gem
 	}, nil
 }
 
-func processPDFSubmission(ctx context.Context, file multipart.File, persona models.Persona, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
-	fileBytes, err := handlePDFUpload(file)
-	if err != nil {
-		return models.SubmitResponse{}, err
-	}
-
-	contentID := utils.GenerateID(string(fileBytes))
+func processPDFSubmission(ctx context.Context, pdfURL string, persona models.Persona, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
+	contentID := utils.GenerateID(pdfURL)
 
 	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
 	isFirstQuiz := false
@@ -121,9 +87,12 @@ func processPDFSubmission(ctx context.Context, file multipart.File, persona mode
 		}
 	}
 
-	// Pass the PDF file bytes directly to the geminiClient without converting to a string
-	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, fileBytes, persona)
+	quizContent, err := geminiClient.GenerateQuizFromPDF(ctx, pdfURL, "Generate a quiz", persona.Name, persona.Role, persona.Language, persona.Difficulty)
 	if err != nil {
+		return models.SubmitResponse{}, err
+	}
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
 		return models.SubmitResponse{}, err
 	}
 
@@ -134,7 +103,7 @@ func processPDFSubmission(ctx context.Context, file multipart.File, persona mode
 		return models.SubmitResponse{}, err
 	}
 
-	err = firestoreClient.SaveQuiz(ctx, "", title, quiz) // No normalized URL for PDF
+	err = firestoreClient.SaveQuiz(ctx, "", "", quiz) // No normalized URL for PDF
 	if err != nil {
 		return models.SubmitResponse{}, err
 	}
@@ -144,7 +113,7 @@ func processPDFSubmission(ctx context.Context, file multipart.File, persona mode
 		URL:         "", // No URL for PDF
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
-		Title:       title,
+		Title:       "", // Title is not extracted for PDF
 		IsFirstQuiz: isFirstQuiz,
 	}, nil
 }

@@ -5,6 +5,11 @@ type URLRequest struct {
 	Persona `json:"persona"`
 }
 
+type PDFRequest struct {
+	PDFURL  string  `json:"pdf_url"`
+	Persona Persona `json:"persona"`
+}
+
 type SubmitResponse struct {
 	Status      string `json:"status"`
 	URL         string `json:"url"`
