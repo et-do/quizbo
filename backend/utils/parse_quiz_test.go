@@ -1,4 +1,4 @@
-package services
+package utils
 
 import (
 	"encoding/json"
@@ -34,13 +34,13 @@ func TestParseQuizResponse(t *testing.T) {
 		QuizID: "0001",
 		Questions: []models.Question{
 			{
-				QuestionID: generateQuestionID(),
+				QuestionID: GenerateQuestionID(),
 				Question:   "What is the purpose of the 'example' domain?",
 				Answer:     "The 'example' domain is intended for use in illustrative examples within documents, allowing users to employ it without needing prior permission or coordination.",
 				Reference:  "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 			},
 			{
-				QuestionID: generateQuestionID(),
+				QuestionID: GenerateQuestionID(),
 				Question:   "Where can you find more information about the 'example' domain?",
 				Answer:     "You can find more information about the 'example' domain by following the link provided: [More information...](https://www.iana.org/domains/example)",
 				Reference:  "[More information...](https://www.iana.org/domains/example)",

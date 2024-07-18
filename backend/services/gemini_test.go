@@ -194,6 +194,10 @@ func TestReviewResponse(t *testing.T) {
 	}
 }
 
+// So that first function ran runs global init
+func init() {
+	LoadSystemInstructions()
+}
 func TestSystemInstructions(t *testing.T) {
 	if instructions.QuizModelSystemInstructions == "" {
 		t.Error("QuizModelSystemInstructions not loaded")
@@ -210,7 +214,7 @@ func TestSystemInstructions(t *testing.T) {
 	t.Log("All system instructions loaded successfully")
 }
 
-func TestGenerateContentFromPDF(t *testing.T) {
+func TestExtractContentFromPDF(t *testing.T) {
 	ctx := context.Background()
 
 	// Ensure the environment variable is set for the test
@@ -230,14 +234,14 @@ func TestGenerateContentFromPDF(t *testing.T) {
 	}
 
 	var output bytes.Buffer
-	content, err := geminiClient.generateContentFromPDF(ctx, &output, prompt, modelName)
+	content, err := geminiClient.extractContentFromPDF(ctx, &output, prompt, modelName)
 	if err != nil {
-		t.Fatalf("generateContentFromPDF: expected no error, got %v", err)
+		t.Fatalf("ExtractContentFromPDF: expected no error, got %v", err)
 	}
 
 	// Check if content is not empty
 	if strings.TrimSpace(content) == "" {
-		t.Error("generateContentFromPDF: expected non-empty content, got empty string")
+		t.Error("ExtractContentFromPDF: expected non-empty content, got empty string")
 	}
 
 	t.Logf("Generated Content: %s", content)

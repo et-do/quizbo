@@ -7,6 +7,7 @@ import (
 	"read-robin/models"
 	"read-robin/services"
 	"read-robin/utils"
+	"strings"
 
 	"golang.org/x/net/context"
 )
@@ -111,7 +112,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-	} else if contentType == "multipart/form-data" {
+	} else if strings.Contains(contentType, "multipart/form-data") {
 		response, err = handleMultipartForm(r, ctx, geminiClient, firestoreClient)
 		if err != nil {
 			log.Printf("SubmitHandler: Error processing PDF submission: %v", err)

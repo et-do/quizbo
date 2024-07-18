@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"read-robin/models"
@@ -25,6 +26,10 @@ func handlePDFUpload(file multipart.File) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Log the size of the file content for debugging purposes
+	log.Printf("PDF file size: %d bytes", len(fileBytes))
+
 	return fileBytes, nil
 }
 
@@ -77,7 +82,7 @@ func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, gem
 
 	latestQuizID := services.GetLatestQuizID(existingQuizzes)
 
-	quiz, err := services.ParseQuizResponse(quizContentMap, latestQuizID)
+	quiz, err := utils.ParseQuizResponse(quizContentMap, latestQuizID)
 	if err != nil {
 		return models.SubmitResponse{}, err
 	}
@@ -103,7 +108,7 @@ func processPDFSubmission(ctx context.Context, file multipart.File, persona mode
 		return models.SubmitResponse{}, err
 	}
 
-	contentID := services.GenerateID(string(fileBytes))
+	contentID := utils.GenerateID(string(fileBytes))
 
 	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
 	isFirstQuiz := false
@@ -116,14 +121,15 @@ func processPDFSubmission(ctx context.Context, file multipart.File, persona mode
 		}
 	}
 
-	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, string(fileBytes), persona)
+	// Pass the PDF file bytes directly to the geminiClient without converting to a string
+	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, fileBytes, persona)
 	if err != nil {
 		return models.SubmitResponse{}, err
 	}
 
 	latestQuizID := services.GetLatestQuizID(existingQuizzes)
 
-	quiz, err := services.ParseQuizResponse(quizContentMap, latestQuizID)
+	quiz, err := utils.ParseQuizResponse(quizContentMap, latestQuizID)
 	if err != nil {
 		return models.SubmitResponse{}, err
 	}
@@ -156,6 +162,6 @@ func normalizeAndGenerateID(url string) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	contentID := services.GenerateID(normalizedURL)
+	contentID := utils.GenerateID(normalizedURL)
 	return normalizedURL, contentID, nil
 }
