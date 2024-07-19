@@ -40,6 +40,9 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         pdf_url: fileURL,
       };
 
+      // Log payload to console
+      console.log("Payload being sent to backend:", payload);
+
       const idToken = await user.getIdToken();
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
