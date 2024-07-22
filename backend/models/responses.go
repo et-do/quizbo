@@ -7,6 +7,7 @@ type URLRequest struct {
 
 type PDFRequest struct {
 	PDFURL  string  `json:"pdf_url"`
+	GCSURI  string  `json:"gcs_uri"`
 	Persona Persona `json:"persona"`
 }
 

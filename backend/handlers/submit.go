@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"read-robin/models"
@@ -97,29 +98,38 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	var response models.SubmitResponse
 
 	if contentType == "application/json" {
-		var pdfRequest models.PDFRequest
-		if err := json.NewDecoder(r.Body).Decode(&pdfRequest); err == nil && pdfRequest.PDFURL != "" {
-			response, err = processPDFSubmission(ctx, pdfRequest.PDFURL, pdfRequest.Persona, geminiClient, firestoreClient)
-			if err != nil {
-				log.Printf("SubmitHandler: Error processing PDF submission: %v", err)
-				http.Error(w, "Error processing PDF submission", http.StatusInternalServerError)
-				return
-			}
-		} else {
-			urlRequest, err := decodeURLRequest(r)
-			if err != nil {
-				log.Printf("SubmitHandler: Unable to parse URL request: %v", err)
-				http.Error(w, "Unable to parse URL request", http.StatusBadRequest)
-				return
-			}
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("SubmitHandler: Error reading request body: %v", err)
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			return
+		}
+		log.Printf("SubmitHandler: Raw request body: %s", string(body))
 
+		var urlRequest models.URLRequest
+		var pdfRequest models.PDFRequest
+
+		err = json.Unmarshal(body, &urlRequest)
+		if err == nil && urlRequest.URL != "" {
 			response, err = processURLSubmission(ctx, urlRequest, geminiClient, firestoreClient)
-			if err != nil {
-				log.Printf("SubmitHandler: Error processing URL submission: %v", err)
-				http.Error(w, "Error processing URL submission", http.StatusInternalServerError)
+		} else {
+			err = json.Unmarshal(body, &pdfRequest)
+			if err == nil && pdfRequest.GCSURI != "" {
+				// Use the GCS URI directly
+				response, err = processPDFSubmission(ctx, pdfRequest.GCSURI, pdfRequest.Persona, geminiClient, firestoreClient)
+			} else {
+				log.Printf("SubmitHandler: Error unmarshalling request: %v", err)
+				http.Error(w, "Unable to parse request", http.StatusBadRequest)
 				return
 			}
 		}
+
+		if err != nil {
+			log.Printf("SubmitHandler: Error processing submission: %v", err)
+			http.Error(w, "Error processing submission", http.StatusInternalServerError)
+			return
+		}
+
 	} else {
 		http.Error(w, "Unsupported content type", http.StatusUnsupportedMediaType)
 		return
