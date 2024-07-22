@@ -6,25 +6,20 @@ import (
 	"net/http"
 	"read-robin/models"
 	"read-robin/services"
+	"read-robin/services/gemini"
 	"read-robin/utils"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func decodeURLRequest(r *http.Request) (models.URLRequest, error) {
-	var urlRequest models.URLRequest
-	err := utils.DecodeJSONBody(r, &urlRequest)
-	return urlRequest, err
+func DecodeJSONBody(r *http.Request, dst interface{}) error {
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(dst)
 }
 
-func decodePDFRequest(r *http.Request) (models.PDFRequest, error) {
-	var pdfRequest models.PDFRequest
-	err := utils.DecodeJSONBody(r, &pdfRequest)
-	return pdfRequest, err
-}
-
-func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
+func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, geminiClient *gemini.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
 	htmlContent, err := utils.FetchHTML(urlRequest.URL)
 	if err != nil {
 		return models.SubmitResponse{}, err
@@ -73,7 +68,7 @@ func processURLSubmission(ctx context.Context, urlRequest models.URLRequest, gem
 	}, nil
 }
 
-func processPDFSubmission(ctx context.Context, pdfURL string, persona models.Persona, geminiClient *services.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
+func processPDFSubmission(ctx context.Context, pdfURL string, persona models.Persona, geminiClient *gemini.GeminiClient, firestoreClient *services.FirestoreClient) (models.SubmitResponse, error) {
 	contentID := utils.GenerateID(pdfURL)
 
 	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
@@ -87,10 +82,11 @@ func processPDFSubmission(ctx context.Context, pdfURL string, persona models.Per
 		}
 	}
 
-	quizContent, err := geminiClient.GenerateQuizFromPDF(ctx, pdfURL, "Generate a quiz", persona.Name, persona.Role, persona.Language, persona.Difficulty)
+	quizContent, err := geminiClient.GenerateQuizFromPDF(ctx, pdfURL, persona.Name, persona.Role, persona.Language, persona.Difficulty)
 	if err != nil {
 		return models.SubmitResponse{}, err
 	}
+
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
 		return models.SubmitResponse{}, err
@@ -122,8 +118,8 @@ func createFirestoreClient(ctx context.Context) (*services.FirestoreClient, erro
 	return services.NewFirestoreClient(ctx)
 }
 
-func createGeminiClient(ctx context.Context) (*services.GeminiClient, error) {
-	return services.NewGeminiClient(ctx)
+func createGeminiClient(ctx context.Context) (*gemini.GeminiClient, error) {
+	return gemini.NewGeminiClient(ctx)
 }
 
 func normalizeAndGenerateID(url string) (string, string, error) {
