@@ -26,7 +26,6 @@ type Content struct {
 	Quizzes   []Quiz    `json:"quizzes" firestore:"quizzes"`
 }
 
-// Represents a users submitted persona
 type Persona struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`

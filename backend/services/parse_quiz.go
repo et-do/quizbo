@@ -1,4 +1,4 @@
-package utils
+package services
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ func ParseQuizResponse(response map[string]interface{}, quizID string) (models.Q
 		}
 
 		questions = append(questions, models.Question{
-			QuestionID: GenerateQuestionID(),
+			QuestionID: generateQuestionID(),
 			Question:   questionText,
 			Answer:     answer,
 			Reference:  reference,
