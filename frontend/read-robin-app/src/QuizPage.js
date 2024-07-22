@@ -190,7 +190,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
 
   return (
     <div className="quiz-page">
-      <button className="back-button" onClick={() => setPage("quizForm")}>
+      <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
       <h2>Quiz</h2>
