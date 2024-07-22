@@ -18,7 +18,6 @@ import {
 import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
-import QuizForm from "./QuizForm";
 import QuizPage from "./QuizPage";
 import Login from "./Login";
 import Sidebar from "./Sidebar";
@@ -26,7 +25,8 @@ import AttemptPage from "./AttemptPage";
 import IntroScreen from "./IntroScreen";
 import PersonaForm from "./PersonaForm";
 import PersonaList from "./PersonaList";
-import PdfForm from "./PdfForm"; // Import PdfForm
+import UrlForm from "./URLForm";
+import PdfForm from "./PdfForm";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -167,9 +167,9 @@ function App() {
         return <Login signIn={signIn} />;
       case "selection":
         return <SelectionPage setPage={setPage} />;
-      case "quizForm":
+      case "urlForm":
         return (
-          <QuizForm
+          <UrlForm
             user={user}
             activePersona={activePersona}
             setPage={setPage}
