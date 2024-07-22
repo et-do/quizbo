@@ -13,6 +13,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// TODO: Refactor submit.go and gemini.go
+// Add switch for content_type to use url vs pdf paths when returning quiz
 // URLRequest is a struct to hold the URL and persona details submitted by the user
 type URLRequest struct {
 	URL         string         `json:"url"`
