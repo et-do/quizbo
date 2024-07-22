@@ -24,7 +24,7 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       }
 
       // Upload file to Firebase Storage
-      const storageRef = ref(storage, `pdfs/${file.name}`);
+      const storageRef = ref(storage, `${user.uid}/pdfs/${file.name}`);
       await uploadBytes(storageRef, file);
       const fileURL = await getDownloadURL(storageRef);
 
@@ -35,6 +35,7 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
 
       // Prepare payload for submission
       const payload = {
+        url: gcsURI,
         persona: {
           id: activePersona.id,
           name: activePersona.name,
@@ -42,8 +43,7 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
           language: activePersona.language,
           difficulty: activePersona.difficulty,
         },
-        pdf_url: fileURL,
-        gcs_uri: gcsURI,
+        content_type: "PDF",
       };
 
       // Log payload to console
