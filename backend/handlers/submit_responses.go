@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"read-robin/models"
 	"read-robin/services"
-	"read-robin/services/gemini"
 
 	"golang.org/x/net/context"
 )
@@ -22,7 +21,7 @@ type ReviewResponse struct {
 	Status string `json:"status"`
 }
 
-func ResponseHandler(w http.ResponseWriter, r *http.Request) {
+func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 	var responseSubmission ResponseSubmission
 	if err := json.NewDecoder(r.Body).Decode(&responseSubmission); err != nil {
 		log.Printf("SubmitResponseHandler: Unable to parse request: %v", err)
@@ -65,7 +64,7 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create Gemini client
-	geminiClient, err := gemini.NewGeminiClient(ctx)
+	geminiClient, err := services.NewGeminiClient(ctx)
 	if err != nil {
 		log.Printf("SubmitResponseHandler: Error creating Gemini client: %v", err)
 		http.Error(w, "Error creating Gemini client", http.StatusInternalServerError)

@@ -8,7 +8,6 @@ import (
 	"os"
 	"testing"
 
-	"read-robin/models"
 	"read-robin/services"
 
 	"github.com/gorilla/mux"
@@ -62,7 +61,7 @@ func TestGetQuizHandler(t *testing.T) {
 	}
 
 	// Parse the response body into QuizResponse struct
-	var quizResponse models.QuizResponse
+	var quizResponse QuizResponse
 	if err := json.NewDecoder(responseRecorder.Body).Decode(&quizResponse); err != nil {
 		t.Fatalf("failed to parse quiz response body: %v", err)
 	}

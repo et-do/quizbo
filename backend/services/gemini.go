@@ -3,59 +3,56 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"os"
 	"read-robin/models"
-	"read-robin/utils"
 	"strings"
 
 	"cloud.google.com/go/vertexai/genai"
-	"github.com/BurntSushi/toml"
 )
 
 const (
-	location  = "northamerica-northeast1"
-	modelName = "gemini-1.5-pro"
+	location                    = "northamerica-northeast1"
+	modelName                   = "gemini-1.5-pro"
+	quizModelSystemInstructions = `You are a highly skilled model that generates quiz questions and answers from summarized content tailored for a specific user persona. The persona details include Name, Role (profession, age, etc.), Language, and Difficulty (beginner, intermediate, expert). Your task is to generate questions and answers based on the summarized content provided, considering the persona details. You should also generate a small piece of reference text that was used to create your question/answer pair. Omit any backticks or format reference. Return everything in a JSON dictionary with 'quiz' being an array of objects containing 'question', 'answer', and 'reference' strings. The structure should look like this:
+{
+	"quiz": [
+		{
+			"question": "question",
+			"answer": "answer",
+			"reference": "reference"
+		},
+		{
+			"question": "question",
+			"answer": "answer",
+			"reference": "reference"
+		}
+	]
+}`
+	webscrapeModelSystemInstructions = `You are a highly skilled model that extracts readable text from HTML content and generates a title for the content. Your task is to extract the given HTML content and output it into a clear and concise article, ignoring any unnecessary HTML tags or irrelevant content. Additionally, generate a title from the URL to objectively define the site's host and page names (e.g., www.example.com would be Example, and https://en.wikipedia.org/wiki/The_World%27s_Largest_Lobster would be Wikipedia - The World's Largest Lobster). Return everything in a JSON dictionary with 'content' and 'title' keys. Exclude any markdown code fences in your response. The structure should look like this:
+{
+	"content": "extracted content",
+	"title": "generated title"
+}`
+	reviewModelSystemInstructions = `You are a highly skilled model that reviews quiz responses. Your task is to determine if the user's response captures the essence of the expected answer based on the reference provided. As long as the user's response includes the key points or main ideas of the expected answer, it should be considered a "PASS". Yes or No is an acceptable response for yes and no questions. Use a lenient approach, focusing on the main concepts rather than exact wording. Return only "PASS" or "FAIL" as the response.
+
+	Examples:
+	1. Expected Answer: "The 'Example Domain' is for use in illustrative examples in documents."
+	   User Response: "Example Domain is used in documents for examples."
+	   Response: "PASS"
+	
+	2. Expected Answer: "The 'Example Domain' is for use in illustrative examples in documents."
+	   User Response: "It is a domain for examples."
+	   Response: "PASS"
+	
+	3. Expected Answer: "The 'Example Domain' is for use in illustrative examples in documents."
+	   User Response: "This domain is for examples in documents."
+	   Response: "PASS"
+	
+	4. Expected Answer: "The 'Example Domain' is for use in illustrative examples in documents."
+	   User Response: "It is a domain used in documents."
+	   Response: "FAIL"`
 )
-
-type SystemInstructions struct {
-	QuizModelSystemInstructions      string `toml:"quizModelSystemInstructions"`
-	WebscrapeModelSystemInstructions string `toml:"webscrapeModelSystemInstructions"`
-	PDFModelSystemInstructions       string `toml:"pdfModelSystemInstructions"`
-	ReviewModelSystemInstructions    string `toml:"reviewModelSystemInstructions"`
-}
-
-var instructions SystemInstructions
-
-// Needs to be global for handler tests to work
-func LoadSystemInstructions() {
-	configFile, err := utils.FindConfigFile("gemini_system_instructions.toml")
-	if err != nil {
-		fmt.Printf("Error locating config file: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("Reading config file: %s\n", configFile)
-	configData, err := os.ReadFile(configFile)
-	if err != nil {
-		fmt.Printf("Error reading config file: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println("Unmarshaling config data")
-	err = toml.Unmarshal(configData, &instructions)
-	if err != nil {
-		fmt.Printf("Error unmarshaling config file: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Print("Loaded system instructions")
-}
-
-func init() {
-	LoadSystemInstructions()
-}
 
 // GeminiClient is a wrapper around the Vertex AI GenAI client
 type GeminiClient struct {
@@ -96,6 +93,9 @@ func (gc *GeminiClient) generateContent(ctx context.Context, systemInstructions,
 		return "", "", fmt.Errorf("json.MarshalIndent: %w", err)
 	}
 
+	// Debug: Print the full response structure
+	fmt.Printf("Full response: %s\n", fullResponse)
+
 	// Extract the text from the parts
 	var partContent strings.Builder
 	for _, cand := range resp.Candidates {
@@ -111,7 +111,7 @@ func (gc *GeminiClient) generateContent(ctx context.Context, systemInstructions,
 
 // ExtractContent extracts the given HTML text using the Gemini model and returns both the content and title
 func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (map[string]string, string, error) {
-	extractedContent, fullResponse, err := gc.generateContent(ctx, instructions.WebscrapeModelSystemInstructions, htmlText)
+	extractedContent, fullResponse, err := gc.generateContent(ctx, webscrapeModelSystemInstructions, htmlText)
 	if err != nil {
 		return nil, "", fmt.Errorf("error extracting content: %w", err)
 	}
@@ -127,7 +127,7 @@ func (gc *GeminiClient) ExtractContent(ctx context.Context, htmlText string) (ma
 // GenerateQuiz generates quiz questions and answers from the summarized content
 func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent, personaName, personaRole, personaLanguage, personaDifficulty string) (string, string, error) {
 	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, summarizedContent)
-	return gc.generateContent(ctx, instructions.QuizModelSystemInstructions, promptText)
+	return gc.generateContent(ctx, quizModelSystemInstructions, promptText)
 }
 
 // ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
@@ -151,68 +151,9 @@ func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent 
 
 // ReviewResponse reviews the user's response using the Gemini model
 func (gc *GeminiClient) ReviewResponse(ctx context.Context, reviewData string) (string, error) {
-	reviewResult, _, err := gc.generateContent(ctx, instructions.ReviewModelSystemInstructions, reviewData)
+	reviewResult, _, err := gc.generateContent(ctx, reviewModelSystemInstructions, reviewData)
 	if err != nil {
 		return "", fmt.Errorf("error reviewing response: %w", err)
 	}
 	return strings.TrimSpace(reviewResult), nil
-}
-
-type pdfPrompt struct {
-	// pdfPath is a Google Cloud Storage path starting with "gs://"
-	pdfPath string
-	// question asked to the model
-	question string
-}
-
-// GenerateContentFromPDF generates a response based on the provided PDF asset and question
-func (gc *GeminiClient) extractContentFromPDF(ctx context.Context, w io.Writer, prompt pdfPrompt, modelName string) (string, error) {
-	model := gc.client.GenerativeModel(modelName)
-
-	part := genai.FileData{
-		MIMEType: "application/pdf",
-		FileURI:  prompt.pdfPath,
-	}
-
-	res, err := model.GenerateContent(ctx, part, genai.Text(prompt.question))
-	if err != nil {
-		return "", fmt.Errorf("unable to generate contents: %w", err)
-	}
-
-	if len(res.Candidates) == 0 || len(res.Candidates[0].Content.Parts) == 0 {
-		return "", errors.New("empty response from model")
-	}
-
-	fmt.Fprintf(w, "generated response: %s\n", res.Candidates[0].Content.Parts[0])
-	content := res.Candidates[0].Content.Parts[0]
-
-	// Use fmt.Sprintf to convert genai.Part to string
-	contentText := fmt.Sprintf("%s", content)
-
-	return contentText, nil
-}
-
-// GenerateQuizFromPDF extracts content from a PDF and generates quiz questions
-func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath, question, personaName, personaRole, personaLanguage, personaDifficulty string) (string, error) {
-	// Create a pdfPrompt object
-	prompt := pdfPrompt{
-		pdfPath:  pdfPath,
-		question: question,
-	}
-
-	// Use an io.Writer to capture the output
-	var output strings.Builder
-
-	content, err := gc.extractContentFromPDF(ctx, &output, prompt, modelName)
-	if err != nil {
-		return "", fmt.Errorf("error generating content from PDF: %w", err)
-	}
-
-	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", personaRole, personaLanguage, personaDifficulty, content)
-	quizContent, _, err := gc.generateContent(ctx, instructions.QuizModelSystemInstructions, promptText)
-	if err != nil {
-		return "", fmt.Errorf("error generating quiz: %w", err)
-	}
-
-	return quizContent, nil
 }
