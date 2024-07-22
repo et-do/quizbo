@@ -28,6 +28,11 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       await uploadBytes(storageRef, file);
       const fileURL = await getDownloadURL(storageRef);
 
+      // Construct the GCS URI
+      const bucketName = "read-robin-2e150.appspot.com";
+      const filePath = storageRef.fullPath;
+      const gcsURI = `gs://${bucketName}/${filePath}`;
+
       // Prepare payload for submission
       const payload = {
         persona: {
@@ -38,6 +43,7 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
           difficulty: activePersona.difficulty,
         },
         pdf_url: fileURL,
+        gcs_uri: gcsURI,
       };
 
       // Log payload to console
