@@ -15,8 +15,9 @@ import (
 
 // URLRequest is a struct to hold the URL and persona details submitted by the user
 type URLRequest struct {
-	URL     string         `json:"url"`
-	Persona models.Persona `json:"persona"`
+	URL         string         `json:"url"`
+	Persona     models.Persona `json:"persona"`
+	ContentType string         `json:"content_type"`
 }
 
 // SubmitResponse is a struct to hold the response to be sent back to the user
@@ -69,7 +70,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("SubmitHandler: Received URL: %s", urlRequest.URL)
+	log.Printf("SubmitHandler: Received Request: %s", urlRequest)
 
 	htmlContent, err := utils.FetchHTML(urlRequest.URL)
 	if err != nil {
