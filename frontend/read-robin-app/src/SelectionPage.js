@@ -7,16 +7,16 @@ function SelectionPage({ setPage }) {
       <div className="selection-options">
         <h1>What do you want a quiz generated for?</h1>
         <button className="selection-button" onClick={() => setPage("urlForm")}>
-          Webpage
+          🌐 Webpage
         </button>
         <button className="selection-button" onClick={() => setPage("pdfForm")}>
-          PDF
+          📄 PDF
         </button>
         <button
           className="selection-button"
           onClick={() => setPage("audioForm")}
         >
-          Audio
+          🎧 Audio
         </button>
       </div>
     </div>

@@ -1,11 +1,11 @@
 .sidebar {
-  width: 300px; /* Increased width for better fit */
+  width: 400px; /* Increased width for better fit */
   height: 100%;
   background-color: #1e1e1e; /* Dark background color */
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
-  left: -320px; /* Adjusted to match increased width */
+  left: -420px; /* Adjusted to match increased width */
   top: 0;
   bottom: 0;
   overflow-y: auto; /* Enable vertical scrollbar */
@@ -36,7 +36,7 @@
 }
 
 .sidebar li h3 {
-  margin: 0;
+  margin: 0 10px; /* Add margin to the sides */
   color: #ffffff; /* Light text color */
   cursor: pointer;
   background-color: #444444; /* Button shade */
@@ -44,11 +44,11 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
+  justify-content: center; /* Center justify the text */
   white-space: normal; /* Allow text wrapping */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis to overflowing text */
   font-size: 0.9rem; /* Reduce font size for better fit */
-  width: 100%;
   word-break: break-word; /* Break long words to fit */
 }
 
@@ -89,7 +89,7 @@
 }
 
 .sidebar-toggle.open {
-  left: 310px; /* Adjusted to match increased width */
+  left: 410px; /* Adjusted to match increased width */
 }
 
 .overlay {
