@@ -71,7 +71,7 @@ func (gc *GeminiClient) ExtractAndGenerateQuizFromPdf(ctx context.Context, pdfPa
 
 // ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
 func (gc *GeminiClient) ExtractAndGenerateQuizFromAudio(ctx context.Context, audioPath string, persona models.Persona) (map[string]interface{}, string, error) {
-	contentMap, _, err := gc.ExtractContentFromPdf(ctx, audioPath)
+	contentMap, _, err := gc.ExtractContentFromAudio(ctx, audioPath)
 	if err != nil {
 		return nil, "", err
 	}

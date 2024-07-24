@@ -32,10 +32,15 @@ func TestSubmitHandler(t *testing.T) {
 		// 	contentType: "URL",
 		// 	url:         "http://www.example.com",
 		// },
+		// {
+		// 	name:        "PDF content type",
+		// 	contentType: "PDF",
+		// 	url:         "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf",
+		// },
 		{
-			name:        "PDF content type",
-			contentType: "PDF",
-			url:         "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf",
+			name:        "Audio content type",
+			contentType: "Audio",
+			url:         "gs://read-robin-2e150.appspot.com/audio/Porsche+Macan+July+5+2018+(1).mp3",
 		},
 	}
 
