@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"read-robin/models"
+	"read-robin/utils"
 
 	"cloud.google.com/go/firestore"
 )
@@ -31,7 +32,7 @@ func TestSaveQuiz(t *testing.T) {
 
 	questions := []models.Question{
 		{
-			QuestionID: generateQuestionID(),
+			QuestionID: utils.GenerateQuestionID(),
 			Question:   "What is the purpose of the 'Example Domain'?",
 			Answer:     "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 			Reference:  "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
@@ -46,7 +47,7 @@ func TestSaveQuiz(t *testing.T) {
 
 	contentURL := "example.com"
 	contentTitle := "Example Domain"
-	contentID := GenerateID(contentURL)
+	contentID := utils.GenerateID(contentURL)
 
 	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)
 	if err != nil {
@@ -96,7 +97,7 @@ func TestGetQuiz(t *testing.T) {
 
 	questions := []models.Question{
 		{
-			QuestionID: generateQuestionID(),
+			QuestionID: utils.GenerateQuestionID(),
 			Question:   "What is the purpose of the 'Example Domain'?",
 			Answer:     "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 			Reference:  "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
@@ -111,7 +112,7 @@ func TestGetQuiz(t *testing.T) {
 
 	contentURL := "http://example.com"
 	contentTitle := "Example Domain"
-	contentID := GenerateID(contentURL)
+	contentID := utils.GenerateID(contentURL)
 
 	// Save the quiz to Firestore first
 	err = firestoreClient.SaveQuiz(ctx, contentURL, contentTitle, quiz)

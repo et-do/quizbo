@@ -7,6 +7,7 @@ import (
 )
 
 func TestFetchHTML(t *testing.T) {
+	t.Parallel()
 	// Create a test server that returns some HTML
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")

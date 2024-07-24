@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"read-robin/models"
 	"read-robin/services"
+	"read-robin/services/gemini"
 
 	"golang.org/x/net/context"
 )
@@ -64,7 +65,7 @@ func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create Gemini client
-	geminiClient, err := services.NewGeminiClient(ctx)
+	geminiClient, err := gemini.NewGeminiClient(ctx)
 	if err != nil {
 		log.Printf("SubmitResponseHandler: Error creating Gemini client: %v", err)
 		http.Error(w, "Error creating Gemini client", http.StatusInternalServerError)
