@@ -5,34 +5,36 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"mime"
+	"path/filepath"
 	"read-robin/models"
 
 	"cloud.google.com/go/vertexai/genai"
 )
 
 const (
-	pdfModelSystemInstructions = `You are a highly skilled model that extracts readable text from PDF content and generates a title for the content. Your task is to extract the given PDF content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the PDF. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
+	audioModelSystemInstructions = `You are a highly skilled model that extracts readable text from Audio content and generates a title for the content. Your task is to extract the given Audio content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the Audio. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
     {
         "content": "extracted content",
         "title": "generated title"
     }`
 )
 
-type pdfPrompt struct {
-	pdfPath string
+type audioPrompt struct {
+	audioPath string
 }
 
-// extractContentFromPDF extracts readable text and title from PDF content using the Gemini model
-func (gc *GeminiClient) ExtractContentFromPdf(ctx context.Context, pdfPath string) (map[string]string, string, error) {
+// ExtractContentFromAudio extracts readable text and title from Audio content using the Gemini model
+func (gc *GeminiClient) ExtractContentFromAudio(ctx context.Context, audioPath string) (map[string]string, string, error) {
 	model := gc.client.GenerativeModel(modelName)
 
 	part := genai.FileData{
-		MIMEType: "application/pdf",
-		FileURI:  pdfPath,
+		MIMEType: mime.TypeByExtension(filepath.Ext(audioPath)),
+		FileURI:  audioPath,
 	}
 
-	fmt.Printf("Extracting content from PDF: %s\n", pdfPath)
-	res, err := model.GenerateContent(ctx, genai.Text(pdfModelSystemInstructions), part)
+	fmt.Printf("Extracting content from Audio: %s\n", audioPath)
+	res, err := model.GenerateContent(ctx, genai.Text(audioModelSystemInstructions), part)
 	if err != nil {
 		return nil, "", fmt.Errorf("unable to generate contents: %w", err)
 	}
@@ -60,17 +62,17 @@ func (gc *GeminiClient) ExtractContentFromPdf(ctx context.Context, pdfPath strin
 	return contentMap, string(fullResponse), nil
 }
 
-func (gc *GeminiClient) GenerateQuizFromPDF(ctx context.Context, pdfPath string, persona models.Persona) (string, error) {
-	prompt := pdfPrompt{
-		pdfPath: pdfPath,
+func (gc *GeminiClient) GenerateQuizFromAudio(ctx context.Context, audioPath string, persona models.Persona) (string, error) {
+	prompt := audioPrompt{
+		audioPath: audioPath,
 	}
 
-	contentMap, fullHTML, err := gc.ExtractContentFromPdf(ctx, prompt.pdfPath)
+	contentMap, fullHTML, err := gc.ExtractContentFromAudio(ctx, prompt.audioPath)
 	if err != nil {
-		return "", fmt.Errorf("error generating content from PDF: %w", err)
+		return "", fmt.Errorf("error generating content from Audio: %w", err)
 	}
 
-	fmt.Printf("Generating quiz from PDF content: %s\n", contentMap)
+	fmt.Printf("Generating quiz from Audio content: %s\n", contentMap)
 	fmt.Print(fullHTML)
 	promptText := fmt.Sprintf("Generate a quiz for a %s (%s) at %s difficulty level based on the following content: %s", persona.Role, persona.Language, persona.Difficulty, contentMap)
 	quizContent, _, err := gc.generateContent(ctx, quizModelSystemInstructions, promptText)
