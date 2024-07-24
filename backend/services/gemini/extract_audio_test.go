@@ -9,27 +9,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExtractContentFromPDF(t *testing.T) {
+const (
+	audioPath = "gs://read-robin-2e150.appspot.com/audio/Porsche+Macan+July+5+2018+(1).mp3"
+)
+
+func TestExtractContentFromAudio(t *testing.T) {
 	ctx := context.Background()
 	client, err := NewGeminiClient(ctx)
 	assert.NoError(t, err)
 
-	pdfPath := "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf"
-	pdf_path := pdfPrompt{pdfPath: pdfPath}
+	audio_path := audioPrompt{audioPath: audioPath}
 
-	contentMap, fullHTML, err := client.ExtractContentFromPdf(ctx, pdf_path.pdfPath)
+	contentMap, fullText, err := client.ExtractContentFromAudio(ctx, audio_path.audioPath)
 	fmt.Print(contentMap)
-	fmt.Print(fullHTML)
+	fmt.Print(fullText)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, contentMap)
 }
 
-func TestGenerateQuizFromPDF(t *testing.T) {
+func TestGenerateQuizFromAudio(t *testing.T) {
 	ctx := context.Background()
 	client, err := NewGeminiClient(ctx)
 	assert.NoError(t, err)
 
-	pdfPath := "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf"
 	persona := models.Persona{
 		ID:         "Test_ID",
 		Name:       "Test Persona",
@@ -37,7 +39,7 @@ func TestGenerateQuizFromPDF(t *testing.T) {
 		Language:   "English",
 		Difficulty: "Easy"}
 
-	quizContent, err := client.GenerateQuizFromPDF(ctx, pdfPath, persona)
+	quizContent, err := client.GenerateQuizFromAudio(ctx, audioPath, persona)
 	fmt.Print(quizContent)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, quizContent)
