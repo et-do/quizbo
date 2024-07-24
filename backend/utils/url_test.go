@@ -7,6 +7,7 @@ import (
 )
 
 func TestNormalizeURL(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input    string
 		expected string

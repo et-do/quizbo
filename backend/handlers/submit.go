@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"read-robin/models"
 	"read-robin/services"
+	"read-robin/services/gemini"
 	"read-robin/utils"
 
 	"golang.org/x/net/context"
@@ -50,7 +51,7 @@ func normalizeAndGenerateID(url string) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	contentID := services.GenerateID(normalizedURL)
+	contentID := utils.GenerateID(normalizedURL)
 	return normalizedURL, contentID, nil
 }
 
@@ -60,8 +61,8 @@ func createFirestoreClient(ctx context.Context) (*services.FirestoreClient, erro
 }
 
 // createGeminiClient creates a new Gemini client
-func createGeminiClient(ctx context.Context) (*services.GeminiClient, error) {
-	return services.NewGeminiClient(ctx)
+func createGeminiClient(ctx context.Context) (*gemini.GeminiClient, error) {
+	return gemini.NewGeminiClient(ctx)
 }
 
 func SubmitHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,7 +128,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	latestQuizID := services.GetLatestQuizID(existingQuizzes)
 
-	quiz, err := services.ParseQuizResponse(quizContentMap, latestQuizID)
+	quiz, err := utils.ParseQuizResponse(quizContentMap, latestQuizID)
 	if err != nil {
 		log.Printf("SubmitHandler: Error parsing quiz response: %v", err)
 		http.Error(w, "Error parsing quiz response", http.StatusInternalServerError)
