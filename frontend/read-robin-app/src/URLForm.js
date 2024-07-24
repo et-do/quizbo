@@ -103,7 +103,7 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       <h2>Webpage Quiz</h2>
       <div className="example-urls">
         <div className="example-card">
-          <h3>examples:</h3>
+          <h3>Try these examples:</h3>
           <ul>
             {exampleUrls.map((example, index) => (
               <li key={index}>

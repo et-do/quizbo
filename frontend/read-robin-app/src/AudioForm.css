@@ -28,12 +28,6 @@
   color: #ffffff; /* Light text color */
 }
 
-/* Placeholder styling */
-.audio-form input::placeholder {
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.6); /* Adjust the color and opacity as needed */
-}
-
 .audio-form button {
   padding: 0.5rem;
   font-size: 1rem;
@@ -47,4 +41,66 @@
 
 .audio-form button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.example-audio {
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.example-card {
+  background-color: #333333; /* Dark background */
+  color: #ffffff; /* Light text */
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center the text */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
+}
+
+.example-audio h3 {
+  color: #ffffff; /* Light text color */
+}
+
+.example-audio ul {
+  list-style: none;
+  padding: 0;
+}
+
+.example-audio li {
+  margin-bottom: 10px;
+}
+
+.example-audio .example-link {
+  color: #ffffff; /* Light text color */
+  text-decoration: none;
+}
+
+.example-audio .example-link:hover {
+  text-decoration: underline;
+}
+
+.example-audio .download-button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  text-decoration: none; /* Remove underline */
+}
+
+.example-audio .download-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.loading-spinner {
+  margin-top: 10px;
 }
