@@ -3,12 +3,12 @@ package services
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"time"
 
 	"read-robin/models"
+	"read-robin/utils"
 
 	"cloud.google.com/go/firestore"
 )
@@ -37,7 +37,7 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title string, quiz models.Quiz) error {
 	collection := "quizzes"
 
-	contentID := GenerateID(url)
+	contentID := utils.GenerateID(url)
 	docRef := fc.Client.Collection(collection).Doc(contentID)
 
 	// Get the existing document or create a new one
@@ -125,23 +125,4 @@ func GetLatestQuizID(quizzes []models.Quiz) string {
 	nextID := fmt.Sprintf("%04d", maxID+1)
 	fmt.Printf("Next quiz ID: %s\n", nextID) // Add logging to check next quiz ID
 	return nextID
-}
-
-// GenerateID creates a unique ID based on the URL
-func GenerateID(url string) string {
-	return fmt.Sprintf("%x", hash(url))
-}
-
-// generateQuestionID generates a 4-digit random question ID
-func generateQuestionID() string {
-	return fmt.Sprintf("%04d", rand.Intn(10000))
-}
-
-// hash is a simple hash function for generating URL IDs
-func hash(s string) int {
-	h := 0
-	for _, c := range s {
-		h = int(c) + ((h << 5) - h)
-	}
-	return h
 }

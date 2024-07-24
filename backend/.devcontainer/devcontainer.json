@@ -16,7 +16,9 @@
         "golang.go",
         "premparihar.gotestexplorer",
         "dbaeumer.vscode-eslint",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "hediet.vscode-drawio",
+        "purocean.drawio-preview"
       ]
     }
   },
