@@ -41,7 +41,7 @@ const IntroScreen = ({ onFinish }) => {
     if (currentSlide < slides.length) {
       const timer = setTimeout(() => {
         setCurrentSlide((prev) => prev + 1);
-      }, 4500); // Adjust the timeout as needed
+      }, 3500); // Adjust the timeout as needed
       return () => clearTimeout(timer);
     } else {
       const fadeTimer = setTimeout(() => {
