@@ -18,7 +18,6 @@ import {
 import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
-import QuizForm from "./QuizForm";
 import QuizPage from "./QuizPage";
 import Login from "./Login";
 import Sidebar from "./Sidebar";
@@ -26,6 +25,8 @@ import AttemptPage from "./AttemptPage";
 import IntroScreen from "./IntroScreen";
 import PersonaForm from "./PersonaForm";
 import PersonaList from "./PersonaList";
+import UrlForm from "./URLForm";
+import PdfForm from "./PdfForm";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -166,9 +167,19 @@ function App() {
         return <Login signIn={signIn} />;
       case "selection":
         return <SelectionPage setPage={setPage} />;
-      case "quizForm":
+      case "urlForm":
         return (
-          <QuizForm
+          <UrlForm
+            user={user}
+            activePersona={activePersona}
+            setPage={setPage}
+            setContentID={setContentID}
+            setQuizID={setQuizID}
+          />
+        );
+      case "pdfForm":
+        return (
+          <PdfForm
             user={user}
             activePersona={activePersona}
             setPage={setPage}
@@ -246,6 +257,10 @@ function App() {
               <h2 className="tagline">
                 Your AI Companion for Smarter Comprehension
               </h2>
+              <div
+                className="refresh-icon"
+                onClick={() => window.location.reload()}
+              ></div>
             </div>
             {user && (
               <div className="user-info">

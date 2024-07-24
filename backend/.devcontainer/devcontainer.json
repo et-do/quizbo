@@ -15,7 +15,10 @@
       "extensions": [
         "golang.go",
         "premparihar.gotestexplorer",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "tamasfe.even-better-toml",
+        "hediet.vscode-drawio",
+        "purocean.drawio-preview"
       ]
     }
   },

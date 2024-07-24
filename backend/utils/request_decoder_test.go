@@ -13,6 +13,7 @@ type TestRequest struct {
 }
 
 func TestDecodeJSONBody(t *testing.T) {
+	t.Parallel()
 	jsonStr := `{"url": "http://example.com"}`
 	req := httptest.NewRequest("POST", "/", strings.NewReader(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
@@ -25,6 +26,7 @@ func TestDecodeJSONBody(t *testing.T) {
 }
 
 func TestDecodeJSONBody_InvalidJSON(t *testing.T) {
+	t.Parallel()
 	jsonStr := `{"url": "http://example.com"`
 	req := httptest.NewRequest("POST", "/", strings.NewReader(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
@@ -36,6 +38,7 @@ func TestDecodeJSONBody_InvalidJSON(t *testing.T) {
 }
 
 func TestDecodeFormBody(t *testing.T) {
+	t.Parallel()
 	formStr := "url=http://example.com"
 	req := httptest.NewRequest("POST", "/", strings.NewReader(formStr))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -48,6 +51,7 @@ func TestDecodeFormBody(t *testing.T) {
 }
 
 func TestDecodeFormBody_InvalidForm(t *testing.T) {
+	t.Parallel()
 	req := httptest.NewRequest("POST", "/", strings.NewReader("invalid=formdata"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 

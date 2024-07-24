@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./QuizForm.css";
+import "./URLForm.css";
 import { db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 
-function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
+function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,6 +18,19 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         throw new Error("User or active persona is not defined");
       }
 
+      const payload = {
+        url: url,
+        persona: {
+          id: activePersona.id,
+          name: activePersona.name,
+          role: activePersona.role,
+          language: activePersona.language,
+          difficulty: activePersona.difficulty,
+        },
+        content_type: "URL",
+      };
+      console.log("Payload being sent to backend:", payload);
+
       const idToken = await user.getIdToken();
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
@@ -27,16 +40,7 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({
-            url,
-            persona: {
-              id: activePersona.id,
-              name: activePersona.name,
-              role: activePersona.role,
-              language: activePersona.language,
-              difficulty: activePersona.difficulty,
-            },
-          }),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -60,7 +64,7 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       await setDoc(quizRef, {
         contentID: data.content_id,
         url: url,
-        title: data.title, // Include the title field
+        title: data.title,
       });
 
       setPage("quizPage");
@@ -94,4 +98,4 @@ function QuizForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   );
 }
 
-export default QuizForm;
+export default UrlForm;
