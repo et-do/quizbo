@@ -28,6 +28,7 @@ import PersonaList from "./PersonaList";
 import UrlForm from "./URLForm";
 import PdfForm from "./PdfForm";
 import AudioForm from "./AudioForm";
+import VideoForm from "./VideoForm";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -191,6 +192,16 @@ function App() {
       case "audioForm":
         return (
           <AudioForm
+            user={user}
+            activePersona={activePersona}
+            setPage={setPage}
+            setContentID={setContentID}
+            setQuizID={setQuizID}
+          />
+        );
+      case "videoForm":
+        return (
+          <VideoForm
             user={user}
             activePersona={activePersona}
             setPage={setPage}

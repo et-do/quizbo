@@ -141,6 +141,13 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error generating quiz content from Audio", http.StatusInternalServerError)
 			return
 		}
+	case "Video":
+		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromVideo(ctx, submitRequest.URL, submitRequest.Persona)
+		if err != nil {
+			log.Printf("SubmitHandler: Error generating quiz content from Audio: %v", err)
+			http.Error(w, "Error generating quiz content from Audio", http.StatusInternalServerError)
+			return
+		}
 	default:
 		log.Printf("SubmitHandler: Unsupported content type: %v", submitRequest.ContentType)
 		http.Error(w, "Unsupported content type", http.StatusBadRequest)
