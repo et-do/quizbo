@@ -36,7 +36,7 @@
 }
 
 .sidebar li h3 {
-  margin: 0;
+  margin: 0 10px; /* Add margin to the sides */
   color: #ffffff; /* Light text color */
   cursor: pointer;
   background-color: #444444; /* Button shade */
@@ -49,7 +49,6 @@
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis to overflowing text */
   font-size: 0.9rem; /* Reduce font size for better fit */
-  width: 100%;
   word-break: break-word; /* Break long words to fit */
 }
 
