@@ -80,11 +80,17 @@
 
 .example-urls li {
   margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between; /* Align items to the sides */
+  align-items: center; /* Center items vertically */
 }
 
 .example-urls .example-link {
   color: #ffffff; /* Light text color */
   text-decoration: none;
+  flex: 1; /* Take up available space */
+  text-align: right; /* Align text to the right */
+  padding-right: 10px; /* Add some padding to the right */
 }
 
 .example-urls .example-link:hover {
@@ -99,7 +105,6 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 10px;
 }
 
 .example-urls .use-url-button:hover {
