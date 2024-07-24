@@ -32,8 +32,27 @@ func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent stri
 }
 
 // ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuiz(ctx context.Context, htmlContent string, persona models.Persona) (map[string]interface{}, string, error) {
+func (gc *GeminiClient) ExtractAndGenerateQuizFromHtml(ctx context.Context, htmlContent string, persona models.Persona) (map[string]interface{}, string, error) {
 	contentMap, _, err := gc.ExtractContentFromHtml(ctx, htmlContent)
+	if err != nil {
+		return nil, "", err
+	}
+
+	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona)
+	if err != nil {
+		return nil, "", err
+	}
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
+		return nil, "", err
+	}
+
+	return quizContentMap, contentMap["title"], nil
+}
+
+// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuizFromPdf(ctx context.Context, pdfPath string, persona models.Persona) (map[string]interface{}, string, error) {
+	contentMap, _, err := gc.ExtractContentFromPdf(ctx, pdfPath)
 	if err != nil {
 		return nil, "", err
 	}
