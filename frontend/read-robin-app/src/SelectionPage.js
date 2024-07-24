@@ -18,6 +18,12 @@ function SelectionPage({ setPage }) {
         >
           🎧 Audio
         </button>
+        <button
+          className="selection-button"
+          onClick={() => setPage("videoForm")}
+        >
+          🎥 Video
+        </button>
       </div>
     </div>
   );
