@@ -12,8 +12,11 @@ function SelectionPage({ setPage }) {
         <button className="selection-button" onClick={() => setPage("pdfForm")}>
           PDF
         </button>
-        <button className="selection-button" disabled>
-          Audio (Coming Soon)
+        <button
+          className="selection-button"
+          onClick={() => setPage("audioForm")}
+        >
+          Audio
         </button>
       </div>
     </div>
