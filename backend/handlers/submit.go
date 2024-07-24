@@ -14,10 +14,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// TODO: Refactor submit.go and gemini.go
-// Add switch for content_type to use url vs pdf paths when returning quiz
-// URLRequest is a struct to hold the URL and persona details submitted by the user
-type URLRequest struct {
+// SubmitRequest is a struct to hold the URL and persona details submitted by the user
+type SubmitRequest struct {
 	URL         string         `json:"url"`
 	Persona     models.Persona `json:"persona"`
 	ContentType string         `json:"content_type"`
@@ -29,19 +27,19 @@ type SubmitResponse struct {
 	URL         string `json:"url"`
 	ContentID   string `json:"content_id"`
 	QuizID      string `json:"quiz_id"`
-	Title       string `json:"title"` // Add this line
+	Title       string `json:"title"`
 	IsFirstQuiz bool   `json:"is_first_quiz"`
 }
 
-// decodeURLRequest decodes the URL request from the HTTP request
-func decodeURLRequest(r *http.Request) (URLRequest, error) {
-	var urlRequest URLRequest
+// decodeSubmitRequest decodes the URL request from the HTTP request
+func decodeSubmitRequest(r *http.Request) (SubmitRequest, error) {
+	var submitRequest SubmitRequest
 	if r.Header.Get("Content-Type") == "application/json" {
-		err := utils.DecodeJSONBody(r, &urlRequest)
-		return urlRequest, err
+		err := utils.DecodeJSONBody(r, &submitRequest)
+		return submitRequest, err
 	} else {
-		err := utils.DecodeFormBody(r, "url", &urlRequest.URL)
-		return urlRequest, err
+		err := utils.DecodeFormBody(r, "url", &submitRequest.URL)
+		return submitRequest, err
 	}
 }
 
@@ -66,21 +64,14 @@ func createGeminiClient(ctx context.Context) (*gemini.GeminiClient, error) {
 }
 
 func SubmitHandler(w http.ResponseWriter, r *http.Request) {
-	urlRequest, err := decodeURLRequest(r)
+	submitRequest, err := decodeSubmitRequest(r)
 	if err != nil {
 		log.Printf("SubmitHandler: Unable to parse request: %v", err)
 		http.Error(w, "Unable to parse request", http.StatusBadRequest)
 		return
 	}
 
-	log.Printf("SubmitHandler: Received Request: %s", urlRequest)
-
-	htmlContent, err := utils.FetchHTML(urlRequest.URL)
-	if err != nil {
-		log.Printf("SubmitHandler: Error fetching HTML content: %v", err)
-		http.Error(w, "Error fetching HTML content", http.StatusInternalServerError)
-		return
-	}
+	log.Printf("SubmitHandler: Received Request: %s", submitRequest)
 
 	ctx := context.Background()
 
@@ -98,7 +89,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	normalizedURL, contentID, err := normalizeAndGenerateID(urlRequest.URL)
+	normalizedURL, contentID, err := normalizeAndGenerateID(submitRequest.URL)
 	if err != nil {
 		log.Printf("SubmitHandler: Error normalizing URL: %v", err)
 		http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
@@ -118,11 +109,34 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Pass persona information to the Gemini client
-	quizContentMap, title, err := geminiClient.ExtractAndGenerateQuiz(ctx, htmlContent, urlRequest.Persona)
-	if err != nil {
-		log.Printf("SubmitHandler: Error generating quiz content: %v", err)
-		http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
+	var quizContentMap map[string]interface{}
+	var title string
+
+	switch submitRequest.ContentType {
+	case "URL":
+		htmlContent, err := utils.FetchHTML(submitRequest.URL)
+		if err != nil {
+			log.Printf("SubmitHandler: Error fetching HTML content: %v", err)
+			http.Error(w, "Error fetching HTML content", http.StatusInternalServerError)
+			return
+		}
+
+		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromHtml(ctx, htmlContent, submitRequest.Persona)
+		if err != nil {
+			log.Printf("SubmitHandler: Error generating quiz content: %v", err)
+			http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
+			return
+		}
+	case "PDF":
+		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromPdf(ctx, submitRequest.URL, submitRequest.Persona)
+		if err != nil {
+			log.Printf("SubmitHandler: Error generating quiz content from PDF: %v", err)
+			http.Error(w, "Error generating quiz content from PDF", http.StatusInternalServerError)
+			return
+		}
+	default:
+		log.Printf("SubmitHandler: Unsupported content type: %v", submitRequest.ContentType)
+		http.Error(w, "Unsupported content type", http.StatusBadRequest)
 		return
 	}
 
@@ -144,7 +158,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := SubmitResponse{
 		Status:      "success",
-		URL:         urlRequest.URL,
+		URL:         submitRequest.URL,
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
 		Title:       title,
