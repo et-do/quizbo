@@ -164,7 +164,7 @@ function PerformanceHistory({
     const xLabels = filteredAttempts.map((attempt) => {
       const attemptDate = new Date(attempt.createdAt.seconds * 1000);
       if (timeFrame === "24h") {
-        return attemptDate.getHours() + ":00";
+        return `${attemptDate.getHours()}:00`;
       } else if (timeFrame === "7d") {
         return attemptDate.toLocaleDateString("en-US", { weekday: "short" });
       } else {
