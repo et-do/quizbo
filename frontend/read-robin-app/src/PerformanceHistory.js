@@ -52,12 +52,19 @@ function PerformanceHistory({
                 .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds); // Sort by recency
               return {
                 id: quizDoc.id,
-                title: quizDoc.data().title || quizDoc.data().url,
+                contentID: quizDoc.data().contentID,
+                title:
+                  quizDoc.data().title ||
+                  quizDoc.data().url ||
+                  quizDoc.data().audio_url ||
+                  quizDoc.data().video_url ||
+                  quizDoc.data().pdf_url,
                 attempts,
               };
             })
           );
           setQuizzes(quizzesData);
+          console.log("Fetched quizzes data:", quizzesData);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching quizzes:", error);
@@ -95,16 +102,21 @@ function PerformanceHistory({
     }
 
     const filteredAttempts = quizzes.flatMap((quiz) =>
-      quiz.attempts.filter((attempt) => {
+      (quiz.attempts || []).filter((attempt) => {
         const attemptDate = new Date(attempt.createdAt.seconds * 1000);
         return now - attemptDate <= timeFrameMs;
       })
     );
 
+    console.log("Filtered attempts for stats:", filteredAttempts);
+
     const totalQuizzes = new Set(
       filteredAttempts.map((attempt) => attempt.contentID)
     ).size;
-    const totalQuestions = filteredAttempts.length;
+    const totalQuestions = filteredAttempts.reduce(
+      (sum, attempt) => sum + attempt.responses.length,
+      0
+    );
     const averageScore = filteredAttempts.length
       ? (
           filteredAttempts.reduce((sum, attempt) => sum + attempt.score, 0) /
@@ -116,50 +128,155 @@ function PerformanceHistory({
   };
 
   const stats = calculateStats(timeFrame);
+  console.log("Calculated stats:", stats);
+
+  const getXLabels = (timeFrame) => {
+    const now = new Date();
+    let timeFrameMs;
+
+    switch (timeFrame) {
+      case "24h":
+        timeFrameMs = 24 * 60 * 60 * 1000;
+        break;
+      case "7d":
+        timeFrameMs = 7 * 24 * 60 * 60 * 1000;
+        break;
+      case "1m":
+        timeFrameMs = 30 * 24 * 60 * 60 * 1000;
+        break;
+      default:
+        timeFrameMs = 24 * 60 * 60 * 1000;
+    }
+
+    const filteredAttempts = quizzes.flatMap((quiz) =>
+      (quiz.attempts || []).filter((attempt) => {
+        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+        return now - attemptDate <= timeFrameMs;
+      })
+    );
+
+    const xLabels = filteredAttempts.map((attempt) => {
+      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+      if (timeFrame === "24h") {
+        return attemptDate.getHours() + ":00";
+      } else if (timeFrame === "7d") {
+        return attemptDate.toLocaleDateString("en-US", { weekday: "short" });
+      } else {
+        return attemptDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+    });
+
+    console.log("X Labels:", xLabels);
+    return xLabels;
+  };
+
+  const groupAttemptsByContentType = (attempts) => {
+    const grouped = {
+      URL: [],
+      PDF: [],
+      Audio: [],
+      Video: [],
+    };
+
+    attempts.forEach((attempt) => {
+      if (attempt.url) {
+        grouped.URL.push(attempt);
+      } else if (attempt.pdf_url) {
+        grouped.PDF.push(attempt);
+      } else if (attempt.audio_url) {
+        grouped.Audio.push(attempt);
+      } else if (attempt.video_url) {
+        grouped.Video.push(attempt);
+      }
+    });
+
+    console.log("Grouped attempts by content type:", grouped);
+    return grouped;
+  };
+
+  const getScoresByContentType = (timeFrame) => {
+    const now = new Date();
+    let timeFrameMs;
+
+    switch (timeFrame) {
+      case "24h":
+        timeFrameMs = 24 * 60 * 60 * 1000;
+        break;
+      case "7d":
+        timeFrameMs = 7 * 24 * 60 * 60 * 1000;
+        break;
+      case "1m":
+        timeFrameMs = 30 * 24 * 60 * 60 * 1000;
+        break;
+      default:
+        timeFrameMs = 24 * 60 * 60 * 1000;
+    }
+
+    const filteredAttempts = quizzes.flatMap((quiz) =>
+      (quiz.attempts || []).filter((attempt) => {
+        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+        return now - attemptDate <= timeFrameMs;
+      })
+    );
+
+    console.log("Filtered attempts for scores:", filteredAttempts);
+
+    const groupedAttempts = groupAttemptsByContentType(filteredAttempts);
+
+    return {
+      URL: groupedAttempts.URL.map((attempt) => attempt.score),
+      PDF: groupedAttempts.PDF.map((attempt) => attempt.score),
+      Audio: groupedAttempts.Audio.map((attempt) => attempt.score),
+      Video: groupedAttempts.Video.map((attempt) => attempt.score),
+    };
+  };
+
+  const scoresByContentType = getScoresByContentType(timeFrame);
+  console.log("Scores by content type:", scoresByContentType);
 
   const scoresOverTime = {
-    labels: quizzes.flatMap((quiz) =>
-      quiz.attempts
-        .filter((attempt) => {
-          const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-          return (
-            new Date() - attemptDate <=
-            (timeFrame === "24h"
-              ? 24 * 60 * 60 * 1000
-              : timeFrame === "7d"
-              ? 7 * 24 * 60 * 60 * 1000
-              : 30 * 24 * 60 * 60 * 1000)
-          );
-        })
-        .map((attempt) =>
-          new Date(attempt.createdAt.seconds * 1000).toLocaleDateString()
-        )
-    ),
+    labels: getXLabels(timeFrame),
     datasets: [
       {
-        label: "Scores",
-        data: quizzes.flatMap((quiz) =>
-          quiz.attempts
-            .filter((attempt) => {
-              const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-              return (
-                new Date() - attemptDate <=
-                (timeFrame === "24h"
-                  ? 24 * 60 * 60 * 1000
-                  : timeFrame === "7d"
-                  ? 7 * 24 * 60 * 60 * 1000
-                  : 30 * 24 * 60 * 60 * 1000)
-              );
-            })
-            .map((attempt) => attempt.score)
-        ),
+        label: "URL",
+        data: scoresByContentType.URL,
         fill: false,
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
         borderWidth: 1,
       },
+      {
+        label: "PDF",
+        data: scoresByContentType.PDF,
+        fill: false,
+        backgroundColor: "rgba(54,162,235,1)",
+        borderColor: "rgba(54,162,235,1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Audio",
+        data: scoresByContentType.Audio,
+        fill: false,
+        backgroundColor: "rgba(255,206,86,1)",
+        borderColor: "rgba(255,206,86,1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Video",
+        data: scoresByContentType.Video,
+        fill: false,
+        backgroundColor: "rgba(153,102,255,1)",
+        borderColor: "rgba(153,102,255,1)",
+        borderWidth: 1,
+      },
     ],
   };
+
+  console.log("Scores over time:", scoresOverTime);
 
   const contentTypes = {
     labels: ["URL", "PDF", "Audio", "Video"],
@@ -168,10 +285,10 @@ function PerformanceHistory({
         label: "Content Types",
         data: quizzes.reduce(
           (acc, quiz) => {
-            if (quiz.title.includes("http")) acc[0]++;
-            else if (quiz.title.endsWith(".pdf")) acc[1]++;
-            else if (quiz.title.endsWith(".mp3")) acc[2]++;
-            else acc[3]++;
+            if (quiz.url) acc[0]++;
+            else if (quiz.pdf_url) acc[1]++;
+            else if (quiz.audio_url) acc[2]++;
+            else if (quiz.video_url) acc[3]++;
             return acc;
           },
           [0, 0, 0, 0]
@@ -192,6 +309,8 @@ function PerformanceHistory({
       },
     ],
   };
+
+  console.log("Content types:", contentTypes);
 
   return (
     <div className="performance-history">
@@ -253,7 +372,13 @@ function PerformanceHistory({
           <h3>Scores Over Time</h3>
           <Line
             data={scoresOverTime}
-            options={{ plugins: { legend: { display: false } } }}
+            options={{
+              plugins: { legend: { display: true, position: "bottom" } },
+              scales: {
+                x: { title: { display: true, text: "Time" } },
+                y: { title: { display: true, text: "Score" } },
+              },
+            }}
           />
         </div>
         <div className="chart-card">
