@@ -115,7 +115,7 @@ function PerformanceHistory({
 
     console.log("Filtered attempts for stats:", filteredAttempts);
 
-    const totalQuizzes = filteredAttempts.length;
+    const totalQuizzes = new Set(filteredAttempts.map((a) => a.contentID)).size;
     const totalQuestions = filteredAttempts.reduce(
       (sum, attempt) =>
         sum + (attempt.responses ? attempt.responses.length : 0),
@@ -257,6 +257,7 @@ function PerformanceHistory({
   console.log("Scores by content type:", scoresByContentType);
 
   const scoresOverTime = {
+    labels: getXLabels(timeFrame),
     datasets: [
       {
         label: "URL",
@@ -265,10 +266,6 @@ function PerformanceHistory({
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
         borderWidth: 1,
-        parsing: {
-          xAxisKey: "x",
-          yAxisKey: "y",
-        },
       },
       {
         label: "PDF",
@@ -277,10 +274,6 @@ function PerformanceHistory({
         backgroundColor: "rgba(54,162,235,1)",
         borderColor: "rgba(54,162,235,1)",
         borderWidth: 1,
-        parsing: {
-          xAxisKey: "x",
-          yAxisKey: "y",
-        },
       },
       {
         label: "Audio",
@@ -289,10 +282,6 @@ function PerformanceHistory({
         backgroundColor: "rgba(255,206,86,1)",
         borderColor: "rgba(255,206,86,1)",
         borderWidth: 1,
-        parsing: {
-          xAxisKey: "x",
-          yAxisKey: "y",
-        },
       },
       {
         label: "Video",
@@ -301,10 +290,6 @@ function PerformanceHistory({
         backgroundColor: "rgba(153,102,255,1)",
         borderColor: "rgba(153,102,255,1)",
         borderWidth: 1,
-        parsing: {
-          xAxisKey: "x",
-          yAxisKey: "y",
-        },
       },
     ],
   };
@@ -409,7 +394,11 @@ function PerformanceHistory({
               plugins: { legend: { display: true, position: "bottom" } },
               scales: {
                 x: { title: { display: true, text: "Time" } },
-                y: { title: { display: true, text: "Score" } },
+                y: {
+                  title: { display: true, text: "Score" },
+                  min: 0,
+                  max: 100,
+                },
               },
             }}
           />
