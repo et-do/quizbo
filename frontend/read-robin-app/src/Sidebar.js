@@ -135,12 +135,12 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
                 <ul>
                   {quizzes.map((quiz) => (
                     <li key={quiz.id} className="quiz-item">
-                      <h4
+                      <div
                         className="quiz-title"
                         onClick={() => toggleQuiz(quiz.id)}
                       >
                         {quiz.title}
-                      </h4>
+                      </div>
                       {expandedQuiz === quiz.id && (
                         <ul className="attempts-list">
                           {quiz.attempts.length > 0 ? (
