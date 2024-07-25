@@ -110,118 +110,91 @@ function PerformanceHistory({
     });
   };
 
-  const calculateStats = (attempts) => {
-    const totalQuizzes = attempts.length;
-    const totalQuestions = attempts.reduce(
-      (sum, attempt) =>
-        sum + (attempt.responses ? attempt.responses.length : 0),
-      0
-    );
-    const averageScore = attempts.length
-      ? (
-          attempts.reduce((sum, attempt) => sum + attempt.score, 0) /
-          attempts.length
-        ).toFixed(2)
-      : 0;
-
-    return { totalQuizzes, totalQuestions, averageScore };
-  };
-
-  const prepareChartData = (attempts) => {
-    const groupedByContentType = {
-      URL: [],
-      PDF: [],
-      Audio: [],
-      Video: [],
-    };
-
-    attempts.forEach((attempt) => {
-      if (attempt.url) {
-        groupedByContentType.URL.push(attempt);
-      } else if (attempt.pdf_url) {
-        groupedByContentType.PDF.push(attempt);
-      } else if (attempt.audio_url) {
-        groupedByContentType.Audio.push(attempt);
-      } else if (attempt.video_url) {
-        groupedByContentType.Video.push(attempt);
+  const getXLabels = (filteredAttempts) => {
+    const dates = filteredAttempts.map((attempt) => {
+      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+      if (timeFrame === "24h") {
+        return attemptDate.getHours() + ":00";
+      } else if (timeFrame === "7d") {
+        return attemptDate.toLocaleDateString("en-US", { weekday: "short" });
+      } else {
+        return attemptDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
       }
     });
 
-    const scoresByContentType = {
-      URL: groupedByContentType.URL.map((attempt) => ({
-        x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
-      })),
-      PDF: groupedByContentType.PDF.map((attempt) => ({
-        x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
-      })),
-      Audio: groupedByContentType.Audio.map((attempt) => ({
-        x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
-      })),
-      Video: groupedByContentType.Video.map((attempt) => ({
-        x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
-      })),
-    };
+    return dates;
+  };
 
-    const contentTypesCount = {
-      URL: groupedByContentType.URL.length,
-      PDF: groupedByContentType.PDF.length,
-      Audio: groupedByContentType.Audio.length,
-      Video: groupedByContentType.Video.length,
-    };
+  const prepareChartData = (attempts) => {
+    const groupedByDate = {};
 
-    return { scoresByContentType, contentTypesCount };
+    attempts.forEach((attempt) => {
+      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+      const dateKey =
+        timeFrame === "24h"
+          ? attemptDate.getHours() + ":00"
+          : timeFrame === "7d"
+          ? attemptDate.toLocaleDateString("en-US", { weekday: "short" })
+          : attemptDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            });
+
+      if (!groupedByDate[dateKey]) {
+        groupedByDate[dateKey] = [];
+      }
+
+      groupedByDate[dateKey].push(attempt.score);
+    });
+
+    const dates = Object.keys(groupedByDate);
+    const averageScores = dates.map((date) => {
+      const scores = groupedByDate[date];
+      const avgScore =
+        scores.reduce((sum, score) => sum + score, 0) / scores.length;
+      return avgScore;
+    });
+
+    return { dates, averageScores };
   };
 
   const filteredAttempts = quizzes.flatMap((quiz) =>
     filterAttemptsByTimeFrame(quiz.attempts, timeFrame)
   );
 
-  const stats = calculateStats(filteredAttempts);
-  const { scoresByContentType, contentTypesCount } =
-    prepareChartData(filteredAttempts);
+  console.log("Filtered attempts for stats:", filteredAttempts);
+
+  const { dates, averageScores } = prepareChartData(filteredAttempts);
+
+  console.log("Dates:", dates);
+  console.log("Average Scores:", averageScores);
 
   const scoresOverTime = {
-    labels: filteredAttempts.map(
-      (attempt) => new Date(attempt.createdAt.seconds * 1000)
-    ),
+    labels: dates,
     datasets: [
       {
-        label: "URL",
-        data: scoresByContentType.URL,
+        label: "Average Score",
+        data: averageScores,
         fill: false,
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
         borderWidth: 1,
       },
-      {
-        label: "PDF",
-        data: scoresByContentType.PDF,
-        fill: false,
-        backgroundColor: "rgba(54,162,235,1)",
-        borderColor: "rgba(54,162,235,1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Audio",
-        data: scoresByContentType.Audio,
-        fill: false,
-        backgroundColor: "rgba(255,206,86,1)",
-        borderColor: "rgba(255,206,86,1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Video",
-        data: scoresByContentType.Video,
-        fill: false,
-        backgroundColor: "rgba(153,102,255,1)",
-        borderColor: "rgba(153,102,255,1)",
-        borderWidth: 1,
-      },
     ],
+  };
+
+  console.log("Scores over time:", scoresOverTime);
+
+  const contentTypesCount = {
+    URL: quizzes.filter((quiz) => quiz.url).length,
+    PDF: quizzes.filter((quiz) => quiz.pdf_url).length,
+    Audio: quizzes.filter((quiz) => quiz.audio_url).length,
+    Video: quizzes.filter((quiz) => quiz.video_url).length,
   };
 
   const contentTypes = {
@@ -252,10 +225,6 @@ function PerformanceHistory({
     ],
   };
 
-  console.log("Filtered attempts for stats:", filteredAttempts);
-  console.log("Calculated stats:", stats);
-  console.log("Scores over time:", scoresOverTime);
-  console.log("Scores by content type:", scoresByContentType);
   console.log("Content types:", contentTypes);
 
   return (
@@ -301,15 +270,28 @@ function PerformanceHistory({
         <div className="stats-card">
           <div className="stat">
             <h3>Quizzes Taken</h3>
-            <p>{stats.totalQuizzes}</p>
+            <p>{filteredAttempts.length}</p>
           </div>
           <div className="stat">
             <h3>Questions Answered</h3>
-            <p>{stats.totalQuestions}</p>
+            <p>
+              {filteredAttempts.reduce(
+                (sum, attempt) => sum + attempt.responses.length,
+                0
+              )}
+            </p>
           </div>
           <div className="stat">
             <h3>Average Score</h3>
-            <p>{stats.averageScore}%</p>
+            <p>
+              {(
+                filteredAttempts.reduce(
+                  (sum, attempt) => sum + attempt.score,
+                  0
+                ) / filteredAttempts.length
+              ).toFixed(2)}
+              %
+            </p>
           </div>
         </div>
       </div>
@@ -321,7 +303,23 @@ function PerformanceHistory({
             options={{
               plugins: { legend: { display: true, position: "bottom" } },
               scales: {
-                x: { title: { display: true, text: "Time" } },
+                x: {
+                  title: { display: true, text: "Time" },
+                  ticks: {
+                    callback: function (value, index, values) {
+                      const date = new Date(dates[value]);
+                      return timeFrame === "24h"
+                        ? date.getHours() + ":00"
+                        : timeFrame === "7d"
+                        ? date.toLocaleDateString("en-US", { weekday: "short" })
+                        : date.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          });
+                    },
+                  },
+                },
                 y: {
                   title: { display: true, text: "Score" },
                   min: 0,
