@@ -44,13 +44,11 @@ function PerformanceHistory({
                 "attempts"
               );
               const attemptsSnapshot = await getDocs(attemptsRef);
-              const attempts = attemptsSnapshot.docs
-                .map((attemptDoc) => ({
-                  attemptID: attemptDoc.id,
-                  ...attemptDoc.data(),
-                  score: parseFloat(attemptDoc.data().score), // Convert score to float
-                }))
-                .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds); // Sort by recency
+              const attempts = attemptsSnapshot.docs.map((attemptDoc) => ({
+                attemptID: attemptDoc.id,
+                ...attemptDoc.data(),
+                score: parseFloat(attemptDoc.data().score), // Convert score to float
+              }));
               return {
                 id: quizDoc.id,
                 contentID: quizDoc.data().contentID,
@@ -88,7 +86,7 @@ function PerformanceHistory({
     setPage("attemptPage");
   };
 
-  const calculateStats = (timeFrame) => {
+  const filterAttemptsByTimeFrame = (attempts, timeFrame) => {
     const now = new Date();
     let timeFrameMs;
 
@@ -106,82 +104,31 @@ function PerformanceHistory({
         timeFrameMs = 24 * 60 * 60 * 1000;
     }
 
-    const filteredAttempts = quizzes.flatMap((quiz) =>
-      (quiz.attempts || []).filter((attempt) => {
-        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-        return now - attemptDate <= timeFrameMs;
-      })
-    );
+    return attempts.filter((attempt) => {
+      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+      return now - attemptDate <= timeFrameMs;
+    });
+  };
 
-    console.log("Filtered attempts for stats:", filteredAttempts);
-
-    const totalQuizzes = new Set(filteredAttempts.map((a) => a.contentID)).size;
-    const totalQuestions = filteredAttempts.reduce(
+  const calculateStats = (attempts) => {
+    const totalQuizzes = attempts.length;
+    const totalQuestions = attempts.reduce(
       (sum, attempt) =>
         sum + (attempt.responses ? attempt.responses.length : 0),
       0
     );
-    const averageScore = filteredAttempts.length
+    const averageScore = attempts.length
       ? (
-          filteredAttempts.reduce(
-            (sum, attempt) => sum + parseFloat(attempt.score),
-            0
-          ) / filteredAttempts.length
+          attempts.reduce((sum, attempt) => sum + attempt.score, 0) /
+          attempts.length
         ).toFixed(2)
       : 0;
 
     return { totalQuizzes, totalQuestions, averageScore };
   };
 
-  const stats = calculateStats(timeFrame);
-  console.log("Calculated stats:", stats);
-
-  const getXLabels = (timeFrame) => {
-    const now = new Date();
-    let timeFrameMs;
-
-    switch (timeFrame) {
-      case "24h":
-        timeFrameMs = 24 * 60 * 60 * 1000;
-        break;
-      case "7d":
-        timeFrameMs = 7 * 24 * 60 * 60 * 1000;
-        break;
-      case "1m":
-        timeFrameMs = 30 * 24 * 60 * 60 * 1000;
-        break;
-      default:
-        timeFrameMs = 24 * 60 * 60 * 1000;
-    }
-
-    const filteredAttempts = quizzes.flatMap((quiz) =>
-      (quiz.attempts || []).filter((attempt) => {
-        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-        return now - attemptDate <= timeFrameMs;
-      })
-    );
-
-    const xLabels = filteredAttempts.map((attempt) => {
-      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-      if (timeFrame === "24h") {
-        return `${attemptDate.getHours()}:00`;
-      } else if (timeFrame === "7d") {
-        return attemptDate.toLocaleDateString("en-US", { weekday: "short" });
-      } else {
-        return attemptDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      }
-    });
-
-    console.log("X Labels:", xLabels);
-    return xLabels;
-  };
-
-  const groupAttemptsByContentType = (attempts) => {
-    const grouped = {
+  const prepareChartData = (attempts) => {
+    const groupedByContentType = {
       URL: [],
       PDF: [],
       Audio: [],
@@ -190,74 +137,57 @@ function PerformanceHistory({
 
     attempts.forEach((attempt) => {
       if (attempt.url) {
-        grouped.URL.push(attempt);
+        groupedByContentType.URL.push(attempt);
       } else if (attempt.pdf_url) {
-        grouped.PDF.push(attempt);
+        groupedByContentType.PDF.push(attempt);
       } else if (attempt.audio_url) {
-        grouped.Audio.push(attempt);
+        groupedByContentType.Audio.push(attempt);
       } else if (attempt.video_url) {
-        grouped.Video.push(attempt);
+        groupedByContentType.Video.push(attempt);
       }
     });
 
-    console.log("Grouped attempts by content type:", grouped);
-    return grouped;
-  };
-
-  const getScoresByContentType = (timeFrame) => {
-    const now = new Date();
-    let timeFrameMs;
-
-    switch (timeFrame) {
-      case "24h":
-        timeFrameMs = 24 * 60 * 60 * 1000;
-        break;
-      case "7d":
-        timeFrameMs = 7 * 24 * 60 * 60 * 1000;
-        break;
-      case "1m":
-        timeFrameMs = 30 * 24 * 60 * 60 * 1000;
-        break;
-      default:
-        timeFrameMs = 24 * 60 * 60 * 1000;
-    }
-
-    const filteredAttempts = quizzes.flatMap((quiz) =>
-      (quiz.attempts || []).filter((attempt) => {
-        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-        return now - attemptDate <= timeFrameMs;
-      })
-    );
-
-    console.log("Filtered attempts for scores:", filteredAttempts);
-
-    const groupedAttempts = groupAttemptsByContentType(filteredAttempts);
-
-    return {
-      URL: groupedAttempts.URL.map((attempt) => ({
+    const scoresByContentType = {
+      URL: groupedByContentType.URL.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: parseFloat(attempt.score), // Convert score to float
+        y: attempt.score,
       })),
-      PDF: groupedAttempts.PDF.map((attempt) => ({
+      PDF: groupedByContentType.PDF.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: parseFloat(attempt.score), // Convert score to float
+        y: attempt.score,
       })),
-      Audio: groupedAttempts.Audio.map((attempt) => ({
+      Audio: groupedByContentType.Audio.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: parseFloat(attempt.score), // Convert score to float
+        y: attempt.score,
       })),
-      Video: groupedAttempts.Video.map((attempt) => ({
+      Video: groupedByContentType.Video.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: parseFloat(attempt.score), // Convert score to float
+        y: attempt.score,
       })),
     };
+
+    const contentTypesCount = {
+      URL: groupedByContentType.URL.length,
+      PDF: groupedByContentType.PDF.length,
+      Audio: groupedByContentType.Audio.length,
+      Video: groupedByContentType.Video.length,
+    };
+
+    return { scoresByContentType, contentTypesCount };
   };
 
-  const scoresByContentType = getScoresByContentType(timeFrame);
-  console.log("Scores by content type:", scoresByContentType);
+  const filteredAttempts = quizzes.flatMap((quiz) =>
+    filterAttemptsByTimeFrame(quiz.attempts, timeFrame)
+  );
+
+  const stats = calculateStats(filteredAttempts);
+  const { scoresByContentType, contentTypesCount } =
+    prepareChartData(filteredAttempts);
 
   const scoresOverTime = {
-    labels: getXLabels(timeFrame),
+    labels: filteredAttempts.map(
+      (attempt) => new Date(attempt.createdAt.seconds * 1000)
+    ),
     datasets: [
       {
         label: "URL",
@@ -294,23 +224,17 @@ function PerformanceHistory({
     ],
   };
 
-  console.log("Scores over time:", scoresOverTime);
-
   const contentTypes = {
     labels: ["URL", "PDF", "Audio", "Video"],
     datasets: [
       {
         label: "Content Types",
-        data: quizzes.reduce(
-          (acc, quiz) => {
-            if (quiz.url) acc[0]++;
-            else if (quiz.pdf_url) acc[1]++;
-            else if (quiz.audio_url) acc[2]++;
-            else if (quiz.video_url) acc[3]++;
-            return acc;
-          },
-          [0, 0, 0, 0]
-        ),
+        data: [
+          contentTypesCount.URL,
+          contentTypesCount.PDF,
+          contentTypesCount.Audio,
+          contentTypesCount.Video,
+        ],
         backgroundColor: [
           "rgba(75,192,192,0.2)",
           "rgba(54,162,235,0.2)",
@@ -328,6 +252,10 @@ function PerformanceHistory({
     ],
   };
 
+  console.log("Filtered attempts for stats:", filteredAttempts);
+  console.log("Calculated stats:", stats);
+  console.log("Scores over time:", scoresOverTime);
+  console.log("Scores by content type:", scoresByContentType);
   console.log("Content types:", contentTypes);
 
   return (
