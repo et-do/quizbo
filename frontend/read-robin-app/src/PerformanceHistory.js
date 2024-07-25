@@ -48,6 +48,7 @@ function PerformanceHistory({
                 .map((attemptDoc) => ({
                   attemptID: attemptDoc.id,
                   ...attemptDoc.data(),
+                  score: parseFloat(attemptDoc.data().score), // Convert score to float
                 }))
                 .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds); // Sort by recency
               return {
@@ -122,8 +123,10 @@ function PerformanceHistory({
     );
     const averageScore = filteredAttempts.length
       ? (
-          filteredAttempts.reduce((sum, attempt) => sum + attempt.score, 0) /
-          filteredAttempts.length
+          filteredAttempts.reduce(
+            (sum, attempt) => sum + parseFloat(attempt.score),
+            0
+          ) / filteredAttempts.length
         ).toFixed(2)
       : 0;
 
@@ -233,19 +236,19 @@ function PerformanceHistory({
     return {
       URL: groupedAttempts.URL.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
+        y: parseFloat(attempt.score), // Convert score to float
       })),
       PDF: groupedAttempts.PDF.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
+        y: parseFloat(attempt.score), // Convert score to float
       })),
       Audio: groupedAttempts.Audio.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
+        y: parseFloat(attempt.score), // Convert score to float
       })),
       Video: groupedAttempts.Video.map((attempt) => ({
         x: new Date(attempt.createdAt.seconds * 1000),
-        y: attempt.score,
+        y: parseFloat(attempt.score), // Convert score to float
       })),
     };
   };
