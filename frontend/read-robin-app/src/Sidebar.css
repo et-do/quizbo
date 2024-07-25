@@ -24,6 +24,10 @@
   color: #ffffff; /* Light text color */
 }
 
+.sidebar h3 {
+  color: #ffffff; /* Light text color */
+}
+
 .sidebar ul {
   list-style-type: none;
   padding: 0;
@@ -35,7 +39,7 @@
   color: #ffffff; /* Light text color */
 }
 
-.sidebar li h3 {
+.sidebar li .quiz-title {
   margin: 0 10px; /* Add margin to the sides */
   color: #ffffff; /* Light text color */
   cursor: pointer;
@@ -44,7 +48,7 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Center justify the text */
+  justify-content: space-between; /* Space between text and arrow */
   white-space: normal; /* Allow text wrapping */
   overflow: hidden; /* Hide overflowing text */
   text-overflow: ellipsis; /* Add ellipsis to overflowing text */
@@ -52,10 +56,9 @@
   word-break: break-word; /* Break long words to fit */
 }
 
-.sidebar li h4::after {
+.sidebar li .quiz-title::after {
   content: "▼"; /* Dropdown arrow */
   font-size: 0.8em;
-  margin-left: auto;
 }
 
 .sidebar li ul {
