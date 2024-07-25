@@ -114,9 +114,7 @@ function PerformanceHistory({
 
     console.log("Filtered attempts for stats:", filteredAttempts);
 
-    const totalQuizzes = new Set(
-      filteredAttempts.map((attempt) => attempt.contentID)
-    ).size;
+    const totalQuizzes = filteredAttempts.length;
     const totalQuestions = filteredAttempts.reduce(
       (sum, attempt) =>
         sum + (attempt.responses ? attempt.responses.length : 0),
