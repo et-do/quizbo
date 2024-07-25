@@ -29,6 +29,7 @@ import UrlForm from "./URLForm";
 import PdfForm from "./PdfForm";
 import AudioForm from "./AudioForm";
 import VideoForm from "./VideoForm";
+import PerformanceHistory from "./PerformanceHistory";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -219,6 +220,16 @@ function App() {
             quizID={quizID}
           />
         );
+      case "performanceHistory":
+        return (
+          <PerformanceHistory
+            user={user}
+            activePersona={activePersona}
+            setPage={setPage}
+            setAttemptID={setAttemptID} // Pass setAttemptID as a prop
+            setContentID={setContentID} // Pass setContentID as a prop
+          />
+        );
       case "attemptPage":
         return (
           <AttemptPage
@@ -318,6 +329,12 @@ function App() {
                     onClick={() => setPage("personas")}
                   >
                     Manage Personas
+                  </button>
+                  <button
+                    className="performance-history-button"
+                    onClick={() => setPage("performanceHistory")}
+                  >
+                    Performance History
                   </button>
                   <button className="logout-button" onClick={logout}>
                     Logout
