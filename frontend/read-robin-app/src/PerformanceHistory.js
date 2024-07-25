@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { Bar, Line } from "react-chartjs-2";
+import { Chart as ChartJS, registerables } from "chart.js";
 import "./PerformanceHistory.css";
+
+ChartJS.register(...registerables);
 
 function PerformanceHistory({
   user,
@@ -12,6 +16,7 @@ function PerformanceHistory({
 }) {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [timeFrame, setTimeFrame] = useState("24h");
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -71,9 +76,115 @@ function PerformanceHistory({
     setPage("attemptPage");
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const calculateStats = (timeFrame) => {
+    const now = new Date();
+    let timeFrameMs;
+
+    switch (timeFrame) {
+      case "24h":
+        timeFrameMs = 24 * 60 * 60 * 1000;
+        break;
+      case "7d":
+        timeFrameMs = 7 * 24 * 60 * 60 * 1000;
+        break;
+      case "1m":
+        timeFrameMs = 30 * 24 * 60 * 60 * 1000;
+        break;
+      default:
+        timeFrameMs = 24 * 60 * 60 * 1000;
+    }
+
+    const filteredAttempts = quizzes.flatMap((quiz) =>
+      quiz.attempts.filter((attempt) => {
+        const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+        return now - attemptDate <= timeFrameMs;
+      })
+    );
+
+    const totalQuizzes = new Set(
+      filteredAttempts.map((attempt) => attempt.contentID)
+    ).size;
+    const totalQuestions = filteredAttempts.length;
+
+    return { totalQuizzes, totalQuestions };
+  };
+
+  const stats = calculateStats(timeFrame);
+
+  const scoresOverTime = {
+    labels: quizzes.flatMap((quiz) =>
+      quiz.attempts
+        .filter((attempt) => {
+          const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+          return (
+            new Date() - attemptDate <=
+            (timeFrame === "24h"
+              ? 24 * 60 * 60 * 1000
+              : timeFrame === "7d"
+              ? 7 * 24 * 60 * 60 * 1000
+              : 30 * 24 * 60 * 60 * 1000)
+          );
+        })
+        .map((attempt) =>
+          new Date(attempt.createdAt.seconds * 1000).toLocaleDateString()
+        )
+    ),
+    datasets: [
+      {
+        label: "Scores",
+        data: quizzes.flatMap((quiz) =>
+          quiz.attempts
+            .filter((attempt) => {
+              const attemptDate = new Date(attempt.createdAt.seconds * 1000);
+              return (
+                new Date() - attemptDate <=
+                (timeFrame === "24h"
+                  ? 24 * 60 * 60 * 1000
+                  : timeFrame === "7d"
+                  ? 7 * 24 * 60 * 60 * 1000
+                  : 30 * 24 * 60 * 60 * 1000)
+              );
+            })
+            .map((attempt) => attempt.score)
+        ),
+        fill: false,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(75,192,192,1)",
+      },
+    ],
+  };
+
+  const contentTypes = {
+    labels: ["URL", "PDF", "Audio", "Video"],
+    datasets: [
+      {
+        label: "Content Types",
+        data: quizzes.reduce(
+          (acc, quiz) => {
+            if (quiz.title.includes("http")) acc[0]++;
+            else if (quiz.title.endsWith(".pdf")) acc[1]++;
+            else if (quiz.title.endsWith(".mp3")) acc[2]++;
+            else acc[3]++;
+            return acc;
+          },
+          [0, 0, 0, 0]
+        ),
+        backgroundColor: [
+          "rgba(255,99,132,0.2)",
+          "rgba(54,162,235,0.2)",
+          "rgba(255,206,86,0.2)",
+          "rgba(75,192,192,0.2)",
+        ],
+        borderColor: [
+          "rgba(255,99,132,1)",
+          "rgba(54,162,235,1)",
+          "rgba(255,206,86,1)",
+          "rgba(75,192,192,1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <div className="performance-history">
@@ -81,13 +192,41 @@ function PerformanceHistory({
         Back
       </button>
       <h2>Performance History</h2>
-      {quizzes.length === 0 ? (
-        <p>No quizzes found.</p>
-      ) : (
-        <div className="dashboard">
+      <div className="timeframe-select">
+        <label htmlFor="timeframe">Select Timeframe:</label>
+        <select
+          id="timeframe"
+          value={timeFrame}
+          onChange={(e) => setTimeFrame(e.target.value)}
+        >
+          <option value="24h">Last 24 Hours</option>
+          <option value="7d">Last 7 Days</option>
+          <option value="1m">Last 1 Month</option>
+        </select>
+      </div>
+      <div className="stats-container">
+        <div className="stats-card">
+          <h3>Statistics</h3>
+          <p>Quizzes Taken: {stats.totalQuizzes}</p>
+          <p>Questions Answered: {stats.totalQuestions}</p>
+        </div>
+      </div>
+      <div className="charts-container">
+        <div className="chart-card">
+          <h3>Scores Over Time</h3>
+          <Line data={scoresOverTime} />
+        </div>
+        <div className="chart-card">
+          <h3>Content Types</h3>
+          <Bar data={contentTypes} />
+        </div>
+      </div>
+      {quizzes.length > 0 && (
+        <div className="quizzes-list">
+          <h3>Quizzes and Attempts</h3>
           {quizzes.map((quiz) => (
             <div key={quiz.id} className="quiz-card">
-              <h3>{quiz.title}</h3>
+              <h4>{quiz.title}</h4>
               {quiz.attempts.length > 0 ? (
                 <ul>
                   {quiz.attempts.map((attempt) => (

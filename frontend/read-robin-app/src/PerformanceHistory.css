@@ -8,14 +8,26 @@
   color: #ffffff; /* Light text color */
 }
 
-.performance-history .dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+.performance-history .timeframe-select {
+  margin-bottom: 20px;
 }
 
-.performance-history .quiz-card {
+.performance-history .timeframe-select label {
+  margin-right: 10px;
+}
+
+.performance-history .timeframe-select select {
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.performance-history .stats-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.performance-history .stats-card {
   background-color: #333333; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
@@ -23,16 +35,43 @@
   width: 100%;
   max-width: 400px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center text */
+}
+
+.performance-history .charts-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.performance-history .chart-card {
+  background-color: #333333; /* Dark background */
+  color: #ffffff; /* Light text */
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center text */
+}
+
+.performance-history .quizzes-list {
+  margin-top: 20px;
+}
+
+.performance-history .quiz-card {
+  background-color: #333333; /* Dark background */
+  color: #ffffff; /* Light text */
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: left; /* Left-align text */
 }
 
-.performance-history .quiz-card h3 {
+.performance-history .quiz-card h4 {
   color: #ffffff; /* Light text color */
-}
-
-.performance-history .quiz-card ul {
-  list-style: none;
-  padding: 0;
 }
 
 .performance-history .attempt-item {
