@@ -9,6 +9,11 @@ function VideoForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const exampleVideo = {
+    text: "Happiness - A Very Short Story",
+    url: "https://storage.googleapis.com/read-robin-examples/video/happiness_a_very_short_story.mp4",
+  };
+
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -100,6 +105,27 @@ function VideoForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         Back
       </button>
       <h2>Video Quiz</h2>
+      <div className="example-video">
+        <div className="example-card">
+          <h3>Try this example:</h3>
+          <ul>
+            <li>
+              <a
+                href={exampleVideo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="example-link"
+              >
+                {exampleVideo.text}
+              </a>
+              {" - "}
+              <a href={exampleVideo.url} download className="download-button">
+                Download
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
       <form onSubmit={handleSubmit}>
         <input
           type="file"
