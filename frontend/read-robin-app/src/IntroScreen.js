@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./IntroScreen.css";
-import logo from "./logo.png"; // Import the logo
+import logo from "./logo.png";
 
 const slides = [
   {
@@ -20,7 +20,7 @@ const slides = [
     text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, learning style, and objectives.",
   },
   {
-    title: "🤝 Simplify Onboarding",
+    title: "🤝 Simplified Onboarding",
     text: "Make onboarding easier by maintaining a set of quizzes based on your most up-to-date content, ensuring new team members get up to speed quickly in their preferred language and difficulty level.",
   },
   {
@@ -41,7 +41,7 @@ const IntroScreen = ({ onFinish }) => {
     if (currentSlide < slides.length) {
       const timer = setTimeout(() => {
         setCurrentSlide((prev) => prev + 1);
-      }, 3500); // Adjust the timeout as needed
+      }, 3500); // Adjust as needed for slide duration
       return () => clearTimeout(timer);
     } else {
       const fadeTimer = setTimeout(() => {

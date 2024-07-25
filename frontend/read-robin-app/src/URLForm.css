@@ -79,7 +79,6 @@
 }
 
 .example-urls li {
-  margin-bottom: 8px;
   display: flex;
   justify-content: space-between; /* Align items to the sides */
   align-items: center; /* Center items vertically */
