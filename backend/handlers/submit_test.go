@@ -35,17 +35,17 @@ func TestSubmitHandler(t *testing.T) {
 		{
 			name:        "PDF content type",
 			contentType: "PDF",
-			url:         "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf",
+			url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
 		},
 		{
 			name:        "Audio content type",
 			contentType: "Audio",
-			url:         "gs://read-robin-2e150.appspot.com/audio/porsche_macan_ad.mp3",
+			url:         "gs://read-robin-examples/audio/porsche_macan_ad.mp3",
 		},
 		{
 			name:        "Video content type",
 			contentType: "Video",
-			url:         "gs://read-robin-2e150.appspot.com/video/happiness_a_very_short_story.mp4",
+			url:         "gs://read-robin-examples/video/happiness_a_very_short_story.mp4",
 		},
 	}
 

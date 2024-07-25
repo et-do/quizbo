@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	audioPath = "gs://read-robin-2e150.appspot.com/audio/Porsche+Macan+July+5+2018+(1).mp3"
+	audioPath = "gs://read-robin-examples/audio/porsche_macan_ad.mp3"
 )
 
 func TestExtractContentFromAudio(t *testing.T) {

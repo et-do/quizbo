@@ -9,12 +9,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const pdfPath = "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf"
+
 func TestExtractContentFromPDF(t *testing.T) {
 	ctx := context.Background()
 	client, err := NewGeminiClient(ctx)
 	assert.NoError(t, err)
 
-	pdfPath := "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf"
 	pdf_path := pdfPrompt{pdfPath: pdfPath}
 
 	contentMap, fullHTML, err := client.ExtractContentFromPdf(ctx, pdf_path.pdfPath)
@@ -29,7 +30,6 @@ func TestGenerateQuizFromPDF(t *testing.T) {
 	client, err := NewGeminiClient(ctx)
 	assert.NoError(t, err)
 
-	pdfPath := "gs://read-robin-2e150.appspot.com/pdfs/test_document.pdf"
 	persona := models.Persona{
 		ID:         "Test_ID",
 		Name:       "Test Persona",
