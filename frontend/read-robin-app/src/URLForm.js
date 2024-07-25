@@ -115,7 +115,6 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
                 >
                   {example.text}
                 </a>
-                {" - "}
                 <button
                   onClick={() => handleExampleClick(example.url)}
                   className="use-url-button"
