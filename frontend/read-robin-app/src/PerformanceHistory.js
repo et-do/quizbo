@@ -6,7 +6,7 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import "./PerformanceHistory.css";
 
 ChartJS.register(...registerables);
-// Added logging, need to debug based on logs, data not getting fetched from firestore correctly
+
 function PerformanceHistory({
   user,
   activePersona,
@@ -59,6 +59,10 @@ function PerformanceHistory({
                   quizDoc.data().audio_url ||
                   quizDoc.data().video_url ||
                   quizDoc.data().pdf_url,
+                url: quizDoc.data().url,
+                audio_url: quizDoc.data().audio_url,
+                video_url: quizDoc.data().video_url,
+                pdf_url: quizDoc.data().pdf_url,
                 attempts,
               };
             })
@@ -114,7 +118,8 @@ function PerformanceHistory({
       filteredAttempts.map((attempt) => attempt.contentID)
     ).size;
     const totalQuestions = filteredAttempts.reduce(
-      (sum, attempt) => sum + attempt.responses.length,
+      (sum, attempt) =>
+        sum + (attempt.responses ? attempt.responses.length : 0),
       0
     );
     const averageScore = filteredAttempts.length
@@ -228,10 +233,22 @@ function PerformanceHistory({
     const groupedAttempts = groupAttemptsByContentType(filteredAttempts);
 
     return {
-      URL: groupedAttempts.URL.map((attempt) => attempt.score),
-      PDF: groupedAttempts.PDF.map((attempt) => attempt.score),
-      Audio: groupedAttempts.Audio.map((attempt) => attempt.score),
-      Video: groupedAttempts.Video.map((attempt) => attempt.score),
+      URL: groupedAttempts.URL.map((attempt) => ({
+        x: new Date(attempt.createdAt.seconds * 1000),
+        y: attempt.score,
+      })),
+      PDF: groupedAttempts.PDF.map((attempt) => ({
+        x: new Date(attempt.createdAt.seconds * 1000),
+        y: attempt.score,
+      })),
+      Audio: groupedAttempts.Audio.map((attempt) => ({
+        x: new Date(attempt.createdAt.seconds * 1000),
+        y: attempt.score,
+      })),
+      Video: groupedAttempts.Video.map((attempt) => ({
+        x: new Date(attempt.createdAt.seconds * 1000),
+        y: attempt.score,
+      })),
     };
   };
 
@@ -239,7 +256,6 @@ function PerformanceHistory({
   console.log("Scores by content type:", scoresByContentType);
 
   const scoresOverTime = {
-    labels: getXLabels(timeFrame),
     datasets: [
       {
         label: "URL",
@@ -248,6 +264,10 @@ function PerformanceHistory({
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
         borderWidth: 1,
+        parsing: {
+          xAxisKey: "x",
+          yAxisKey: "y",
+        },
       },
       {
         label: "PDF",
@@ -256,6 +276,10 @@ function PerformanceHistory({
         backgroundColor: "rgba(54,162,235,1)",
         borderColor: "rgba(54,162,235,1)",
         borderWidth: 1,
+        parsing: {
+          xAxisKey: "x",
+          yAxisKey: "y",
+        },
       },
       {
         label: "Audio",
@@ -264,6 +288,10 @@ function PerformanceHistory({
         backgroundColor: "rgba(255,206,86,1)",
         borderColor: "rgba(255,206,86,1)",
         borderWidth: 1,
+        parsing: {
+          xAxisKey: "x",
+          yAxisKey: "y",
+        },
       },
       {
         label: "Video",
@@ -272,6 +300,10 @@ function PerformanceHistory({
         backgroundColor: "rgba(153,102,255,1)",
         borderColor: "rgba(153,102,255,1)",
         borderWidth: 1,
+        parsing: {
+          xAxisKey: "x",
+          yAxisKey: "y",
+        },
       },
     ],
   };
@@ -294,16 +326,16 @@ function PerformanceHistory({
           [0, 0, 0, 0]
         ),
         backgroundColor: [
-          "rgba(255,99,132,0.2)",
+          "rgba(75,192,192,0.2)",
           "rgba(54,162,235,0.2)",
           "rgba(255,206,86,0.2)",
-          "rgba(75,192,192,0.2)",
+          "rgba(153,102,255,0.2)",
         ],
         borderColor: [
-          "rgba(255,99,132,1)",
+          "rgba(75,192,192,1)",
           "rgba(54,162,235,1)",
           "rgba(255,206,86,1)",
-          "rgba(75,192,192,1)",
+          "rgba(153,102,255,1)",
         ],
         borderWidth: 1,
       },
