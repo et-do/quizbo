@@ -6,7 +6,7 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import "./PerformanceHistory.css";
 
 ChartJS.register(...registerables);
-
+// Added logging, need to debug based on logs, data not getting fetched from firestore correctly
 function PerformanceHistory({
   user,
   activePersona,
