@@ -14,7 +14,7 @@ import {
   updateDoc,
   collection,
   getDocs,
-} from "firebase/firestore"; // Add updateDoc here
+} from "firebase/firestore";
 import { db } from "./firebase";
 import logo from "./logo.png";
 import SelectionPage from "./SelectionPage";
@@ -34,7 +34,7 @@ function App() {
   const [page, setPage] = useState("intro");
   const [user, setUser] = useState(null);
   const [personas, setPersonas] = useState([]);
-  const [activePersona, setActivePersona] = useState(null); // State for active persona
+  const [activePersona, setActivePersona] = useState(null);
   const [contentID, setContentID] = useState(null);
   const [attemptID, setAttemptID] = useState(null);
   const [quizID, setQuizID] = useState(null);
@@ -240,7 +240,7 @@ function App() {
               personas={personas}
               activePersona={activePersona}
               setActivePersona={handleSetActivePersona}
-              setPage={setPage} // Add this line to pass the setPage function
+              setPage={setPage}
             />
             <button
               className="back-button"
@@ -271,7 +271,7 @@ function App() {
               <div
                 className="logo-title"
                 onClick={() => setPage("selection")}
-                style={{ cursor: "pointer" }} // Add pointer cursor style
+                style={{ cursor: "pointer" }}
               >
                 <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">ReadRobin</h1>

@@ -8,6 +8,21 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const exampleUrls = [
+    {
+      text: "The World's Largest Lobster",
+      url: "https://en.wikipedia.org/wiki/The_World%27s_Largest_Lobster",
+    },
+    {
+      text: "The Death of Saas",
+      url: "https://medium.com/@akiranin/the-death-of-saas-a1c5423da094",
+    },
+    {
+      text: "How to Cook Beef Wellington",
+      url: "https://www.gordonramsay.com/gr/recipes/beef-wellington/",
+    },
+  ];
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
@@ -76,12 +91,41 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
     }
   };
 
+  const handleExampleClick = (exampleUrl) => {
+    setUrl(exampleUrl);
+  };
+
   return (
     <div className="quiz-form">
       <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
       <h2>Webpage Quiz</h2>
+      <div className="example-urls">
+        <div className="example-card">
+          <h3>Try these examples:</h3>
+          <ul>
+            {exampleUrls.map((example, index) => (
+              <li key={index}>
+                <a
+                  href={example.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="example-link"
+                >
+                  {example.text}
+                </a>
+                <button
+                  onClick={() => handleExampleClick(example.url)}
+                  className="use-url-button"
+                >
+                  Use this URL
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"

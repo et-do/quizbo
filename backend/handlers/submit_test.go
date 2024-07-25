@@ -40,12 +40,12 @@ func TestSubmitHandler(t *testing.T) {
 		{
 			name:        "Audio content type",
 			contentType: "Audio",
-			url:         "gs://read-robin-2e150.appspot.com/audio/Porsche+Macan+July+5+2018+(1).mp3",
+			url:         "gs://read-robin-2e150.appspot.com/audio/porsche_macan_ad.mp3",
 		},
 		{
 			name:        "Video content type",
 			contentType: "Video",
-			url:         "gs://read-robin-2e150.appspot.com/video/Happiness_ a very short story.mp4",
+			url:         "gs://read-robin-2e150.appspot.com/video/happiness_a_very_short_story.mp4",
 		},
 	}
 

@@ -9,6 +9,11 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const examplePdf = {
+    text: "Chemistry Chapter Page",
+    url: "https://storage.googleapis.com/read-robin-examples/pdfs/chemistry_chapter_page.pdf",
+  };
+
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -100,6 +105,27 @@ function PdfForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         Back
       </button>
       <h2>PDF Quiz</h2>
+      <div className="example-pdf">
+        <div className="example-card">
+          <h3>Try this example:</h3>
+          <ul>
+            <li>
+              <a
+                href={examplePdf.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="example-link"
+              >
+                {examplePdf.text}
+              </a>
+              {" - "}
+              <a href={examplePdf.url} download className="download-button">
+                Download
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
       <form onSubmit={handleSubmit}>
         <input
           type="file"
