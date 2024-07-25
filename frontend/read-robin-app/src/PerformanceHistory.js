@@ -105,8 +105,14 @@ function PerformanceHistory({
       filteredAttempts.map((attempt) => attempt.contentID)
     ).size;
     const totalQuestions = filteredAttempts.length;
+    const averageScore = filteredAttempts.length
+      ? (
+          filteredAttempts.reduce((sum, attempt) => sum + attempt.score, 0) /
+          filteredAttempts.length
+        ).toFixed(2)
+      : 0;
 
-    return { totalQuizzes, totalQuestions };
+    return { totalQuizzes, totalQuestions, averageScore };
   };
 
   const stats = calculateStats(timeFrame);
@@ -150,6 +156,7 @@ function PerformanceHistory({
         fill: false,
         backgroundColor: "rgba(75,192,192,1)",
         borderColor: "rgba(75,192,192,1)",
+        borderWidth: 1,
       },
     ],
   };
@@ -193,32 +200,68 @@ function PerformanceHistory({
       </button>
       <h2>Performance History</h2>
       <div className="timeframe-select">
-        <label htmlFor="timeframe">Select Timeframe:</label>
-        <select
-          id="timeframe"
-          value={timeFrame}
-          onChange={(e) => setTimeFrame(e.target.value)}
-        >
-          <option value="24h">Last 24 Hours</option>
-          <option value="7d">Last 7 Days</option>
-          <option value="1m">Last 1 Month</option>
-        </select>
+        <label>
+          <input
+            type="radio"
+            name="timeframe"
+            value="24h"
+            checked={timeFrame === "24h"}
+            onChange={(e) => setTimeFrame(e.target.value)}
+          />
+          <span>Last 24 Hours</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="timeframe"
+            value="7d"
+            checked={timeFrame === "7d"}
+            onChange={(e) => setTimeFrame(e.target.value)}
+          />
+          <span>Last 7 Days</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="timeframe"
+            value="1m"
+            checked={timeFrame === "1m"}
+            onChange={(e) => setTimeFrame(e.target.value)}
+          />
+          <span>Last 1 Month</span>
+        </label>
+        <div className="slider"></div>
       </div>
       <div className="stats-container">
         <div className="stats-card">
-          <h3>Statistics</h3>
-          <p>Quizzes Taken: {stats.totalQuizzes}</p>
-          <p>Questions Answered: {stats.totalQuestions}</p>
+          <div className="stat">
+            <h3>Quizzes Taken</h3>
+            <p>{stats.totalQuizzes}</p>
+          </div>
+          <div className="stat">
+            <h3>Questions Answered</h3>
+            <p>{stats.totalQuestions}</p>
+          </div>
+          <div className="stat">
+            <h3>Average Score</h3>
+            <p>{stats.averageScore}%</p>
+          </div>
         </div>
       </div>
       <div className="charts-container">
         <div className="chart-card">
           <h3>Scores Over Time</h3>
-          <Line data={scoresOverTime} />
+          <Line
+            data={scoresOverTime}
+            options={{ plugins: { legend: { display: false } } }}
+          />
         </div>
         <div className="chart-card">
           <h3>Content Types</h3>
-          <Bar data={contentTypes} />
+          <Bar
+            data={contentTypes}
+            options={{ plugins: { legend: { display: false } } }}
+          />
         </div>
       </div>
       {quizzes.length > 0 && (
