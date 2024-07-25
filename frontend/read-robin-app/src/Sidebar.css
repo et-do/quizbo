@@ -52,7 +52,7 @@
   word-break: break-word; /* Break long words to fit */
 }
 
-.sidebar li h3::after {
+.sidebar li h4::after {
   content: "▼"; /* Dropdown arrow */
   font-size: 0.8em;
   margin-left: auto;
