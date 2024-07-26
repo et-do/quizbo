@@ -100,6 +100,8 @@ function PerformanceHistory({
       case "1m":
         timeFrameMs = 30 * 24 * 60 * 60 * 1000;
         break;
+      case "all":
+        return attempts; // All time, no filtering
       default:
         timeFrameMs = 24 * 60 * 60 * 1000;
     }
@@ -110,25 +112,6 @@ function PerformanceHistory({
     });
   };
 
-  const getXLabels = (filteredAttempts) => {
-    const dates = filteredAttempts.map((attempt) => {
-      const attemptDate = new Date(attempt.createdAt.seconds * 1000);
-      if (timeFrame === "24h") {
-        return attemptDate.getHours() + ":00";
-      } else if (timeFrame === "7d") {
-        return attemptDate.toLocaleDateString("en-US", { weekday: "short" });
-      } else {
-        return attemptDate.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-      }
-    });
-
-    return dates;
-  };
-
   const prepareChartData = (attempts) => {
     const groupedByDate = {};
 
@@ -136,9 +119,13 @@ function PerformanceHistory({
       const attemptDate = new Date(attempt.createdAt.seconds * 1000);
       const dateKey =
         timeFrame === "24h"
-          ? attemptDate.getHours() + ":00"
-          : timeFrame === "7d"
-          ? attemptDate.toLocaleDateString("en-US", { weekday: "short" })
+          ? attemptDate.toLocaleTimeString("en-US", { hour: "2-digit" })
+          : timeFrame === "7d" || timeFrame === "1m"
+          ? attemptDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
           : attemptDate.toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
@@ -152,7 +139,9 @@ function PerformanceHistory({
       groupedByDate[dateKey].push(attempt.score);
     });
 
-    const dates = Object.keys(groupedByDate);
+    const dates = Object.keys(groupedByDate).sort(
+      (a, b) => new Date(a) - new Date(b)
+    );
     const averageScores = dates.map((date) => {
       const scores = groupedByDate[date];
       const avgScore =
@@ -190,11 +179,22 @@ function PerformanceHistory({
 
   console.log("Scores over time:", scoresOverTime);
 
+  const filterQuizzesByTimeFrame = (quizzes, timeFrame) => {
+    return quizzes
+      .map((quiz) => ({
+        ...quiz,
+        attempts: filterAttemptsByTimeFrame(quiz.attempts, timeFrame),
+      }))
+      .filter((quiz) => quiz.attempts.length > 0);
+  };
+
+  const filteredQuizzes = filterQuizzesByTimeFrame(quizzes, timeFrame);
+
   const contentTypesCount = {
-    URL: quizzes.filter((quiz) => quiz.url).length,
-    PDF: quizzes.filter((quiz) => quiz.pdf_url).length,
-    Audio: quizzes.filter((quiz) => quiz.audio_url).length,
-    Video: quizzes.filter((quiz) => quiz.video_url).length,
+    URL: filteredQuizzes.filter((quiz) => quiz.url).length,
+    PDF: filteredQuizzes.filter((quiz) => quiz.pdf_url).length,
+    Audio: filteredQuizzes.filter((quiz) => quiz.audio_url).length,
+    Video: filteredQuizzes.filter((quiz) => quiz.video_url).length,
   };
 
   const contentTypes = {
@@ -264,6 +264,16 @@ function PerformanceHistory({
           />
           <span>Last 1 Month</span>
         </label>
+        <label>
+          <input
+            type="radio"
+            name="timeframe"
+            value="all"
+            checked={timeFrame === "all"}
+            onChange={(e) => setTimeFrame(e.target.value)}
+          />
+          <span>All Time</span>
+        </label>
         <div className="slider"></div>
       </div>
       <div className="stats-container">
@@ -307,16 +317,7 @@ function PerformanceHistory({
                   title: { display: true, text: "Time" },
                   ticks: {
                     callback: function (value, index, values) {
-                      const date = new Date(dates[value]);
-                      return timeFrame === "24h"
-                        ? date.getHours() + ":00"
-                        : timeFrame === "7d"
-                        ? date.toLocaleDateString("en-US", { weekday: "short" })
-                        : date.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          });
+                      return dates[value];
                     },
                   },
                 },
