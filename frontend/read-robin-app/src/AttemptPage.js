@@ -7,6 +7,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quizTitle, setQuizTitle] = useState("");
+  const [contentType, setContentType] = useState("");
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -22,7 +23,23 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         );
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
-          setQuizTitle(quizDoc.data().title || quizDoc.data().url);
+          const data = quizDoc.data();
+          setQuizTitle(
+            data.title ||
+              data.url ||
+              data.audio_url ||
+              data.video_url ||
+              data.pdf_url
+          );
+          if (data.url) {
+            setContentType("URL");
+          } else if (data.pdf_url) {
+            setContentType("PDF");
+          } else if (data.audio_url) {
+            setContentType("Audio");
+          } else if (data.video_url) {
+            setContentType("Video");
+          }
         }
 
         const attemptRef = doc(
@@ -68,6 +85,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         Back
       </button>
       <h2>{quizTitle}</h2>
+      <p className="content-type">Content Type: {contentType}</p>
       <p className="score-text">
         Score:{" "}
         <span className={`score-value ${getScoreClass(attempt.score)}`}>
