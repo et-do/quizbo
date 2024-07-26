@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	videoPath = "gs://read-robin-2e150.appspot.com/video/Happiness_ a very short story.mp4"
+	videoPath = "gs://read-robin-examples/video/happiness_a_very_short_story.mp4"
 )
 
 func TestExtractContentFromVideo(t *testing.T) {

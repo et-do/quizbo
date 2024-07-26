@@ -64,7 +64,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     const correctAnswers = responses.filter(
       (response) => response.status === "Correct"
     ).length;
-    return ((correctAnswers / totalQuestions) * 100).toFixed(2);
+    return (correctAnswers / totalQuestions) * 100;
   };
 
   const handleSubmitResponse = async (index, questionID) => {
