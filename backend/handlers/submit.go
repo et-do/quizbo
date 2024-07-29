@@ -28,6 +28,7 @@ type SubmitResponse struct {
 	ContentID   string `json:"content_id"`
 	QuizID      string `json:"quiz_id"`
 	Title       string `json:"title"`
+	ContentText string `json:"content_text"`
 	IsFirstQuiz bool   `json:"is_first_quiz"`
 }
 
@@ -178,6 +179,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
 		Title:       title,
+		ContentText: contentText,
 		IsFirstQuiz: isFirstQuiz,
 	}
 

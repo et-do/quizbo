@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ContentManagementPage.css";
 import { db } from "./firebase";
-import { collection, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 function ContentManagementPage({
   user,
@@ -41,10 +41,44 @@ function ContentManagementPage({
     fetchContents();
   }, [user, activePersona]);
 
-  const handleGenerateQuiz = (contentID, quizID) => {
-    setContentID(contentID);
-    setQuizID(quizID);
-    setPage("quizPage");
+  const handleGenerateQuiz = async (contentID, contentText) => {
+    const payload = {
+      content_text: contentText,
+      persona: {
+        id: activePersona.id,
+        name: activePersona.name,
+        role: activePersona.role,
+        language: activePersona.language,
+        difficulty: activePersona.difficulty,
+      },
+      content_type: "TEXT",
+    };
+
+    try {
+      const idToken = await user.getIdToken();
+      const res = await fetch(
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`Error generating quiz: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setContentID(data.content_id);
+      setQuizID(data.quiz_id);
+      setPage("quizPage");
+    } catch (error) {
+      console.error("Error generating quiz:", error);
+    }
   };
 
   return (
@@ -60,7 +94,7 @@ function ContentManagementPage({
             <p>{content.url}</p>
             <button
               onClick={() =>
-                handleGenerateQuiz(content.contentID, content.quizID)
+                handleGenerateQuiz(content.contentID, content.content_text)
               }
             >
               Generate Quiz
