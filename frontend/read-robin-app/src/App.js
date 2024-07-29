@@ -350,16 +350,16 @@ function App() {
                     Manage Personas
                   </button>
                   <button
-                    className="performance-history-button"
-                    onClick={() => setPage("performanceHistory")}
-                  >
-                    Performance History
-                  </button>
-                  <button
                     className="content-management-button"
                     onClick={() => setPage("contentManagement")}
                   >
                     Your Content
+                  </button>
+                  <button
+                    className="performance-history-button"
+                    onClick={() => setPage("performanceHistory")}
+                  >
+                    Performance History
                   </button>
                   <button className="logout-button" onClick={logout}>
                     Logout
