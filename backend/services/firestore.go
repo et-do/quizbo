@@ -33,8 +33,8 @@ func NewFirestoreClient(ctx context.Context) (*FirestoreClient, error) {
 	return &FirestoreClient{Client: client}, nil
 }
 
-// SaveQuizWithTitle saves a quiz and its title to Firestore
-func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title string, quiz models.Quiz) error {
+// SaveQuiz saves a quiz, its title, and content text to Firestore, updating existing content if present
+func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title, contentText string, quiz models.Quiz) error {
 	collection := "quizzes"
 
 	contentID := utils.GenerateID(url)
@@ -49,24 +49,27 @@ func (fc *FirestoreClient) SaveQuiz(ctx context.Context, url, title string, quiz
 		}
 	} else {
 		content = models.Content{
-			URL:       url,
-			Timestamp: time.Now(),
-			ContentID: contentID,
-			Title:     title,
-			Quizzes:   []models.Quiz{},
+			URL:         url,
+			Timestamp:   time.Now(),
+			ContentID:   contentID,
+			Title:       title,
+			ContentText: contentText,
+			Quizzes:     []models.Quiz{},
 		}
 	}
 
-	// Add logging to check existing quizzes
-	fmt.Printf("Existing quizzes: %v\n", content.Quizzes)
+	// Update content text and title if they are different or new
+	if content.ContentText != contentText {
+		content.ContentText = contentText
+	}
+	if content.Title != title {
+		content.Title = title
+	}
 
-	latestQuizID := GetLatestQuizID(content.Quizzes)
-	quiz.QuizID = latestQuizID
-	quiz.Timestamp = time.Now()
-
+	// Add the new quiz to the list of quizzes
 	content.Quizzes = append(content.Quizzes, quiz)
-	content.Title = title // Update the title in case it was not previously set
 
+	// Set the updated content back to Firestore
 	_, err = docRef.Set(ctx, content)
 	if err != nil {
 		return fmt.Errorf("failed adding quiz: %v", err)
@@ -123,6 +126,5 @@ func GetLatestQuizID(quizzes []models.Quiz) string {
 		}
 	}
 	nextID := fmt.Sprintf("%04d", maxID+1)
-	fmt.Printf("Next quiz ID: %s\n", nextID) // Add logging to check next quiz ID
 	return nextID
 }
