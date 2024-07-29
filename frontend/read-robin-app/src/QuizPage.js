@@ -7,6 +7,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [status, setStatus] = useState({});
+  const [explanations, setExplanations] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [attemptID, setAttemptID] = useState(() => {
@@ -14,6 +15,8 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     return `${quizID}@${timestamp}`;
   });
   const [quizTitle, setQuizTitle] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState("");
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -128,7 +131,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
         ...status,
         [index]: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
       };
+      const newExplanations = {
+        ...explanations,
+        [index]: data.explanation,
+      };
       setStatus(newStatus);
+      setExplanations(newExplanations);
 
       const attemptRef = doc(
         db,
@@ -186,6 +194,17 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     setAttemptID(`${quizID}@${timestamp}`);
     setResponses({});
     setStatus({});
+    setExplanations({});
+  };
+
+  const handleShowExplanation = (index) => {
+    setPopupContent(explanations[index]);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setPopupContent("");
   };
 
   return (
@@ -221,6 +240,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
                   }
                 >
                   {status[index]}
+                  <button
+                    className="explanation-button"
+                    onClick={() => handleShowExplanation(index)}
+                  >
+                    ℹ️
+                  </button>
                 </div>
               )}
             </div>
@@ -228,6 +253,16 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
           <button className="retake-button" onClick={handleRetakeQuiz}>
             Retake Quiz
           </button>
+        </div>
+      )}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <span className="close-button" onClick={handleClosePopup}>
+              &times;
+            </span>
+            <p>{popupContent}</p>
+          </div>
         </div>
       )}
     </div>

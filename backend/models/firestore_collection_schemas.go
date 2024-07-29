@@ -19,11 +19,12 @@ type Quiz struct {
 
 // Content represents the structure of content with multiple quizzes
 type Content struct {
-	Timestamp time.Time `json:"timestamp" firestore:"timestamp"`
-	ContentID string    `json:"content_id" firestore:"content_id"`
-	URL       string    `json:"url" firestore:"url"`
-	Title     string    `json:"title" firestore:"title"` // Add this line
-	Quizzes   []Quiz    `json:"quizzes" firestore:"quizzes"`
+	Timestamp   time.Time `json:"timestamp" firestore:"timestamp"`
+	ContentID   string    `json:"content_id" firestore:"content_id"`
+	URL         string    `json:"url" firestore:"url"`
+	Title       string    `json:"title" firestore:"title"`
+	ContentText string    `json:"content_text" firestore:"content_text"` // This is the newly added field
+	Quizzes     []Quiz    `json:"quizzes" firestore:"quizzes"`
 }
 
 type Persona struct {

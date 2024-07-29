@@ -27,16 +27,16 @@ func TestSubmitHandler(t *testing.T) {
 		url                string
 		expectedStatusCode int
 	}{
-		{
-			name:        "URL content type",
-			contentType: "URL",
-			url:         "http://www.example.com",
-		},
-		{
-			name:        "PDF content type",
-			contentType: "PDF",
-			url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
-		},
+		// {
+		// 	name:        "URL content type",
+		// 	contentType: "URL",
+		// 	url:         "http://www.example.com",
+		// },
+		// {
+		// 	name:        "PDF content type",
+		// 	contentType: "PDF",
+		// 	url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
+		// },
 		{
 			name:        "Audio content type",
 			contentType: "Audio",

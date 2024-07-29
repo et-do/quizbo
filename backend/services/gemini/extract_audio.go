@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	audioModelSystemInstructions = `You are a highly skilled model that extracts readable text from Audio content and generates a title for the content. Your task is to extract the given Audio content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the Audio. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
+	audioModelSystemInstructions = `You are a highly skilled model that extracts the full text from Audio content and generates a title for the content. Your task is to extract the given Audio content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the Audio. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
     {
         "content": "extracted content",
         "title": "generated title"

@@ -110,7 +110,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var quizContentMap map[string]interface{}
-	var title string
+	var contentMap map[string]string
 
 	switch submitRequest.ContentType {
 	case "URL":
@@ -121,31 +121,31 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromHtml(ctx, htmlContent, submitRequest.Persona)
+		quizContentMap, contentMap, err = geminiClient.ExtractAndGenerateQuizFromHtml(ctx, htmlContent, submitRequest.Persona)
 		if err != nil {
 			log.Printf("SubmitHandler: Error generating quiz content: %v", err)
 			http.Error(w, "Error generating quiz content", http.StatusInternalServerError)
 			return
 		}
 	case "PDF":
-		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromPdf(ctx, submitRequest.URL, submitRequest.Persona)
+		quizContentMap, contentMap, err = geminiClient.ExtractAndGenerateQuizFromPdf(ctx, submitRequest.URL, submitRequest.Persona)
 		if err != nil {
 			log.Printf("SubmitHandler: Error generating quiz content from PDF: %v", err)
 			http.Error(w, "Error generating quiz content from PDF", http.StatusInternalServerError)
 			return
 		}
 	case "Audio":
-		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromAudio(ctx, submitRequest.URL, submitRequest.Persona)
+		quizContentMap, contentMap, err = geminiClient.ExtractAndGenerateQuizFromAudio(ctx, submitRequest.URL, submitRequest.Persona)
 		if err != nil {
 			log.Printf("SubmitHandler: Error generating quiz content from Audio: %v", err)
 			http.Error(w, "Error generating quiz content from Audio", http.StatusInternalServerError)
 			return
 		}
 	case "Video":
-		quizContentMap, title, err = geminiClient.ExtractAndGenerateQuizFromVideo(ctx, submitRequest.URL, submitRequest.Persona)
+		quizContentMap, contentMap, err = geminiClient.ExtractAndGenerateQuizFromVideo(ctx, submitRequest.URL, submitRequest.Persona)
 		if err != nil {
-			log.Printf("SubmitHandler: Error generating quiz content from Audio: %v", err)
-			http.Error(w, "Error generating quiz content from Audio", http.StatusInternalServerError)
+			log.Printf("SubmitHandler: Error generating quiz content from Video: %v", err)
+			http.Error(w, "Error generating quiz content from Video", http.StatusInternalServerError)
 			return
 		}
 	default:
@@ -154,6 +154,8 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	title := contentMap["title"]
+	contentText := contentMap["content"]
 	latestQuizID := services.GetLatestQuizID(existingQuizzes)
 
 	quiz, err := utils.ParseQuizResponse(quizContentMap, latestQuizID)
@@ -163,7 +165,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = firestoreClient.SaveQuiz(ctx, normalizedURL, title, quiz)
+	err = firestoreClient.SaveQuiz(ctx, normalizedURL, title, contentText, quiz)
 	if err != nil {
 		log.Printf("SubmitHandler: Error saving quiz to Firestore: %v", err)
 		http.Error(w, "Error saving quiz to Firestore", http.StatusInternalServerError)
