@@ -30,6 +30,7 @@ import PdfForm from "./PdfForm";
 import AudioForm from "./AudioForm";
 import VideoForm from "./VideoForm";
 import PerformanceHistory from "./PerformanceHistory";
+import ContentManagementPage from "./ContentManagementPage";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -261,6 +262,24 @@ function App() {
             </button>
           </>
         );
+      case "contentManagement":
+        return (
+          <>
+            <ContentManagementPage
+              user={user}
+              activePersona={activePersona}
+              setPage={setPage}
+              setContentID={setContentID}
+              setQuizID={setQuizID}
+            />
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
+          </>
+        );
       default:
         return null;
     }
@@ -335,6 +354,12 @@ function App() {
                     onClick={() => setPage("performanceHistory")}
                   >
                     Performance History
+                  </button>
+                  <button
+                    className="content-management-button"
+                    onClick={() => setPage("contentManagement")}
+                  >
+                    Your Content
                   </button>
                   <button className="logout-button" onClick={logout}>
                     Logout
