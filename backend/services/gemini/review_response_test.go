@@ -25,7 +25,7 @@ func TestReviewResponse(t *testing.T) {
 	testCases := []struct {
 		name           string
 		reviewData     map[string]string
-		expectedResult string
+		expectedStatus string
 	}{
 		{
 			name: "Passing case",
@@ -35,7 +35,7 @@ func TestReviewResponse(t *testing.T) {
 				"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 				"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 			},
-			expectedResult: "PASS",
+			expectedStatus: "PASS",
 		},
 		{
 			name: "Failing case",
@@ -45,7 +45,7 @@ func TestReviewResponse(t *testing.T) {
 				"expected_answer": "The 'Example Domain' is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 				"reference":       "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
 			},
-			expectedResult: "FAIL",
+			expectedStatus: "FAIL",
 		},
 	}
 
@@ -56,15 +56,21 @@ func TestReviewResponse(t *testing.T) {
 				t.Fatalf("Error marshaling review data: %v", err)
 			}
 
-			reviewResult, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
+			status, explanation, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
 			if err != nil {
 				t.Fatalf("ReviewResponse: expected no error, got %v", err)
 			}
 
-			if reviewResult != tc.expectedResult {
-				t.Errorf("ReviewResponse: expected %s, got %s", tc.expectedResult, reviewResult)
+			if status != tc.expectedStatus {
+				t.Errorf("ReviewResponse: expected status %s, got %s", tc.expectedStatus, status)
 			} else {
-				t.Logf("Review Result for %s: %s", tc.name, reviewResult)
+				t.Logf("Review Status for %s: %s", tc.name, status)
+			}
+
+			if explanation == "" {
+				t.Errorf("ReviewResponse: expected non-empty explanation for %s", tc.name)
+			} else {
+				t.Logf("Review Explanation for %s: %s", tc.name, explanation)
 			}
 		})
 	}
