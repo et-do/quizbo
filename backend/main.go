@@ -21,6 +21,7 @@ func main() {
 	r.HandleFunc("/submit", handlers.SubmitHandler).Methods("POST")
 	r.HandleFunc("/quiz/{contentID}/{quizID}", handlers.GetQuizHandler).Methods("GET")
 	r.HandleFunc("/submit-response", handlers.SubmitResponseHandler).Methods("POST") // New route for question submission
+	r.HandleFunc("/regenerate-quiz", handlers.RegenerateQuizHandler).Methods("POST") // New route for regenerating quizzes
 
 	// Apply logging middleware
 	r.Use(middleware.LoggingMiddleware)
