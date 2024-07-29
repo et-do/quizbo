@@ -17,6 +17,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
   const [quizTitle, setQuizTitle] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState("");
+  const [submitting, setSubmitting] = useState({});
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -111,6 +112,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     };
 
     try {
+      setSubmitting({ ...submitting, [index]: true });
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit-response`,
         {
@@ -186,6 +188,8 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
       if (error.code === "permission-denied") {
         console.error("Permission denied! Check your Firestore rules.");
       }
+    } finally {
+      setSubmitting({ ...submitting, [index]: false });
     }
   };
 
@@ -195,6 +199,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     setResponses({});
     setStatus({});
     setExplanations({});
+    setSubmitting({});
   };
 
   const handleShowExplanation = (index) => {
@@ -229,10 +234,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
                 />
                 <button
                   onClick={() => handleSubmitResponse(index, item.question_id)}
+                  disabled={submitting[index]}
                 >
                   Submit
                 </button>
               </div>
+              {submitting[index] && <div className="loading-spinner"></div>}
               {status[index] && (
                 <div
                   className={
