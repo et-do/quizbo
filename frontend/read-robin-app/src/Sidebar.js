@@ -157,7 +157,7 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
                                     ).toLocaleString()
                                   : "N/A"}
                                 <br />
-                                {attempt.score ? `${attempt.score}%` : "N/A"}
+                                {attempt.score ? `${attempt.score}%` : "0.00%"}
                               </li>
                             ))
                           ) : (
