@@ -80,6 +80,7 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         contentID: data.content_id,
         url: url,
         title: data.title,
+        content_text: data.content_text, // Add this line
       });
 
       setPage("quizPage");
