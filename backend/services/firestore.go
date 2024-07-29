@@ -100,6 +100,23 @@ func (fc *FirestoreClient) GetQuiz(ctx context.Context, contentID, quizID string
 	return nil, fmt.Errorf("no quiz found for quizID: %s", quizID)
 }
 
+// GetContent retrieves the entire content document from Firestore by contentID
+func (fc *FirestoreClient) GetContent(ctx context.Context, contentID string) (*models.Content, error) {
+	collection := "quizzes"
+
+	doc, err := fc.Client.Collection(collection).Doc(contentID).Get(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed retrieving content: %v", err)
+	}
+
+	var content models.Content
+	if err := doc.DataTo(&content); err != nil {
+		return nil, fmt.Errorf("dataTo: %v", err)
+	}
+
+	return &content, nil
+}
+
 // GetExistingQuizzes fetches existing quizzes from Firestore
 func (fc *FirestoreClient) GetExistingQuizzes(ctx context.Context, contentID string) ([]models.Quiz, error) {
 	doc, err := fc.Client.Collection("quizzes").Doc(contentID).Get(ctx)

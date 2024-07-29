@@ -19,7 +19,8 @@ type ResponseSubmission struct {
 }
 
 type ReviewResponse struct {
-	Status string `json:"status"`
+	Status      string `json:"status"`
+	Explanation string `json:"explanation"`
 }
 
 func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,25 +41,37 @@ func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch the quiz from Firestore
-	quiz, err := firestoreClient.GetQuiz(ctx, responseSubmission.ContentID, responseSubmission.QuizID)
+	// Fetch the content from Firestore
+	content, err := firestoreClient.GetContent(ctx, responseSubmission.ContentID)
 	if err != nil {
-		log.Printf("SubmitResponseHandler: Error fetching quiz: %v", err)
-		http.Error(w, "Error fetching quiz", http.StatusInternalServerError)
+		log.Printf("SubmitResponseHandler: Error fetching content: %v", err)
+		http.Error(w, "Error fetching content", http.StatusInternalServerError)
+		return
+	}
+
+	// Find the specific quiz
+	var quiz *models.Quiz
+	for _, q := range content.Quizzes {
+		if q.QuizID == responseSubmission.QuizID {
+			quiz = &q
+			break
+		}
+	}
+	if quiz == nil {
+		log.Printf("SubmitResponseHandler: Quiz not found")
+		http.Error(w, "Quiz not found", http.StatusNotFound)
 		return
 	}
 
 	// Find the specific question
-	var question models.Question
-	found := false
+	var question *models.Question
 	for _, q := range quiz.Questions {
 		if q.QuestionID == responseSubmission.QuestionID {
-			question = q
-			found = true
+			question = &q
 			break
 		}
 	}
-	if !found {
+	if question == nil {
 		log.Printf("SubmitResponseHandler: Question not found")
 		http.Error(w, "Question not found", http.StatusNotFound)
 		return
@@ -78,6 +91,7 @@ func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 		"user_response":   responseSubmission.UserResponse,
 		"expected_answer": question.Answer,
 		"reference":       question.Reference,
+		"content_text":    content.ContentText,
 	}
 
 	reviewDataJSON, err := json.Marshal(reviewData)
@@ -88,7 +102,7 @@ func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call Gemini LLM for review
-	reviewResult, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
+	status, explanation, err := geminiClient.ReviewResponse(ctx, string(reviewDataJSON))
 	if err != nil {
 		log.Printf("SubmitResponseHandler: Error reviewing response: %v", err)
 		http.Error(w, "Error reviewing response", http.StatusInternalServerError)
@@ -97,7 +111,8 @@ func SubmitResponseHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Return the review result to the frontend
 	reviewResponse := ReviewResponse{
-		Status: reviewResult,
+		Status:      status,
+		Explanation: explanation,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
