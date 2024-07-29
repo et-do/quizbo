@@ -31,78 +31,78 @@ func (gc *GeminiClient) GenerateQuiz(ctx context.Context, summarizedContent stri
 	return gc.generateContent(ctx, quizModelSystemInstructions, promptText)
 }
 
-// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuizFromHtml(ctx context.Context, htmlContent string, persona models.Persona) (map[string]interface{}, string, error) {
+// ExtractAndGenerateQuizFromHtml extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuizFromHtml(ctx context.Context, htmlContent string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
 	contentMap, _, err := gc.ExtractContentFromHtml(ctx, htmlContent)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
-	return quizContentMap, contentMap["title"], nil
+	return quizContentMap, contentMap, nil
 }
 
-// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuizFromPdf(ctx context.Context, pdfPath string, persona models.Persona) (map[string]interface{}, string, error) {
+// ExtractAndGenerateQuizFromPdf extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuizFromPdf(ctx context.Context, pdfPath string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
 	contentMap, _, err := gc.ExtractContentFromPdf(ctx, pdfPath)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
-	return quizContentMap, contentMap["title"], nil
+	return quizContentMap, contentMap, nil
 }
 
-// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuizFromAudio(ctx context.Context, audioPath string, persona models.Persona) (map[string]interface{}, string, error) {
+// ExtractAndGenerateQuizFromAudio extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuizFromAudio(ctx context.Context, audioPath string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
 	contentMap, _, err := gc.ExtractContentFromAudio(ctx, audioPath)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
-	return quizContentMap, contentMap["title"], nil
+	return quizContentMap, contentMap, nil
 }
 
-// ExtractAndGenerateQuiz extracts content and generates a quiz using the Gemini client
-func (gc *GeminiClient) ExtractAndGenerateQuizFromVideo(ctx context.Context, videoPath string, persona models.Persona) (map[string]interface{}, string, error) {
+// ExtractAndGenerateQuizFromVideo extracts content and generates a quiz using the Gemini client
+func (gc *GeminiClient) ExtractAndGenerateQuizFromVideo(ctx context.Context, videoPath string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
 	contentMap, _, err := gc.ExtractContentFromVideo(ctx, videoPath)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
 	quizContent, _, err := gc.GenerateQuiz(ctx, contentMap["content"], persona)
 	if err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
-		return nil, "", err
+		return nil, nil, err
 	}
 
-	return quizContentMap, contentMap["title"], nil
+	return quizContentMap, contentMap, nil
 }

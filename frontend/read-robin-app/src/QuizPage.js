@@ -7,6 +7,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
   const [status, setStatus] = useState({});
+  const [explanations, setExplanations] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [attemptID, setAttemptID] = useState(() => {
@@ -14,6 +15,9 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     return `${quizID}@${timestamp}`;
   });
   const [quizTitle, setQuizTitle] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState("");
+  const [submitting, setSubmitting] = useState({});
 
   useEffect(() => {
     const fetchQuizData = async () => {
@@ -108,6 +112,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     };
 
     try {
+      setSubmitting({ ...submitting, [index]: true });
       const res = await fetch(
         `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit-response`,
         {
@@ -128,7 +133,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
         ...status,
         [index]: data.status.trim() === "PASS" ? "Correct" : "Incorrect",
       };
+      const newExplanations = {
+        ...explanations,
+        [index]: data.explanation,
+      };
       setStatus(newStatus);
+      setExplanations(newExplanations);
 
       const attemptRef = doc(
         db,
@@ -178,6 +188,8 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
       if (error.code === "permission-denied") {
         console.error("Permission denied! Check your Firestore rules.");
       }
+    } finally {
+      setSubmitting({ ...submitting, [index]: false });
     }
   };
 
@@ -186,6 +198,18 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
     setAttemptID(`${quizID}@${timestamp}`);
     setResponses({});
     setStatus({});
+    setExplanations({});
+    setSubmitting({});
+  };
+
+  const handleShowExplanation = (index) => {
+    setPopupContent(explanations[index]);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setPopupContent("");
   };
 
   return (
@@ -210,10 +234,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
                 />
                 <button
                   onClick={() => handleSubmitResponse(index, item.question_id)}
+                  disabled={submitting[index]}
                 >
                   Submit
                 </button>
               </div>
+              {submitting[index] && <div className="loading-spinner"></div>}
               {status[index] && (
                 <div
                   className={
@@ -221,6 +247,12 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
                   }
                 >
                   {status[index]}
+                  <button
+                    className="explanation-button"
+                    onClick={() => handleShowExplanation(index)}
+                  >
+                    ℹ️
+                  </button>
                 </div>
               )}
             </div>
@@ -228,6 +260,16 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
           <button className="retake-button" onClick={handleRetakeQuiz}>
             Retake Quiz
           </button>
+        </div>
+      )}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <span className="close-button" onClick={handleClosePopup}>
+              &times;
+            </span>
+            <p>{popupContent}</p>
+          </div>
         </div>
       )}
     </div>

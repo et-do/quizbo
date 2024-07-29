@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	videoModelSystemInstructions = `You are a highly skilled model that generates a transcript of text from Video content and generates a title for the content. Your task is to extract the given Video content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the Video. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
+	videoModelSystemInstructions = `You are a highly skilled model that generates a full text transcript from Video content and generates a title for the content. Your task is to extract the given Video content and output it into a clear and concise article, ignoring any unnecessary formatting or irrelevant content. Additionally, generate a title that objectively defines the main topic of the Video. Return everything in a JSON dictionary with 'content' and 'title' keys, omit any markdown backticks. The structure should look like this:
     {
         "content": "extracted content",
         "title": "generated title"
