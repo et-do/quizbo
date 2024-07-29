@@ -130,7 +130,7 @@ body {
 .performance-history-button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
-
+.content-management-button,
 .manage-personas-button {
   background-color: #dd3730; /* Accent color */
   color: #ffffff; /* Light text color */
@@ -141,7 +141,7 @@ body {
   font-size: 1rem;
   margin-left: 10px;
 }
-
+.content-management-button,
 .manage-personas-button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }

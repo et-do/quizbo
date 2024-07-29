@@ -11,9 +11,12 @@ function ContentManagementPage({
   setQuizID,
 }) {
   const [contents, setContents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchContents = async () => {
+      setLoading(true);
       try {
         if (!user || !activePersona || !activePersona.id) {
           throw new Error("User or active persona is not defined");
@@ -35,15 +38,24 @@ function ContentManagementPage({
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
+        setError("Error fetching contents");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchContents();
   }, [user, activePersona]);
 
-  const handleGenerateQuiz = async (contentID, contentText) => {
+  const handleGenerateQuiz = async (contentID, title, url, contentText) => {
+    setError(null);
+    setLoading(true);
+
     const payload = {
+      content_id: contentID,
       content_text: contentText,
+      title: title,
+      url: url,
       persona: {
         id: activePersona.id,
         name: activePersona.name,
@@ -51,13 +63,13 @@ function ContentManagementPage({
         language: activePersona.language,
         difficulty: activePersona.difficulty,
       },
-      content_type: "TEXT",
+      content_type: "Text",
     };
 
     try {
       const idToken = await user.getIdToken();
       const res = await fetch(
-        `https://read-robin-dev-6yudia4zva-nn.a.run.app/submit`,
+        `https://read-robin-dev-6yudia4zva-nn.a.run.app/regenerate-quiz`,
         {
           method: "POST",
           headers: {
@@ -69,15 +81,19 @@ function ContentManagementPage({
       );
 
       if (!res.ok) {
-        throw new Error(`Error generating quiz: ${res.statusText}`);
+        throw new Error(`Error submitting content: ${res.statusText}`);
       }
 
       const data = await res.json();
       setContentID(data.content_id);
       setQuizID(data.quiz_id);
+
       setPage("quizPage");
+      setLoading(false);
     } catch (error) {
-      console.error("Error generating quiz:", error);
+      console.error("Error:", error);
+      setError(`Error submitting content: ${error.message}`);
+      setLoading(false);
     }
   };
 
@@ -86,22 +102,36 @@ function ContentManagementPage({
       <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
-      <h2>Your Saved Contents</h2>
-      <div className="content-list">
-        {contents.map((content) => (
-          <div key={content.id} className="content-item">
-            <h3>{content.title}</h3>
-            <p>{content.url}</p>
-            <button
-              onClick={() =>
-                handleGenerateQuiz(content.contentID, content.content_text)
-              }
-            >
-              Generate Quiz
-            </button>
-          </div>
-        ))}
-      </div>
+      <h2>Your Content</h2>
+      {error && <div style={{ color: "red" }}>{error}</div>}
+      {loading && <div className="loading-spinner"></div>}
+      {!loading && contents.length > 0 && (
+        <div className="content-list">
+          {contents.map((content) => (
+            <div key={content.id} className="content-item">
+              <h3>{content.title}</h3>
+              <button
+                className="generate-quiz-button"
+                onClick={() =>
+                  handleGenerateQuiz(
+                    content.id,
+                    content.title,
+                    content.url,
+                    content.content_text
+                  )
+                }
+              >
+                Generate Quiz
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {contents.length === 0 && !loading && (
+        <div>
+          No content available. Submit some content to generate quizzes.
+        </div>
+      )}
     </div>
   );
 }
