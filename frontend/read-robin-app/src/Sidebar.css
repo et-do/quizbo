@@ -22,10 +22,12 @@
 .sidebar h2 {
   margin-top: 0;
   color: #ffffff; /* Light text color */
+  text-align: center; /* Center align text */
 }
 
 .sidebar h3 {
   color: #ffffff; /* Light text color */
+  text-align: center; /* Center align text */
 }
 
 .sidebar ul {
@@ -54,6 +56,7 @@
   text-overflow: ellipsis; /* Add ellipsis to overflowing text */
   font-size: 0.9rem; /* Reduce font size for better fit */
   word-break: break-word; /* Break long words to fit */
+  text-align: left; /* Left align text */
 }
 
 .sidebar li .quiz-title::after {
@@ -71,6 +74,7 @@
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px; /* Line break between attempts */
+  text-align: center; /* Center align text */
 }
 
 .sidebar li ul li:hover {
