@@ -41,7 +41,8 @@ function ContentManagementPage({
                 data.url.replace("gs://read-robin-2e150.appspot.com/", "")
               );
               try {
-                data.url = await getDownloadURL(fileRef);
+                const url = await getDownloadURL(fileRef);
+                data.url = url;
               } catch (error) {
                 console.error("Error fetching download URL:", error);
                 throw error;
