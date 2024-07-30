@@ -30,6 +30,14 @@
   overflow-wrap: break-word; /* Break words when necessary */
 }
 
+.cmp-content-type-title {
+  color: #ffffff; /* Light text color */
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
 .cmp-generate-new-quiz,
 .cmp-see-content {
   background-color: #dd3730; /* Accent color */
