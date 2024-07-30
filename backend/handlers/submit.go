@@ -175,7 +175,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := SubmitResponse{
 		Status:      "success",
-		URL:         submitRequest.URL,
+		URL:         normalizedURL,
 		ContentID:   contentID,
 		QuizID:      latestQuizID,
 		Title:       title,
