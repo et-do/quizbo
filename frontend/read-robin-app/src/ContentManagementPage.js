@@ -66,6 +66,8 @@ function ContentManagementPage({
       content_type: "Text",
     };
 
+    console.log("Payload being sent to backend:", payload); // Log the payload
+
     try {
       const idToken = await user.getIdToken();
       const res = await fetch(
