@@ -12,16 +12,16 @@ func TestNormalizeURL(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"https://Example.com", "example.com"},
-		{"http://Example.com/Path", "example.com/path"},
-		{"HTTP://EXAMPLE.COM/PATH", "example.com/path"},
-		{"example.com", "example.com"},
-		{"http://www.example.com", "example.com"},
-		{"https://www.example.com", "example.com"},
-		{"www.example.com", "example.com"},
-		{"http://example.com", "example.com"},
-		{"https://example.com", "example.com"},
-		{"HTTP://WWW.EXAMPLE.COM/TEST", "example.com/test"},
+		{"https://Example.com", "https://example.com"},
+		{"http://Example.com/Path", "https://example.com/path"},
+		{"HTTP://EXAMPLE.COM/PATH", "https://example.com/path"},
+		{"example.com", "https://example.com"},
+		{"http://www.example.com", "https://example.com"},
+		{"https://www.example.com", "https://example.com"},
+		{"www.example.com", "https://example.com"},
+		{"http://example.com", "https://example.com"},
+		{"https://example.com", "https://example.com"},
+		{"HTTP://WWW.EXAMPLE.COM/TEST", "https://example.com/test"},
 	}
 
 	for _, test := range tests {
