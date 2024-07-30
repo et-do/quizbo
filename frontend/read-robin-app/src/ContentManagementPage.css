@@ -27,6 +27,7 @@
   max-width: 400px;
   text-align: center;
   word-wrap: break-word; /* Ensure text wraps within the container */
+  overflow-wrap: break-word; /* Break words when necessary */
 }
 
 .cmp-generate-new-quiz,
@@ -107,16 +108,20 @@
   max-height: calc(80vh - 100px); /* Adjust as needed */
   white-space: pre-wrap; /* Preserve whitespace and wrap text */
   word-wrap: break-word; /* Ensure text wraps within the container */
+  overflow-wrap: break-word; /* Break words when necessary */
+  word-break: break-all; /* Break words at arbitrary points */
   color: #ffffff; /* Ensure text color is white */
   background-color: #333333; /* Ensure background color is dark */
+  padding: 1rem;
 }
 
 .cmp-popup-scroll pre {
   background-color: #333333; /* Dark background for text */
   color: #ffffff; /* White text color */
-  padding: 1rem;
-  border-radius: 5px;
   overflow-x: hidden; /* Prevent horizontal scrolling */
+  word-wrap: break-word; /* Ensure text wraps within the container */
+  overflow-wrap: break-word; /* Break words when necessary */
+  word-break: break-all; /* Break words at arbitrary points */
 }
 
 .cmp-close-button {
@@ -131,5 +136,5 @@
 }
 
 .cmp-close-button:hover {
-  color: #a96a59; /* Darker accent color on hover */
+  color: #dd3730; /* Darker accent color on hover */
 }
