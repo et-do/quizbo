@@ -15,7 +15,7 @@ function ContentManagementPage({
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState("");
-  const [popupTitle, setPopupTitle] = useState(""); // New state for the title
+  const [popupTitle, setPopupTitle] = useState("");
 
   useEffect(() => {
     const fetchContents = async () => {
@@ -104,15 +104,29 @@ function ContentManagementPage({
 
   const handleSeeContent = (contentText, contentTitle) => {
     setPopupContent(contentText);
-    setPopupTitle(contentTitle); // Set the title
+    setPopupTitle(contentTitle);
     setShowPopup(true);
   };
 
   const closePopup = () => {
     setShowPopup(false);
     setPopupContent("");
-    setPopupTitle(""); // Clear the title
+    setPopupTitle("");
   };
+
+  // Group contents by content_type
+  const groupContentsByContentType = (contents) => {
+    return contents.reduce((acc, content) => {
+      const { content_type } = content;
+      if (!acc[content_type]) {
+        acc[content_type] = [];
+      }
+      acc[content_type].push(content);
+      return acc;
+    }, {});
+  };
+
+  const groupedContents = groupContentsByContentType(contents);
 
   return (
     <div className="cmp-content-management-page">
@@ -122,32 +136,37 @@ function ContentManagementPage({
       <h2>Your Content</h2>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {loading && <div className="cmp-loading-spinner"></div>}
-      {!loading && contents.length > 0 && (
+      {!loading && Object.keys(groupedContents).length > 0 && (
         <div className="cmp-content-list">
-          {contents.map((content) => (
-            <div key={content.id} className="cmp-content-item">
-              <h3 style={{ color: "white" }}>{content.title}</h3>
-              <button
-                className="cmp-generate-new-quiz"
-                onClick={() =>
-                  handleGenerateQuiz(
-                    content.id,
-                    content.title,
-                    content.url,
-                    content.content_text
-                  )
-                }
-              >
-                Generate New Quiz
-              </button>
-              <button
-                className="cmp-see-content"
-                onClick={() =>
-                  handleSeeContent(content.content_text, content.title)
-                }
-              >
-                See Content
-              </button>
+          {Object.keys(groupedContents).map((contentType) => (
+            <div key={contentType}>
+              <h3 className="cmp-content-type-title">{contentType}</h3>
+              {groupedContents[contentType].map((content) => (
+                <div key={content.id} className="cmp-content-item">
+                  <h3 style={{ color: "white" }}>{content.title}</h3>
+                  <button
+                    className="cmp-generate-new-quiz"
+                    onClick={() =>
+                      handleGenerateQuiz(
+                        content.id,
+                        content.title,
+                        content.url,
+                        content.content_text
+                      )
+                    }
+                  >
+                    Generate New Quiz
+                  </button>
+                  <button
+                    className="cmp-see-content"
+                    onClick={() =>
+                      handleSeeContent(content.content_text, content.title)
+                    }
+                  >
+                    See Content
+                  </button>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -163,8 +182,7 @@ function ContentManagementPage({
             <button className="cmp-close-button" onClick={closePopup}>
               &times;
             </button>
-            <h3 className="cmp-popup-title">{popupTitle}</h3>{" "}
-            {/* Title for the popup */}
+            <h3 className="cmp-popup-title">{popupTitle}</h3>
             <div className="cmp-popup-scroll">
               <pre>{popupContent}</pre>
             </div>
