@@ -149,12 +149,7 @@ body {
   justify-content: center; /* Center the buttons */
 }
 
-.performance-history-button,
-.content-management-button,
-.manage-personas-button,
-.generate-quiz-button,
-.manage-personas-button,
-.logout-button {
+.button-common {
   padding: 10px 20px;
   font-size: 1rem;
   background-color: #dd3730; /* Accent color */
@@ -164,12 +159,7 @@ body {
   cursor: pointer;
 }
 
-.performance-history-button:hover,
-.generate-quiz-button:hover,
-.manage-personas-button:hover,
-.content-management-button:hover,
-.manage-personas-button:hover,
-.logout-button:hover {
+.button-common:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
 

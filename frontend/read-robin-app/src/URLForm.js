@@ -81,6 +81,7 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
         url: data.url,
         title: data.title,
         content_text: data.content_text,
+        content_type: "URL",
       });
 
       setPage("quizPage");
