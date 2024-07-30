@@ -152,6 +152,10 @@
   color: #ffffff;
 }
 
+.close-button:hover {
+  color: #dd3730;
+}
+
 .correct::before {
   content: "✅";
   margin-right: 0.5rem;

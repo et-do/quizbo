@@ -62,6 +62,14 @@
   min-width: 150px; /* Adjust as necessary */
 }
 
+.attempt-page .status-value.red {
+  color: #ff0000; /* Red color for incorrect status */
+}
+
+.attempt-page .status-value.green {
+  color: #00ff00; /* Green color for correct status */
+}
+
 .attempt-page hr {
   border: 0;
   border-top: 1px solid #444444; /* Dark line color */

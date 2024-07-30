@@ -101,51 +101,6 @@ body {
   background-color: #2e2e2e; /* Dark scrollbar track color */
 }
 
-.logout-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  margin-left: 10px;
-}
-
-.logout-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-.performance-history-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  margin-left: 10px;
-}
-
-.performance-history-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
-.manage-personas-button {
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  margin-left: 10px;
-}
-
-.manage-personas-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
-}
-
 .back-button {
   margin-right: 10px;
   margin-top: 10px;
@@ -194,9 +149,7 @@ body {
   justify-content: center; /* Center the buttons */
 }
 
-.generate-quiz-button,
-.manage-personas-button,
-.logout-button {
+.button-common {
   padding: 10px 20px;
   font-size: 1rem;
   background-color: #dd3730; /* Accent color */
@@ -206,9 +159,7 @@ body {
   cursor: pointer;
 }
 
-.generate-quiz-button:hover,
-.manage-personas-button:hover,
-.logout-button:hover {
+.button-common:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
 

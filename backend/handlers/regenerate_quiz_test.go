@@ -13,52 +13,39 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func TestSubmitHandler(t *testing.T) {
+func TestRegenerateQuizHandler(t *testing.T) {
 	// Ensure the working directory is the project root
 	err := os.Chdir("..")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Create test cases for URL and PDF content types
+	// Create test cases for Text content type
 	testCases := []struct {
 		name               string
-		contentType        string
+		contentID          string
+		contentText        string
+		title              string
 		url                string
 		expectedStatusCode int
 	}{
 		{
-			name:        "URL content type",
-			contentType: "URL",
-			url:         "http://www.example.com",
-		},
-		{
-			name:        "PDF content type",
-			contentType: "PDF",
-			url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
-		},
-		{
-			name:        "Audio content type",
-			contentType: "Audio",
-			url:         "gs://read-robin-examples/audio/porsche_macan_ad.mp3",
-		},
-		{
-			name:        "Video content type",
-			contentType: "Video",
-			url:         "gs://read-robin-examples/video/happiness_a_very_short_story.mp4",
-		},
-		{
-			name:        "Video content type",
-			contentType: "Video",
-			url:         "gs://read-robin-examples/video/happiness_a_very_short_story.mp4",
+			name:        "Text content type",
+			contentID:   "-53fd7eb86d4e84fd",
+			contentText: "The World's Largest Lobster (French: Le plus grand homard du monde) is a concrete and reinforced steel sculpture in Shediac, New Brunswick, Canada sculpted by Canadian artist Winston Bronnum. Despite being known by its name The World's Largest Lobster, it is not actually the largest lobster sculpture. Description The sculpture is 11 metres long and 5 metres tall, weighing 90 tonnes.[1] The sculpture was commissioned by the Shediac Rotary Club as a tribute to the town's lobster fishing industry.[2] The sculpture took three years to complete,[2] at a cost of $170,000.[3] It attracts 500,000 visitors per year.[2] Contrary to popular belief, this is not actually the \"World's Largest Lobster\" as that title went to the Big Lobster sculpture in Kingston, South Australia, until 2015 when Qianjiang, Hubei, China built a 100-tonne lobster/crayfish.[4] See also * List of world's largest roadside attractions * Betsy the Lobster, another large lobster sculpture",
+			title:       "Wikipedia - The World's Largest Lobster",
+			url:         "en.wikipedia.org/wiki/the_world's_largest_lobster",
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			// Create a SubmitRequest payload with persona details to be sent in the POST request
-			submitRequestPayload := SubmitRequest{
-				URL: tc.url,
+			// Create a RegenerateQuizRequest payload with persona details to be sent in the POST request
+			regenerateQuizRequestPayload := RegenerateQuizRequest{
+				ContentID:   tc.contentID,
+				ContentText: tc.contentText,
+				Title:       tc.title,
+				URL:         tc.url,
 				Persona: models.Persona{
 					ID:         "test_persona_id",
 					Name:       "Test User",
@@ -66,16 +53,15 @@ func TestSubmitHandler(t *testing.T) {
 					Language:   "Japanese",
 					Difficulty: "Intermediate",
 				},
-				ContentType: tc.contentType,
 			}
 			// Marshal the payload into JSON format
-			submitRequestPayloadBytes, err := json.Marshal(submitRequestPayload)
+			regenerateQuizRequestPayloadBytes, err := json.Marshal(regenerateQuizRequestPayload)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			// Create a new POST request to the /submit endpoint with the JSON payload
-			postRequest, err := http.NewRequest("POST", "/submit", bytes.NewBuffer(submitRequestPayloadBytes))
+			// Create a new POST request to the /regenerate-quiz endpoint with the JSON payload
+			postRequest, err := http.NewRequest("POST", "/regenerate-quiz", bytes.NewBuffer(regenerateQuizRequestPayloadBytes))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -84,11 +70,11 @@ func TestSubmitHandler(t *testing.T) {
 
 			// Create a ResponseRecorder to record the response
 			responseRecorder := httptest.NewRecorder()
-			// Wrap the SubmitHandler function with http.HandlerFunc
-			submitHandler := http.HandlerFunc(SubmitHandler)
+			// Wrap the RegenerateQuizHandler function with http.HandlerFunc
+			regenerateQuizHandler := http.HandlerFunc(RegenerateQuizHandler)
 
 			// Serve the HTTP request using the handler
-			submitHandler.ServeHTTP(responseRecorder, postRequest)
+			regenerateQuizHandler.ServeHTTP(responseRecorder, postRequest)
 
 			// Check if the status code returned by the handler is 200 OK
 			if statusCode := responseRecorder.Code; statusCode != http.StatusOK {
@@ -97,21 +83,21 @@ func TestSubmitHandler(t *testing.T) {
 			}
 
 			// Parse the response body into SubmitResponse struct
-			var submitResponse SubmitResponse
-			if err := json.NewDecoder(responseRecorder.Body).Decode(&submitResponse); err != nil {
+			var regenerateQuizResponse SubmitResponse
+			if err := json.NewDecoder(responseRecorder.Body).Decode(&regenerateQuizResponse); err != nil {
 				t.Fatalf("failed to parse response body: %v", err)
 			}
 
-			// Check if the response body contains the expected status, URL, contentID, and quizID
-			if submitResponse.Status != "success" || submitResponse.URL != tc.url {
-				t.Errorf("handler returned unexpected body: got %v", submitResponse)
+			// Check if the response body contains the expected status, contentID, and quizID
+			if regenerateQuizResponse.Status != "success" || regenerateQuizResponse.ContentID != tc.contentID {
+				t.Errorf("handler returned unexpected body: got %v", regenerateQuizResponse)
 			}
 
 			// Log the full response for debugging
-			t.Logf("Submit response body: %v", submitResponse)
+			t.Logf("Regenerate quiz response body: %v", regenerateQuizResponse)
 
 			// Now make a GET request to the /quiz/{contentID}/{quizID} endpoint using the content_id and quiz_id from the response
-			getRequest, err := http.NewRequest("GET", "/quiz/"+submitResponse.ContentID+"/"+submitResponse.QuizID, nil)
+			getRequest, err := http.NewRequest("GET", "/quiz/"+regenerateQuizResponse.ContentID+"/"+regenerateQuizResponse.QuizID, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

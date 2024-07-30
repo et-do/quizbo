@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"read-robin/models"
+	"read-robin/services"
 )
 
 const (
@@ -102,6 +103,47 @@ func (gc *GeminiClient) ExtractAndGenerateQuizFromVideo(ctx context.Context, vid
 	var quizContentMap map[string]interface{}
 	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
 		return nil, nil, err
+	}
+
+	return quizContentMap, contentMap, nil
+}
+
+// GenerateQuizFromText generates quiz content directly from text
+func (gc *GeminiClient) GenerateQuizFromText(ctx context.Context, contentID string, textContent string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
+	// Fetch title from Firestore using contentID
+	firestoreClient, err := services.NewFirestoreClient(ctx)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error creating Firestore client: %w", err)
+	}
+
+	quizRef := firestoreClient.Client.Collection("quizzes").Doc(contentID)
+	quizDoc, err := quizRef.Get(ctx)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error fetching quiz from Firestore: %w", err)
+	}
+
+	var quizData map[string]interface{}
+	if err := quizDoc.DataTo(&quizData); err != nil {
+		return nil, nil, fmt.Errorf("error parsing quiz data: %w", err)
+	}
+
+	title, ok := quizData["title"].(string)
+	if !ok {
+		title = "Generated Quiz from Text"
+	}
+
+	quizContent, _, err := gc.GenerateQuiz(ctx, textContent, persona)
+	if err != nil {
+		return nil, nil, err
+	}
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
+		return nil, nil, err
+	}
+
+	contentMap := map[string]string{
+		"title":   title,
+		"content": textContent,
 	}
 
 	return quizContentMap, contentMap, nil

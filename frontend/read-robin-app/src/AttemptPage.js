@@ -24,22 +24,8 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
           const data = quizDoc.data();
-          setQuizTitle(
-            data.title ||
-              data.url ||
-              data.audio_url ||
-              data.video_url ||
-              data.pdf_url
-          );
-          if (data.url) {
-            setContentType("URL");
-          } else if (data.pdf_url) {
-            setContentType("PDF");
-          } else if (data.audio_url) {
-            setContentType("Audio");
-          } else if (data.video_url) {
-            setContentType("Video");
-          }
+          setQuizTitle(data.title);
+          setContentType(data.content_type);
         }
 
         const attemptRef = doc(
@@ -71,6 +57,10 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
     return "";
   };
 
+  const getStatusClass = (status) => {
+    return status === "Correct" ? "green" : "red";
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -81,7 +71,10 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
 
   return (
     <div className="attempt-page">
-      <button className="back-button" onClick={() => setPage("selection")}>
+      <button
+        className="back-button"
+        onClick={() => setPage("performanceHistory")}
+      >
         Back
       </button>
       <h2>{quizTitle}</h2>
@@ -109,7 +102,11 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
             </div>
             <div className="response-item">
               <span className="response-title">Status:</span>
-              <span>{response.status}</span>
+              <span
+                className={`status-value ${getStatusClass(response.status)}`}
+              >
+                {response.status}
+              </span>
             </div>
             <div className="response-item">
               <span className="response-title">Reference:</span>

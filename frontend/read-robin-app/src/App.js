@@ -30,6 +30,7 @@ import PdfForm from "./PdfForm";
 import AudioForm from "./AudioForm";
 import VideoForm from "./VideoForm";
 import PerformanceHistory from "./PerformanceHistory";
+import ContentManagementPage from "./ContentManagementPage";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -226,8 +227,8 @@ function App() {
             user={user}
             activePersona={activePersona}
             setPage={setPage}
-            setAttemptID={setAttemptID} // Pass setAttemptID as a prop
-            setContentID={setContentID} // Pass setContentID as a prop
+            setAttemptID={setAttemptID}
+            setContentID={setContentID}
           />
         );
       case "attemptPage":
@@ -252,6 +253,24 @@ function App() {
               activePersona={activePersona}
               setActivePersona={handleSetActivePersona}
               setPage={setPage}
+            />
+            <button
+              className="back-button"
+              onClick={() => setPage("selection")}
+            >
+              Back
+            </button>
+          </>
+        );
+      case "contentManagement":
+        return (
+          <>
+            <ContentManagementPage
+              user={user}
+              activePersona={activePersona}
+              setPage={setPage}
+              setContentID={setContentID}
+              setQuizID={setQuizID}
             />
             <button
               className="back-button"
@@ -319,24 +338,33 @@ function App() {
                 )}
                 <div className="button-container">
                   <button
-                    className="generate-quiz-button"
+                    className="button-common generate-quiz-button"
                     onClick={() => setPage("selection")}
                   >
                     Generate Quiz
                   </button>
                   <button
-                    className="manage-personas-button"
+                    className="button-common manage-personas-button"
                     onClick={() => setPage("personas")}
                   >
                     Manage Personas
                   </button>
                   <button
-                    className="performance-history-button"
+                    className="button-common content-management-button"
+                    onClick={() => setPage("contentManagement")}
+                  >
+                    Manage Content
+                  </button>
+                  <button
+                    className="button-common performance-history-button"
                     onClick={() => setPage("performanceHistory")}
                   >
                     Performance History
                   </button>
-                  <button className="logout-button" onClick={logout}>
+                  <button
+                    className="button-common logout-button"
+                    onClick={logout}
+                  >
                     Logout
                   </button>
                 </div>
