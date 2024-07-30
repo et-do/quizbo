@@ -57,6 +57,10 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
     return "";
   };
 
+  const getStatusClass = (status) => {
+    return status === "Correct" ? "green" : "red";
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -67,7 +71,10 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
 
   return (
     <div className="attempt-page">
-      <button className="back-button" onClick={() => setPage("selection")}>
+      <button
+        className="back-button"
+        onClick={() => setPage("performanceHistory")}
+      >
         Back
       </button>
       <h2>{quizTitle}</h2>
@@ -95,7 +102,11 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
             </div>
             <div className="response-item">
               <span className="response-title">Status:</span>
-              <span>{response.status}</span>
+              <span
+                className={`status-value ${getStatusClass(response.status)}`}
+              >
+                {response.status}
+              </span>
             </div>
             <div className="response-item">
               <span className="response-title">Reference:</span>

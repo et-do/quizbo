@@ -227,8 +227,8 @@ function App() {
             user={user}
             activePersona={activePersona}
             setPage={setPage}
-            setAttemptID={setAttemptID} // Pass setAttemptID as a prop
-            setContentID={setContentID} // Pass setContentID as a prop
+            setAttemptID={setAttemptID}
+            setContentID={setContentID}
           />
         );
       case "attemptPage":
@@ -353,7 +353,7 @@ function App() {
                     className="button-common content-management-button"
                     onClick={() => setPage("contentManagement")}
                   >
-                    Your Content
+                    Manage Content
                   </button>
                   <button
                     className="button-common performance-history-button"
