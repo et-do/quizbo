@@ -67,7 +67,7 @@ function ContentManagementPage({
       content_type: "Text",
     };
 
-    console.log("Payload being sent to backend:", payload); // Log the payload
+    console.log("Payload being sent to backend:", payload);
 
     try {
       const idToken = await user.getIdToken();
@@ -106,7 +106,6 @@ function ContentManagementPage({
       const fileRef = ref(storage, filePath);
       console.log("Attempting to fetch download URL for:", filePath);
       try {
-        const idToken = await user.getIdToken(true); // Fetch ID token
         const downloadURL = await getDownloadURL(fileRef);
         console.log("Download URL fetched successfully:", downloadURL);
         window.open(downloadURL, "_blank");
