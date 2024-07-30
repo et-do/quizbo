@@ -115,7 +115,7 @@ function ContentManagementPage({
                 <h3>{content.title}</h3>
               </a>
               <button
-                className="generate-quiz-button"
+                className="generate-new-quiz"
                 onClick={() =>
                   handleGenerateQuiz(
                     content.id,
