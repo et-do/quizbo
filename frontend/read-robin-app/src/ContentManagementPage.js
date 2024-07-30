@@ -102,16 +102,18 @@ function ContentManagementPage({
 
   const handleLinkClick = async (url) => {
     if (url.startsWith("gs://")) {
-      const fileRef = ref(
-        storage,
-        url.replace("gs://read-robin-2e150.appspot.com/", "")
-      );
+      const filePath = url.replace("gs://read-robin-2e150.appspot.com/", "");
+      const fileRef = ref(storage, filePath);
+      console.log("Attempting to fetch download URL for:", filePath);
       try {
         const downloadURL = await getDownloadURL(fileRef);
+        console.log("Download URL fetched successfully:", downloadURL);
         window.open(downloadURL, "_blank");
       } catch (error) {
         console.error("Error fetching download URL:", error);
-        setError("Error fetching download URL");
+        setError(
+          `Error fetching download URL for ${filePath}: ${error.message}`
+        );
       }
     } else {
       window.open(url, "_blank");
