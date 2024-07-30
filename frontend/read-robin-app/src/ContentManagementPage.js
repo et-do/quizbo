@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./ContentManagementPage.css";
 import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 function ContentManagementPage({
   user,
@@ -34,10 +41,31 @@ function ContentManagementPage({
           "quizzes"
         );
         const contentsSnapshot = await getDocs(contentsRef);
-        const contentsList = contentsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const contentsList = await Promise.all(
+          contentsSnapshot.docs.map(async (doc) => {
+            const attemptsRef = collection(doc.ref, "attempts");
+            const attemptsSnapshot = await getDocs(attemptsRef);
+            const attempts = attemptsSnapshot.docs.map((attemptDoc) => ({
+              id: attemptDoc.id,
+              ...attemptDoc.data(),
+            }));
+            const mostRecentAttempt =
+              attemptsSnapshot.docs.length > 0
+                ? attemptsSnapshot.docs.sort(
+                    (a, b) =>
+                      b.data().createdAt.seconds - a.data().createdAt.seconds
+                  )[0]
+                : null;
+            return {
+              id: doc.id,
+              ...doc.data(),
+              attempts: attempts.length,
+              mostRecentScore: mostRecentAttempt
+                ? mostRecentAttempt.data().score
+                : null,
+            };
+          })
+        );
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
@@ -144,6 +172,14 @@ function ContentManagementPage({
               {groupedContents[contentType].map((content) => (
                 <div key={content.id} className="cmp-content-item">
                   <h3 style={{ color: "white" }}>{content.title}</h3>
+                  <p>Attempts: {content.attempts}</p>
+                  <p>
+                    Most Recent Score:{" "}
+                    {content.mostRecentScore !== "N/A"
+                      ? `${content.mostRecentScore}%`
+                      : "0%"}
+                  </p>
+
                   <button
                     className="cmp-generate-new-quiz"
                     onClick={() =>
