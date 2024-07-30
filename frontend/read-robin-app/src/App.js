@@ -353,7 +353,7 @@ function App() {
                     className="button-common content-management-button"
                     onClick={() => setPage("contentManagement")}
                   >
-                    Your Content
+                    Manage Content
                   </button>
                   <button
                     className="button-common performance-history-button"
