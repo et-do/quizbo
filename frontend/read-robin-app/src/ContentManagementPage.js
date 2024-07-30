@@ -32,28 +32,10 @@ function ContentManagementPage({
           "quizzes"
         );
         const contentsSnapshot = await getDocs(contentsRef);
-        const contentsList = await Promise.all(
-          contentsSnapshot.docs.map(async (doc) => {
-            const data = doc.data();
-            if (data.url && data.url.startsWith("gs://")) {
-              const fileRef = ref(
-                storage,
-                data.url.replace("gs://read-robin-2e150.appspot.com/", "")
-              );
-              try {
-                const url = await getDownloadURL(fileRef);
-                data.url = url;
-              } catch (error) {
-                console.error("Error fetching download URL:", error);
-                throw error;
-              }
-            }
-            return {
-              id: doc.id,
-              ...data,
-            };
-          })
-        );
+        const contentsList = contentsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
@@ -118,6 +100,24 @@ function ContentManagementPage({
     }
   };
 
+  const handleLinkClick = async (url) => {
+    if (url.startsWith("gs://")) {
+      const fileRef = ref(
+        storage,
+        url.replace("gs://read-robin-2e150.appspot.com/", "")
+      );
+      try {
+        const downloadURL = await getDownloadURL(fileRef);
+        window.open(downloadURL, "_blank");
+      } catch (error) {
+        console.error("Error fetching download URL:", error);
+        setError("Error fetching download URL");
+      }
+    } else {
+      window.open(url, "_blank");
+    }
+  };
+
   return (
     <div className="content-management-page">
       <button className="back-button" onClick={() => setPage("selection")}>
@@ -130,9 +130,12 @@ function ContentManagementPage({
         <div className="content-list">
           {contents.map((content) => (
             <div key={content.id} className="content-item">
-              <a href={content.url} target="_blank" rel="noopener noreferrer">
-                <h3>{content.title}</h3>
-              </a>
+              <h3
+                onClick={() => handleLinkClick(content.url)}
+                style={{ cursor: "pointer", color: "white" }}
+              >
+                {content.title}
+              </h3>
               <button
                 className="generate-new-quiz"
                 onClick={() =>
