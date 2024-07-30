@@ -5,11 +5,13 @@ import (
 	"strings"
 )
 
-// NormalizeURL normalizes the URL by making it lowercase and removing the scheme and www.
+// NormalizeURL normalizes the URL by ensuring it has https://, making it lowercase, and removing the www.
 func NormalizeURL(rawURL string) (string, error) {
 	// Ensure the URL has a scheme for proper parsing
 	if !strings.HasPrefix(strings.ToLower(rawURL), "http://") && !strings.HasPrefix(strings.ToLower(rawURL), "https://") {
-		rawURL = "http://" + rawURL
+		rawURL = "https://" + rawURL
+	} else if strings.HasPrefix(strings.ToLower(rawURL), "http://") {
+		rawURL = "https://" + rawURL[len("http://"):]
 	}
 
 	u, err := url.Parse(rawURL)
@@ -24,7 +26,7 @@ func NormalizeURL(rawURL string) (string, error) {
 	host = strings.TrimPrefix(host, "www.")
 
 	// Combine the host and path
-	normalizedURL := host + path
+	normalizedURL := "https://" + host + path
 
 	return normalizedURL, nil
 }

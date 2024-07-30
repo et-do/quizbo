@@ -28,7 +28,16 @@
   text-align: center;
 }
 
-.generate-quiz-button {
+.content-item a {
+  text-decoration: none;
+  color: white;
+}
+
+.content-item a:hover {
+  cursor: pointer;
+}
+
+.generate-new-quiz {
   background-color: #dd3730; /* Accent color */
   color: white;
   padding: 0.5rem 1rem;
@@ -38,7 +47,7 @@
   margin-top: 0.5rem;
 }
 
-.generate-quiz-button:hover {
+.generate-new-quiz:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
 

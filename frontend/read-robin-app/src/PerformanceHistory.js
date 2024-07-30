@@ -52,16 +52,9 @@ function PerformanceHistory({
               return {
                 id: quizDoc.id,
                 contentID: quizDoc.data().contentID,
-                title:
-                  quizDoc.data().title ||
-                  quizDoc.data().url ||
-                  quizDoc.data().audio_url ||
-                  quizDoc.data().video_url ||
-                  quizDoc.data().pdf_url,
+                title: quizDoc.data().title,
                 url: quizDoc.data().url,
-                audio_url: quizDoc.data().audio_url,
-                video_url: quizDoc.data().video_url,
-                pdf_url: quizDoc.data().pdf_url,
+                content_type: quizDoc.data().content_type,
                 attempts,
               };
             })
@@ -191,10 +184,12 @@ function PerformanceHistory({
   const filteredQuizzes = filterQuizzesByTimeFrame(quizzes, timeFrame);
 
   const contentTypesCount = {
-    URL: filteredQuizzes.filter((quiz) => quiz.url).length,
-    PDF: filteredQuizzes.filter((quiz) => quiz.pdf_url).length,
-    Audio: filteredQuizzes.filter((quiz) => quiz.audio_url).length,
-    Video: filteredQuizzes.filter((quiz) => quiz.video_url).length,
+    URL: filteredQuizzes.filter((quiz) => quiz.content_type === "URL").length,
+    PDF: filteredQuizzes.filter((quiz) => quiz.content_type === "PDF").length,
+    Audio: filteredQuizzes.filter((quiz) => quiz.content_type === "Audio")
+      .length,
+    Video: filteredQuizzes.filter((quiz) => quiz.content_type === "Video")
+      .length,
   };
 
   const contentTypes = {
@@ -365,7 +360,7 @@ function PerformanceHistory({
                         </p>
                         <p>
                           <strong>Score:</strong>{" "}
-                          {attempt.score ? `${attempt.score}%` : "N/A"}
+                          {attempt.score ? `${attempt.score}%` : "0%"}
                         </p>
                       </div>
                       <button className="view-details-button">

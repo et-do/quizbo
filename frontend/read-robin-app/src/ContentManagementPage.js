@@ -111,9 +111,11 @@ function ContentManagementPage({
         <div className="content-list">
           {contents.map((content) => (
             <div key={content.id} className="content-item">
-              <h3>{content.title}</h3>
+              <a href={content.url} target="_blank" rel="noopener noreferrer">
+                <h3>{content.title}</h3>
+              </a>
               <button
-                className="generate-quiz-button"
+                className="generate-new-quiz"
                 onClick={() =>
                   handleGenerateQuiz(
                     content.id,

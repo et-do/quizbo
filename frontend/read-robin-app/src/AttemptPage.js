@@ -24,22 +24,8 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         const quizDoc = await getDoc(quizRef);
         if (quizDoc.exists()) {
           const data = quizDoc.data();
-          setQuizTitle(
-            data.title ||
-              data.url ||
-              data.audio_url ||
-              data.video_url ||
-              data.pdf_url
-          );
-          if (data.url) {
-            setContentType("URL");
-          } else if (data.pdf_url) {
-            setContentType("PDF");
-          } else if (data.audio_url) {
-            setContentType("Audio");
-          } else if (data.video_url) {
-            setContentType("Video");
-          }
+          setQuizTitle(data.title);
+          setContentType(data.content_type);
         }
 
         const attemptRef = doc(

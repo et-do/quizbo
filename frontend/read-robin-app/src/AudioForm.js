@@ -86,8 +86,10 @@ function AudioForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       );
       await setDoc(quizRef, {
         contentID: data.content_id,
-        audio_url: fileURL,
+        url: data.url, // Use the normalized URL from the response
         title: data.title,
+        content_text: data.content_text,
+        content_type: "Audio", // Add this line
       });
 
       setPage("quizPage");
