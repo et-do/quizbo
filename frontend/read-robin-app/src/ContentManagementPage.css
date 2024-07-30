@@ -103,6 +103,14 @@
   position: relative;
 }
 
+.cmp-popup-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  font-size: 1.5rem; /* Increased font size for the title */
+  text-align: center;
+}
+
 .cmp-popup-scroll {
   overflow-y: auto;
   max-height: calc(80vh - 100px); /* Adjust as needed */
@@ -122,6 +130,7 @@
   word-wrap: break-word; /* Ensure text wraps within the container */
   overflow-wrap: break-word; /* Break words when necessary */
   word-break: break-word; /* Break words at appropriate points */
+  font-size: 1.2rem; /* Increased font size for content text */
 }
 
 .cmp-close-button {
