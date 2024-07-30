@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ContentManagementPage.css";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 
 function ContentManagementPage({
   user,
@@ -31,10 +32,27 @@ function ContentManagementPage({
           "quizzes"
         );
         const contentsSnapshot = await getDocs(contentsRef);
-        const contentsList = contentsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const contentsList = await Promise.all(
+          contentsSnapshot.docs.map(async (doc) => {
+            const data = doc.data();
+            if (data.url && data.url.startsWith("gs://")) {
+              const fileRef = ref(
+                storage,
+                data.url.replace("gs://read-robin-2e150.appspot.com/", "")
+              );
+              try {
+                data.url = await getDownloadURL(fileRef);
+              } catch (error) {
+                console.error("Error fetching download URL:", error);
+                throw error;
+              }
+            }
+            return {
+              id: doc.id,
+              ...data,
+            };
+          })
+        );
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
