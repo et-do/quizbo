@@ -227,8 +227,8 @@ function App() {
             user={user}
             activePersona={activePersona}
             setPage={setPage}
-            setAttemptID={setAttemptID} // Pass setAttemptID as a prop
-            setContentID={setContentID} // Pass setContentID as a prop
+            setAttemptID={setAttemptID}
+            setContentID={setContentID}
           />
         );
       case "attemptPage":
