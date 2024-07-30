@@ -365,7 +365,7 @@ function PerformanceHistory({
                         </p>
                         <p>
                           <strong>Score:</strong>{" "}
-                          {attempt.score ? `${attempt.score}%` : "N/A"}
+                          {attempt.score ? `${attempt.score}%` : "0%"}
                         </p>
                       </div>
                       <button className="view-details-button">
