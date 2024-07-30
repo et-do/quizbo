@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ContentManagementPage.css";
-import { db, storage } from "./firebase";
+import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { getDownloadURL, ref } from "firebase/storage";
 
 function ContentManagementPage({
   user,
@@ -113,20 +112,20 @@ function ContentManagementPage({
   };
 
   return (
-    <div className="content-management-page">
-      <button className="back-button" onClick={() => setPage("selection")}>
+    <div className="cmp-content-management-page">
+      <button className="cmp-back-button" onClick={() => setPage("selection")}>
         Back
       </button>
       <h2>Your Content</h2>
       {error && <div style={{ color: "red" }}>{error}</div>}
-      {loading && <div className="loading-spinner"></div>}
+      {loading && <div className="cmp-loading-spinner"></div>}
       {!loading && contents.length > 0 && (
-        <div className="content-list">
+        <div className="cmp-content-list">
           {contents.map((content) => (
-            <div key={content.id} className="content-item">
+            <div key={content.id} className="cmp-content-item">
               <h3 style={{ color: "white" }}>{content.title}</h3>
               <button
-                className="generate-new-quiz"
+                className="cmp-generate-new-quiz"
                 onClick={() =>
                   handleGenerateQuiz(
                     content.id,
@@ -139,7 +138,7 @@ function ContentManagementPage({
                 Generate New Quiz
               </button>
               <button
-                className="see-content"
+                className="cmp-see-content"
                 onClick={() => handleSeeContent(content.content_text)}
               >
                 See Content
@@ -154,12 +153,12 @@ function ContentManagementPage({
         </div>
       )}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <button className="close-button" onClick={closePopup}>
+        <div className="cmp-popup-overlay">
+          <div className="cmp-popup-content">
+            <button className="cmp-close-button" onClick={closePopup}>
               &times;
             </button>
-            <div className="popup-scroll">
+            <div className="cmp-popup-scroll">
               <pre>{popupContent}</pre>
             </div>
           </div>
