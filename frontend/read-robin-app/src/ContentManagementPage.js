@@ -15,6 +15,7 @@ function ContentManagementPage({
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState("");
+  const [popupTitle, setPopupTitle] = useState(""); // New state for the title
 
   useEffect(() => {
     const fetchContents = async () => {
@@ -101,14 +102,16 @@ function ContentManagementPage({
     }
   };
 
-  const handleSeeContent = (contentText) => {
+  const handleSeeContent = (contentText, contentTitle) => {
     setPopupContent(contentText);
+    setPopupTitle(contentTitle); // Set the title
     setShowPopup(true);
   };
 
   const closePopup = () => {
     setShowPopup(false);
     setPopupContent("");
+    setPopupTitle(""); // Clear the title
   };
 
   return (
@@ -139,7 +142,9 @@ function ContentManagementPage({
               </button>
               <button
                 className="cmp-see-content"
-                onClick={() => handleSeeContent(content.content_text)}
+                onClick={() =>
+                  handleSeeContent(content.content_text, content.title)
+                }
               >
                 See Content
               </button>
@@ -158,6 +163,8 @@ function ContentManagementPage({
             <button className="cmp-close-button" onClick={closePopup}>
               &times;
             </button>
+            <h3 className="cmp-popup-title">{popupTitle}</h3>{" "}
+            {/* Title for the popup */}
             <div className="cmp-popup-scroll">
               <pre>{popupContent}</pre>
             </div>
