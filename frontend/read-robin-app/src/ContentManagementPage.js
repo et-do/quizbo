@@ -14,6 +14,8 @@ function ContentManagementPage({
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState("");
 
   useEffect(() => {
     const fetchContents = async () => {
@@ -100,24 +102,14 @@ function ContentManagementPage({
     }
   };
 
-  const handleLinkClick = async (url) => {
-    if (url.startsWith("gs://")) {
-      const filePath = url.replace("gs://read-robin-2e150.appspot.com/", "");
-      const fileRef = ref(storage, filePath);
-      console.log("Attempting to fetch download URL for:", filePath);
-      try {
-        const downloadURL = await getDownloadURL(fileRef);
-        console.log("Download URL fetched successfully:", downloadURL);
-        window.open(downloadURL, "_blank");
-      } catch (error) {
-        console.error("Error fetching download URL:", error);
-        setError(
-          `Error fetching download URL for ${filePath}: ${error.message}`
-        );
-      }
-    } else {
-      window.open(url, "_blank");
-    }
+  const handleSeeContent = (contentText) => {
+    setPopupContent(contentText);
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setPopupContent("");
   };
 
   return (
@@ -132,12 +124,7 @@ function ContentManagementPage({
         <div className="content-list">
           {contents.map((content) => (
             <div key={content.id} className="content-item">
-              <h3
-                onClick={() => handleLinkClick(content.url)}
-                style={{ cursor: "pointer", color: "white" }}
-              >
-                {content.title}
-              </h3>
+              <h3 style={{ color: "white" }}>{content.title}</h3>
               <button
                 className="generate-new-quiz"
                 onClick={() =>
@@ -149,7 +136,13 @@ function ContentManagementPage({
                   )
                 }
               >
-                Generate Quiz
+                Generate New Quiz
+              </button>
+              <button
+                className="see-content"
+                onClick={() => handleSeeContent(content.content_text)}
+              >
+                See Content
               </button>
             </div>
           ))}
@@ -158,6 +151,18 @@ function ContentManagementPage({
       {contents.length === 0 && !loading && (
         <div>
           No content available. Submit some content to generate quizzes.
+        </div>
+      )}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <button className="close-button" onClick={closePopup}>
+              &times;
+            </button>
+            <div className="popup-scroll">
+              <pre>{popupContent}</pre>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -28,16 +28,8 @@
   text-align: center;
 }
 
-.content-item a {
-  text-decoration: none;
-  color: white;
-}
-
-.content-item a:hover {
-  cursor: pointer;
-}
-
-.generate-new-quiz {
+.generate-new-quiz,
+.see-content {
   background-color: #dd3730; /* Accent color */
   color: white;
   padding: 0.5rem 1rem;
@@ -45,9 +37,11 @@
   border-radius: 5px;
   cursor: pointer;
   margin-top: 0.5rem;
+  margin-left: 0.5rem;
 }
 
-.generate-new-quiz:hover {
+.generate-new-quiz:hover,
+.see-content:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
 
@@ -78,4 +72,46 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #ffffff;
+  color: #000000;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow: hidden;
+}
+
+.popup-scroll {
+  overflow-y: auto;
+  max-height: calc(80vh - 100px); /* Adjust as needed */
+}
+
+.close-button {
+  background: #dd3730;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+  float: right;
+}
+
+.close-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
 }
