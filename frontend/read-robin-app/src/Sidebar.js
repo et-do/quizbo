@@ -44,16 +44,8 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
                 .sort((a, b) => b.createdAt.seconds - a.createdAt.seconds); // Sort by recency
               return {
                 id: quizDoc.id,
-                title:
-                  quizDoc.data().title ||
-                  quizDoc.data().url ||
-                  quizDoc.data().audio_url ||
-                  quizDoc.data().video_url ||
-                  quizDoc.data().pdf_url,
-                url: quizDoc.data().url,
-                audio_url: quizDoc.data().audio_url,
-                video_url: quizDoc.data().video_url,
-                pdf_url: quizDoc.data().pdf_url,
+                title: quizDoc.data().title,
+                content_type: quizDoc.data().content_type,
                 attempts,
               };
             })
@@ -94,13 +86,13 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
     };
 
     quizzes.forEach((quiz) => {
-      if (quiz.url) {
+      if (quiz.content_type === "URL") {
         grouped.URL.push(quiz);
-      } else if (quiz.pdf_url) {
+      } else if (quiz.content_type === "PDF") {
         grouped.PDF.push(quiz);
-      } else if (quiz.audio_url) {
+      } else if (quiz.content_type === "Audio") {
         grouped.Audio.push(quiz);
-      } else if (quiz.video_url) {
+      } else if (quiz.content_type === "Video") {
         grouped.Video.push(quiz);
       }
     });

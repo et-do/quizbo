@@ -338,30 +338,33 @@ function App() {
                 )}
                 <div className="button-container">
                   <button
-                    className="generate-quiz-button"
+                    className="button-common generate-quiz-button"
                     onClick={() => setPage("selection")}
                   >
                     Generate Quiz
                   </button>
                   <button
-                    className="manage-personas-button"
+                    className="button-common manage-personas-button"
                     onClick={() => setPage("personas")}
                   >
                     Manage Personas
                   </button>
                   <button
-                    className="content-management-button"
+                    className="button-common content-management-button"
                     onClick={() => setPage("contentManagement")}
                   >
                     Your Content
                   </button>
                   <button
-                    className="performance-history-button"
+                    className="button-common performance-history-button"
                     onClick={() => setPage("performanceHistory")}
                   >
                     Performance History
                   </button>
-                  <button className="logout-button" onClick={logout}>
+                  <button
+                    className="button-common logout-button"
+                    onClick={logout}
+                  >
                     Logout
                   </button>
                 </div>

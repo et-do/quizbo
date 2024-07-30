@@ -86,8 +86,10 @@ function VideoForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       );
       await setDoc(quizRef, {
         contentID: data.content_id,
-        video_url: fileURL,
+        url: data.url,
         title: data.title,
+        content_text: data.content_text,
+        content_type: "Vudeo",
       });
 
       setPage("quizPage");
