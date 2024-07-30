@@ -152,6 +152,10 @@
   color: #ffffff;
 }
 
+.close-button:hover {
+  color: #a96a59; /* Darker accent color on hover */
+}
+
 .correct::before {
   content: "✅";
   margin-right: 0.5rem;
