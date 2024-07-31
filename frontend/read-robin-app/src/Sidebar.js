@@ -87,6 +87,7 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
       PDF: [],
       Audio: [],
       Video: [],
+      Text: [],
     };
 
     quizzes.forEach((quiz) => {
@@ -98,6 +99,8 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
         grouped.Audio.push(quiz);
       } else if (quiz.content_type === "Video") {
         grouped.Video.push(quiz);
+      } else if (quiz.content_type === "Text") {
+        grouped.Text.push(quiz);
       }
     });
 
