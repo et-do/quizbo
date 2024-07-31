@@ -65,6 +65,7 @@ function TextForm({ user, activePersona, setPage, setContentID, setQuizID }) {
       );
       await setDoc(quizRef, {
         contentID: data.content_id,
+        url: data.url,
         title: data.title,
         content_text: data.content_text,
         content_type: "Text",
