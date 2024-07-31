@@ -109,7 +109,26 @@ func (gc *GeminiClient) ExtractAndGenerateQuizFromVideo(ctx context.Context, vid
 }
 
 // GenerateQuizFromText generates quiz content directly from text
-func (gc *GeminiClient) GenerateQuizFromText(ctx context.Context, contentID string, textContent string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
+func (gc *GeminiClient) GenerateQuizFromText(ctx context.Context, title string, textContent string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
+	quizContent, _, err := gc.GenerateQuiz(ctx, textContent, persona)
+	if err != nil {
+		return nil, nil, err
+	}
+	var quizContentMap map[string]interface{}
+	if err := json.Unmarshal([]byte(quizContent), &quizContentMap); err != nil {
+		return nil, nil, err
+	}
+
+	contentMap := map[string]string{
+		"title":   title,
+		"content": textContent,
+	}
+
+	return quizContentMap, contentMap, nil
+}
+
+// RegenerateQuizFromText generates quiz content directly from previously extracted text
+func (gc *GeminiClient) RegenerateQuizFromText(ctx context.Context, contentID string, textContent string, persona models.Persona) (map[string]interface{}, map[string]string, error) {
 	// Fetch title from Firestore using contentID
 	firestoreClient, err := services.NewFirestoreClient(ctx)
 	if err != nil {

@@ -25,17 +25,18 @@ func TestSubmitHandler(t *testing.T) {
 		name        string
 		contentType string
 		url         string
+		contentText string
 	}{
 		// {
 		// 	name:        "URL content type",
 		// 	contentType: "URL",
 		// 	url:         "http://www.example.com",
 		// },
-		{
-			name:        "PDF content type",
-			contentType: "PDF",
-			url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
-		},
+		// {
+		// 	name:        "PDF content type",
+		// 	contentType: "PDF",
+		// 	url:         "gs://read-robin-examples/pdfs/chemistry_chapter_page.pdf",
+		// },
 		// {
 		// 	name:        "Audio content type",
 		// 	contentType: "Audio",
@@ -46,6 +47,12 @@ func TestSubmitHandler(t *testing.T) {
 		// 	contentType: "Video",
 		// 	url:         "gs://read-robin-examples/video/happiness_a_very_short_story.mp4",
 		// },
+		{
+			name:        "Text content type",
+			contentType: "Text",
+			url:         "Meeting Notes",
+			contentText: "Dear Team, \n\nHere are the notes from today's meeting:\n1. Project A is on track.\n2. Project B needs more resources.\n3. Next meeting scheduled for Monday.\n\nBest regards,\nProject Manager",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -61,6 +68,9 @@ func TestSubmitHandler(t *testing.T) {
 					Difficulty: "Intermediate",
 				},
 				ContentType: tc.contentType,
+			}
+			if tc.contentType == "Text" {
+				submitRequestPayload.ContentText = tc.contentText
 			}
 			// Marshal the payload into JSON format
 			submitRequestPayloadBytes, err := json.Marshal(submitRequestPayload)

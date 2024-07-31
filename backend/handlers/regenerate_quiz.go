@@ -58,7 +58,7 @@ func RegenerateQuizHandler(w http.ResponseWriter, r *http.Request) {
 	var quizContentMap map[string]interface{}
 	var contentMap map[string]string
 
-	quizContentMap, contentMap, err = geminiClient.GenerateQuizFromText(ctx, contentID, request.ContentText, request.Persona)
+	quizContentMap, contentMap, err = geminiClient.RegenerateQuizFromText(ctx, contentID, request.ContentText, request.Persona)
 	if err != nil {
 		log.Printf("RegenerateQuizHandler: Error generating quiz content from text: %v", err)
 		http.Error(w, "Error generating quiz content from text", http.StatusInternalServerError)
