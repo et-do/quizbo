@@ -1,0 +1,65 @@
+.quiz-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.quiz-form h2 {
+  color: #ffffff; /* Light text color */
+}
+
+.back-button {
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+textarea {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+button[type="submit"] {
+  background-color: #dd3730; /* Accent color */
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #a96a59; /* Darker accent color on hover */
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-left-color: #ffffff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

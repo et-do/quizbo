@@ -29,6 +29,7 @@ import UrlForm from "./URLForm";
 import PdfForm from "./PdfForm";
 import AudioForm from "./AudioForm";
 import VideoForm from "./VideoForm";
+import TextForm from "./TextForm";
 import PerformanceHistory from "./PerformanceHistory";
 import ContentManagementPage from "./ContentManagementPage";
 
@@ -204,6 +205,16 @@ function App() {
       case "videoForm":
         return (
           <VideoForm
+            user={user}
+            activePersona={activePersona}
+            setPage={setPage}
+            setContentID={setContentID}
+            setQuizID={setQuizID}
+          />
+        );
+      case "textForm":
+        return (
+          <TextForm
             user={user}
             activePersona={activePersona}
             setPage={setPage}
