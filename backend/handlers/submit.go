@@ -17,6 +17,7 @@ import (
 // SubmitRequest is a struct to hold the URL and persona details submitted by the user
 type SubmitRequest struct {
 	URL         string         `json:"url"`
+	ContentText string         `json:"content_text,omitempty"` // Add ContentText field
 	Persona     models.Persona `json:"persona"`
 	ContentType string         `json:"content_type"`
 }
@@ -90,11 +91,19 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	normalizedURL, contentID, err := normalizeAndGenerateID(submitRequest.URL)
-	if err != nil {
-		log.Printf("SubmitHandler: Error normalizing URL: %v", err)
-		http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
-		return
+	var normalizedURL string
+	var contentID string
+
+	if submitRequest.ContentType == "Text" {
+		contentID = utils.GenerateID(submitRequest.URL)
+		normalizedURL = submitRequest.URL
+	} else {
+		normalizedURL, contentID, err = normalizeAndGenerateID(submitRequest.URL)
+		if err != nil {
+			log.Printf("SubmitHandler: Error normalizing URL: %v", err)
+			http.Error(w, "Error normalizing URL", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	existingQuizzes, err := firestoreClient.GetExistingQuizzes(ctx, contentID)
@@ -147,6 +156,13 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("SubmitHandler: Error generating quiz content from Video: %v", err)
 			http.Error(w, "Error generating quiz content from Video", http.StatusInternalServerError)
+			return
+		}
+	case "Text":
+		quizContentMap, contentMap, err = geminiClient.GenerateQuizFromText(ctx, submitRequest.URL, submitRequest.ContentText, submitRequest.Persona)
+		if err != nil {
+			log.Printf("SubmitHandler: Error generating quiz content from text: %v", err)
+			http.Error(w, "Error generating quiz content from text", http.StatusInternalServerError)
 			return
 		}
 	default:
