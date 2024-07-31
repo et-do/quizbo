@@ -11,6 +11,7 @@ WORKDIR /workspace/frontend
 RUN npm install -g create-react-app
 RUN npm install -g firebase-tools
 RUN npm install react-chartjs-2 chart.js
+RUN npm install react-select
 
 # Expose port 3000 for the app
 EXPOSE 3000
