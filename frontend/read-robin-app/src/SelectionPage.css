@@ -5,6 +5,8 @@
   justify-content: center;
   height: auto; /* Adjust based on header height */
   padding: 20px;
+  background-color: #1e1e1e; /* Dark background color */
+  color: #ffffff; /* Light text color */
 }
 
 .selection-options {
@@ -32,7 +34,6 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 10px;
   width: 100%;
   max-width: 300px;
 }
@@ -43,4 +44,21 @@
 
 .selection-options button:disabled {
   background-color: #444444; /* Disabled button color */
+}
+
+.selection-dropdown {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+.selection-dropdown option {
+  background-color: #1e1e1e; /* Dark background color */
+  color: #ffffff; /* Light text color */
 }
