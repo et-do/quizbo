@@ -1,34 +1,32 @@
-import React, { useState } from "react";
-import Select from "react-select";
+import React from "react";
 import "./SelectionPage.css";
 
-const options = [
-  { value: "urlForm", label: "🌐 Webpage" },
-  { value: "pdfForm", label: "📄 PDF" },
-  { value: "audioForm", label: "🎧 Audio" },
-  { value: "videoForm", label: "🎥 Video" },
-  { value: "textForm", label: "📝 Text" },
-];
-
 function SelectionPage({ setPage }) {
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const handleChange = (option) => {
-    setSelectedOption(option);
-    setPage(option.value);
+  const handleSelectionChange = (event) => {
+    const page = event.target.value;
+    if (page) {
+      setPage(page);
+    }
   };
 
   return (
-    <div className="selection-page">
-      <div className="selection-options">
+    <div className="selection-page-custom">
+      <div className="selection-options-custom">
         <h1>What do you want a quiz generated for?</h1>
-        <Select
-          value={selectedOption}
-          onChange={handleChange}
-          options={options}
-          className="selection-dropdown"
-          placeholder="Select an option..."
-        />
+        <select
+          className="selection-dropdown-custom"
+          onChange={handleSelectionChange}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Select an option...
+          </option>
+          <option value="urlForm">🌐 Webpage</option>
+          <option value="pdfForm">📄 PDF</option>
+          <option value="audioForm">🎧 Audio</option>
+          <option value="videoForm">🎥 Video</option>
+          <option value="textForm">📝 Text</option>
+        </select>
       </div>
     </div>
   );

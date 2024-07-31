@@ -1,4 +1,4 @@
-.selection-page {
+.selection-page-custom {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,7 +9,7 @@
   color: #ffffff; /* Light text color */
 }
 
-.selection-options {
+.selection-options-custom {
   display: flex;
   flex-direction: column;
   align-items: center; /* Ensure centering horizontally */
@@ -20,45 +20,52 @@
   max-width: 600px;
 }
 
-.selection-options h1 {
-  font-size: 1.5rem;
+.selection-options-custom h1 {
+  font-size: 2rem; /* Increased font size */
   margin-bottom: 20px;
   color: #ffffff; /* Light text color */
 }
 
-.selection-options button {
-  padding: 10px 20px;
-  font-size: 1rem;
+.selection-dropdown-custom {
+  padding: 15px 20px; /* Increased padding */
+  font-size: 1.25rem; /* Increased font size */
   background-color: #dd3730; /* Accent color */
   color: #ffffff; /* Light text color */
   border: none;
-  border-radius: 5px;
+  border-radius: 10px; /* More rounded corners */
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  appearance: none; /* Remove default arrow */
+  -webkit-appearance: none; /* Remove default arrow for Safari */
+  -moz-appearance: none; /* Remove default arrow for Firefox */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpolygon fill='%23ffffff' points='0,0 10,0 5,7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.selection-dropdown-custom option {
+  background-color: #1e1e1e; /* Dark background color */
+  color: #ffffff; /* Light text color */
+  padding: 10px; /* Padding for options */
+}
+
+.selection-options-custom button {
+  padding: 15px 20px;
+  font-size: 1.25rem;
+  background-color: #dd3730; /* Accent color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
   width: 100%;
   max-width: 300px;
 }
 
-.selection-options button:hover {
+.selection-options-custom button:hover {
   background-color: #a96a59; /* Darker accent color on hover */
 }
 
-.selection-options button:disabled {
+.selection-options-custom button:disabled {
   background-color: #444444; /* Disabled button color */
-}
-
-.selection-dropdown {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
-  color: #ffffff; /* Light text color */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-  max-width: 300px;
-}
-
-.selection-dropdown option {
-  background-color: #1e1e1e; /* Dark background color */
-  color: #ffffff; /* Light text color */
 }
