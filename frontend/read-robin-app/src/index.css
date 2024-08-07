@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #0d1b2a; /* Dark dark blue background color */
+  color: #ffffff; /* Light text color */
 }
 
 code {
@@ -13,26 +15,51 @@ code {
 }
 
 .App {
-  text-align: center;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1b263b; /* Lighter but still dark forefront */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin: 2rem auto;
+  max-width: 1200px;
 }
 
 label {
   display: block;
   margin-bottom: 1rem;
+  color: #ffffff; /* Light text color */
 }
 
 input {
-  margin-right: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #444444; /* Dark border color */
+  border-radius: 5px;
+  background-color: #2e2e2e; /* Dark input background */
+  color: #ffffff; /* Light text color */
+  resize: vertical;
 }
 
 button {
   padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #4169e1; /* Royal blue */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 pre {
   text-align: left;
-  background-color: #f4f4f4;
+  background-color: #0d1b2a; /* Dark background */
   padding: 1rem;
   border-radius: 5px;
+  color: #ffffff; /* Light text color */
 }

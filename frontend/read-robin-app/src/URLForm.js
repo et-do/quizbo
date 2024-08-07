@@ -99,7 +99,10 @@ function UrlForm({ user, activePersona, setPage, setContentID, setQuizID }) {
 
   return (
     <div className="quiz-form">
-      <button className="back-button" onClick={() => setPage("selection")}>
+      <button
+        className="quiz-form-back-button"
+        onClick={() => setPage("selection")}
+      >
         Back
       </button>
       <h2>Webpage Quiz</h2>

@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #121212; /* Dark background color */
+  background-color: #1b263b; /* Dark dark blue background color */
   color: #ffffff; /* Light text color */
 }
 
@@ -14,7 +14,7 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #1e1e1e; /* Darker background for the app container */
+  background-color: #1b263b; /* Lighter but still dark forefront */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin: 2rem auto;
@@ -40,17 +40,17 @@ body {
 .logo-title {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .logo {
-  max-height: 80px;
+  max-height: 200px; /* Increased logo size */
   width: auto;
 }
 
 .app-title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2.5rem; /* Increased font size */
   color: #ffffff; /* Accent color */
 }
 
@@ -70,8 +70,8 @@ body {
 }
 
 .loading-spinner {
-  border: 16px solid #333333; /* Dark border */
-  border-top: 16px solid #db3434; /* Accent color for spinner */
+  border: 16px solid #1b263b; /* Dark border */
+  border-top: 16px solid #fc8600; /* Royal blue accent color for spinner */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -104,7 +104,7 @@ body {
 .back-button {
   margin-right: 10px;
   margin-top: 10px;
-  background-color: #dd3730;
+  background-color: #4169e1; /* Royal blue */
   color: #fff;
   padding: 10px;
   border: none;
@@ -113,19 +113,32 @@ body {
 }
 
 .back-button:hover {
-  background-color: #a96a59;
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .app-header .button-container {
   display: flex;
   gap: 10px;
+  margin-bottom: 10px;
 }
+
+.active-persona-title {
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.active-persona-title:hover {
+  color: #fc8600; /* Highlight text in orange on hover */
+  text-decoration: underline; /* Underline text on hover */
+}
+
 .active-persona-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 12px;
   margin-top: 8px;
+  margin-bottom: 20px; /* Added padding below the card */
   width: 100%;
   max-width: 300px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -136,6 +149,7 @@ body {
 
 .active-persona-details {
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .active-persona-details p {
@@ -146,13 +160,14 @@ body {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  margin-bottom: 20px;
   justify-content: center; /* Center the buttons */
 }
 
 .button-common {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -160,7 +175,7 @@ body {
 }
 
 .button-common:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .logo-title {
