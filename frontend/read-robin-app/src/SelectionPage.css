@@ -7,6 +7,10 @@
   padding: 20px;
   background-color: #0d1b2a; /* Lighter but still dark foreground */
   color: #ffffff; /* Light text color */
+  margin-top: 5px;
+  margin-bottom: 3rem; /* Add margin at the bottom */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for the container */
+  border-radius: 10px; /* Optional: to match the overall design */
 }
 
 .selection-options-custom {
@@ -15,13 +19,15 @@
   align-items: center; /* Ensure centering horizontally */
   justify-content: center; /* Ensure centering vertically */
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 2rem; /* Increased margin at the top for better spacing */
+  margin-bottom: 2rem; /* Added margin at the bottom for spacing */
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .selection-options-custom h1 {
   font-size: 2rem; /* Increased font size */
+  text-align: center;
   margin-bottom: 20px;
   color: #ffffff; /* Light text color */
 }

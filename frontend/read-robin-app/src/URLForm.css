@@ -4,11 +4,14 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: #0d1b2a; /* Lighter but still dark foreground */
+  width: 100%;
+  max-width: 800px; /* Ensure the form has a maximum width */
+  margin: 2rem auto;
 }
 
 .quiz-form h2 {
   color: #ffffff; /* Light text color */
+  text-align: center; /* Center the heading */
 }
 
 .quiz-form form {
@@ -17,6 +20,7 @@
   align-items: center;
   width: 100%;
   max-width: 600px;
+  margin: 0 auto; /* Center the form horizontally */
 }
 
 .quiz-form input {
@@ -27,6 +31,7 @@
   margin-bottom: 1rem;
   background-color: #0d1b2a; /* Dark input background */
   color: #ffffff; /* Light text color */
+  width: 100%; /* Ensure input takes full width */
 }
 
 /* Placeholder styling */
@@ -63,11 +68,10 @@
   padding: 8px;
   margin-top: 6px;
   width: 100%;
-  max-width: 600px;
+  max-width: 600px; /* Ensure the card has a maximum width */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center; /* Center the text */
-  margin-left: auto; /* Center horizontally */
-  margin-right: auto; /* Center horizontally */
+  margin: 0 auto; /* Center the card horizontally */
 }
 
 .example-urls h3 {

@@ -1,5 +1,6 @@
 .attempt-page {
   padding: 20px;
+  max-width: 600px;
   background-color: #0d1b2a; /* Lighter but still dark forefront */
   color: #ffffff; /* Light text color */
 }

@@ -6,7 +6,6 @@
   height: calc(100vh - 80px); /* Adjust based on header height */
   padding: 20px;
   padding-top: 50px; /* Add padding to the top to create space from the top */
-  background-color: #0d1b2a; /* Dark dark blue background color */
   color: #ffffff; /* Light text color */
 }
 
