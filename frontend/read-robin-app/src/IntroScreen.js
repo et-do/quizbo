@@ -4,7 +4,7 @@ import logo from "./logo.png";
 
 const slides = [
   {
-    title: "👋 Welcome to ReadRobin!",
+    title: "👋 Welcome to Quizbo!",
     text: "Your AI Companion for Smarter, Personalized Comprehension.",
   },
   {
@@ -29,7 +29,7 @@ const slides = [
   },
   {
     title: "🚀 Get Started!",
-    text: "Join now and enhance your learning journey with ReadRobin today! Start achieving your comprehension goals with quizzes tailored just for you.",
+    text: "Join now and enhance your learning journey with Quizbo today! Start achieving your comprehension goals with quizzes tailored just for you.",
   },
 ];
 

@@ -1,11 +1,11 @@
 .attempt-page {
   padding: 20px;
-  background-color: #1e1e1e; /* Dark background color */
+  background-color: #0d1b2a; /* Lighter but still dark forefront */
   color: #ffffff; /* Light text color */
 }
 
 .back-button {
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -15,7 +15,7 @@
 }
 
 .back-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .attempt-page h2 {
@@ -30,11 +30,11 @@
 }
 
 .attempt-page .score-value.red {
-  color: #ff0000; /* Red color for low scores */
+  color: #4169e1; /* Royal blue color for low scores */
 }
 
 .attempt-page .score-value.green {
-  color: #00ff00; /* Green color for high scores */
+  color: #03dac6; /* Green color for high scores */
 }
 
 .attempt-page .score-value {
@@ -63,11 +63,11 @@
 }
 
 .attempt-page .status-value.red {
-  color: #ff0000; /* Red color for incorrect status */
+  color: #4169e1; /* Royal blue color for incorrect status */
 }
 
 .attempt-page .status-value.green {
-  color: #00ff00; /* Green color for correct status */
+  color: #03dac6; /* Green color for correct status */
 }
 
 .attempt-page hr {
