@@ -181,3 +181,28 @@ body {
 .logo-title {
   cursor: pointer; /* Pointer cursor on hover */
 }
+
+.about-page,
+.howto-page {
+  padding: 20px;
+  background-color: #1b263b; /* Dark background */
+  color: #ffffff; /* Light text color */
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 20px auto;
+  text-align: center; /* Center the text */
+}
+
+.about-page h1,
+.howto-page h1 {
+  font-size: 2rem; /* Larger font size for headers */
+  color: #fc8600; /* Accent color for headers */
+  margin-bottom: 20px;
+}
+
+.about-page p,
+.howto-page p {
+  font-size: 1.2rem; /* Font size for paragraphs */
+  line-height: 1.5; /* Line height for better readability */
+}
