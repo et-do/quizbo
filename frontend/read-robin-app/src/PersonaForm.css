@@ -18,6 +18,16 @@
   color: #ffffff; /* Light text color */
 }
 
+input {
+  margin-right: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #444444; /* Dark border color */
+  border-radius: 5px;
+  background-color: #2e2e2e; /* Dark input background */
+  color: #ffffff; /* Light text color */
+}
+
 .persona-form h2 {
   margin-bottom: 1rem;
   color: #ffffff;
@@ -35,7 +45,7 @@
   border: 1px solid #02033f; /* Dark border color */
   border-radius: 5px;
   margin-bottom: 1rem;
-  background-color: #0d1b2a; /* Dark input background */
+  background-color: #1b263b; /* Dark input background */
   color: #ffffff; /* Light text color */
 }
 

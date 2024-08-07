@@ -1,12 +1,12 @@
-# ReadRobin
-![Read Robin Logo](frontend/read-robin-app/src/logo.png)
+# Quizbo
+![Quizbo Logo](frontend/read-robin-app/src/logo.png)
 
 **Turn Anything into a Quiz**: Your Personalized Knowledge Platform for Articles, Research Papers, Podcasts, Videos, and more!
 
 ## Overview
-Read Robin is a versatile application designed to transform any media into interactive quizzes. 
+Quizbo is a versatile application designed to transform any media into interactive quizzes. 
 
-Whether it's text from URLs, video, audio, or images, Read Robin generates quizzes to help users engage with content and enhance their learning.
+Whether it's text from URLs, video, audio, or images, Quizbo generates quizzes to help users engage with content and enhance their learning.
 
 Users can store their quiz history, compare their performance with peers, and continuously improve their knowledge.
 
