@@ -10,6 +10,8 @@
   overflow: hidden;
   position: relative;
   transition: opacity 1s ease-in-out;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .intro-screen.fade-out {

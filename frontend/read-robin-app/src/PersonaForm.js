@@ -49,7 +49,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </p>
         <div>
           <label>
-            Describe yourself:
+            Describe yourself:&nbsp;&nbsp;
             <input
               type="text"
               value={userRole}
@@ -61,7 +61,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </div>
         <div>
           <label>
-            What level of difficulty are you looking for?:
+            What level of difficulty are you looking for?:&nbsp;&nbsp;
             <input
               type="text"
               value={difficulty}
@@ -73,7 +73,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </div>
         <div>
           <label>
-            What language do you want the questions to be in?:
+            What language do you want the questions to be in?:&nbsp;&nbsp;
             <input
               type="text"
               value={language}
@@ -85,7 +85,7 @@ const PersonaForm = ({ user, addPersona }) => {
         </div>
         <div>
           <label>
-            Give a name to this persona:
+            Give a name to this persona:&nbsp;&nbsp;
             <input
               type="text"
               value={personaName}

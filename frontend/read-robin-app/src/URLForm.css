@@ -3,10 +3,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: auto;
   padding: 20px;
   width: 100%;
   max-width: 800px; /* Ensure the form has a maximum width */
-  margin: 2rem auto;
 }
 
 .quiz-form h2 {
@@ -68,10 +68,16 @@
   padding: 8px;
   margin-top: 6px;
   width: 100%;
-  max-width: 600px; /* Ensure the card has a maximum width */
+  min-width: 350px;
+  max-width: 400px; /* Ensure the card has a maximum width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center; /* Center the text */
   margin: 0 auto; /* Center the card horizontally */
+  box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 .example-urls h3 {
@@ -117,4 +123,17 @@
 
 .loading-spinner {
   margin-top: 10px;
+}
+
+.quiz-form-back-button {
+  background-color: #4169e1; /* Royal blue */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.quiz-form-back-button:hover {
+  background-color: #fc8600; /* Firebase orange on hover */
 }
