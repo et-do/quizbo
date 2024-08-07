@@ -4,15 +4,29 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: #0d1b2a; /* Lighter but still dark foreground */
 }
 
 .quiz-page h2 {
   color: #ffffff; /* Light text color */
 }
 
+.quiz-item-container {
+  background-color: #0d1b2a; /* Dark background color */
+  padding: 20px;
+  margin: 1rem 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box; /* Include padding in width */
+}
+
 .quiz-item {
-  margin-top: 1rem;
+  width: 100%;
 }
 
 .quiz-item input {
@@ -22,7 +36,7 @@
   padding: 0.5rem;
   width: 100%;
   max-width: 300px;
-  background-color: #0d1b2a; /* Dark input background */
+  background-color: #1b263b; /* Slightly lighter dark input background */
   color: #ffffff; /* Light text color */
   border: 1px solid #444444; /* Dark border color */
 }
@@ -116,6 +130,8 @@
   border-radius: 5px;
   cursor: pointer;
   padding: 0.5rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .retake-button:hover {

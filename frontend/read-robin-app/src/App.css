@@ -71,7 +71,7 @@ body {
 
 .loading-spinner {
   border: 16px solid #1b263b; /* Dark border */
-  border-top: 16px solid #4169e1; /* Royal blue accent color for spinner */
+  border-top: 16px solid #fc8600; /* Royal blue accent color for spinner */
   border-radius: 50%;
   width: 120px;
   height: 120px;
