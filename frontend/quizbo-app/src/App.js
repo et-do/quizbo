@@ -323,10 +323,7 @@ function App() {
                 <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">Quizbo</h1>
               </div>
-              <h2 className="tagline">
-                Your AI Companion for Smarter Comprehension
-              </h2>
-              <div className="header-buttons">
+              <div className="header-buttons-container">
                 <button
                   className="header-button"
                   onClick={() => setPage("about")}
@@ -340,11 +337,14 @@ function App() {
                   How To
                 </button>
               </div>
-              <div
-                className="refresh-icon"
-                onClick={() => window.location.reload()}
-              ></div>
             </div>
+            <h2 className="tagline">
+              Your AI Companion for Smarter Comprehension
+            </h2>
+            <div
+              className="refresh-icon"
+              onClick={() => window.location.reload()}
+            ></div>
             {user && (
               <div className="user-info">
                 <p>Welcome, {user.displayName}</p>
