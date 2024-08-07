@@ -296,7 +296,7 @@ function App() {
       case "about":
         return <About />;
       case "howto":
-        return <HowTo />;
+        return <HowTo setPage={setPage} />;
       default:
         return null;
     }
