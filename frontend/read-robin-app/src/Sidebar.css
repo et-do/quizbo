@@ -1,7 +1,7 @@
 .sidebar {
   width: 400px; /* Increased width for better fit */
   height: 100%;
-  background-color: #1e1e1e; /* Dark background color */
+  background-color: #0d1b2a; /* Lighter but still dark foreground */
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   position: fixed;
@@ -45,7 +45,7 @@
   margin: 0 10px; /* Add margin to the sides */
   color: #ffffff; /* Light text color */
   cursor: pointer;
-  background-color: #444444; /* Button shade */
+  background-color: #0d1b2a; /* Button shade */
   padding: 10px;
   border-radius: 5px;
   display: flex;
@@ -85,7 +85,7 @@
   position: fixed;
   top: 20px;
   left: 10px; /* Adjust based on your needs */
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;

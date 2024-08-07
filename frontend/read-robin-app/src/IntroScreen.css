@@ -5,8 +5,8 @@
   justify-content: flex-start;
   height: 100vh;
   width: 500px; /* Ensure intro-screen takes full width */
-  background-color: #121212;
-  color: #ffffff;
+  background-color: #0d1b2a; /* Dark dark blue background color */
+  color: #ffffff; /* Light text color */
   overflow: hidden;
   position: relative;
   transition: opacity 1s ease-in-out;
@@ -64,5 +64,5 @@
 
 .slide p {
   font-size: 1.2rem;
-  color: #cccccc;
+  color: #cccccc; /* Light gray color for paragraph text */
 }

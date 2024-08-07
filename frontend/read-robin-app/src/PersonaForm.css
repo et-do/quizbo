@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: #1e1e1e; /* Darker background */
+  background-color: #0d1b2a; /* Lighter but still dark foreground */
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -32,10 +32,10 @@
 .persona-form input[type="text"] {
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #444444; /* Dark border color */
+  border: 1px solid #02033f; /* Dark border color */
   border-radius: 5px;
   margin-bottom: 1rem;
-  background-color: #333333; /* Dark input background */
+  background-color: #0d1b2a; /* Dark input background */
   color: #ffffff; /* Light text color */
 }
 
@@ -43,8 +43,8 @@
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #dd3730;
-  color: #ffffff;
+  background-color: #4169e1; /* Royal blue */
+  color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -52,7 +52,7 @@
 }
 
 .persona-submit-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .persona-submit-button.submitting {

@@ -315,7 +315,7 @@ function App() {
                 style={{ cursor: "pointer" }}
               >
                 <img src={logo} alt="Logo" className="logo" />
-                <h1 className="app-title">ReadRobin</h1>
+                <h1 className="app-title">Quizbo</h1>
               </div>
               <h2 className="tagline">
                 Your AI Companion for Smarter Comprehension
@@ -330,7 +330,12 @@ function App() {
                 <p>Welcome, {user.displayName}</p>
                 {activePersona && (
                   <div className="active-persona-card">
-                    <h3>Active Persona</h3>
+                    <h3
+                      className="active-persona-title"
+                      onClick={() => setPage("personas")}
+                    >
+                      Active Persona
+                    </h3>
                     <div className="active-persona-details">
                       <p>
                         <strong>Name: </strong> {activePersona.name}

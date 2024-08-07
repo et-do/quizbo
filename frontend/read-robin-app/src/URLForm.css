@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background-color: #0d1b2a; /* Lighter but still dark foreground */
 }
 
 .quiz-form h2 {
@@ -24,7 +25,7 @@
   border: 1px solid #444444; /* Dark border color */
   border-radius: 5px;
   margin-bottom: 1rem;
-  background-color: #333333; /* Dark input background */
+  background-color: #0d1b2a; /* Dark input background */
   color: #ffffff; /* Light text color */
 }
 
@@ -37,7 +38,7 @@
 .quiz-form button {
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -46,7 +47,7 @@
 }
 
 .quiz-form button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .example-urls {
@@ -56,7 +57,7 @@
 }
 
 .example-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 8px;
@@ -99,7 +100,7 @@
 .example-urls .use-url-button {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -107,7 +108,7 @@
 }
 
 .example-urls .use-url-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .loading-spinner {

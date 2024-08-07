@@ -5,7 +5,7 @@
   justify-content: center;
   height: auto; /* Adjust based on header height */
   padding: 20px;
-  background-color: #1e1e1e; /* Dark background color */
+  background-color: #0d1b2a; /* Lighter but still dark foreground */
   color: #ffffff; /* Light text color */
 }
 
@@ -27,15 +27,15 @@
 }
 
 .selection-dropdown-custom {
-  padding: 15px 20px; /* Increased padding */
-  font-size: 1.25rem; /* Increased font size */
-  background-color: #dd3730; /* Accent color */
+  padding: 10px 15px; /* Decreased padding */
+  font-size: 1rem; /* Decreased font size */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 10px; /* More rounded corners */
   cursor: pointer;
   width: 100%;
-  max-width: 300px;
+  max-width: 200px; /* Decreased max-width */
   appearance: none; /* Remove default arrow */
   -webkit-appearance: none; /* Remove default arrow for Safari */
   -moz-appearance: none; /* Remove default arrow for Firefox */
@@ -45,25 +45,25 @@
 }
 
 .selection-dropdown-custom option {
-  background-color: #1e1e1e; /* Dark background color */
+  background-color: #0d1b2a; /* Dark background color */
   color: #ffffff; /* Light text color */
   padding: 10px; /* Padding for options */
 }
 
 .selection-options-custom button {
   padding: 15px 20px;
-  font-size: 1.25rem;
-  background-color: #dd3730; /* Accent color */
+  font-size: 1rem;
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  width: 100%;
-  max-width: 300px;
+  width: 90%;
+  max-width: 250px;
 }
 
 .selection-options-custom button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .selection-options-custom button:disabled {
