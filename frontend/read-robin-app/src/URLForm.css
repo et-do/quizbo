@@ -3,11 +3,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: auto;
   padding: 20px;
+  width: 100%;
+  max-width: 800px; /* Ensure the form has a maximum width */
 }
 
 .quiz-form h2 {
   color: #ffffff; /* Light text color */
+  text-align: center; /* Center the heading */
 }
 
 .quiz-form form {
@@ -16,6 +20,7 @@
   align-items: center;
   width: 100%;
   max-width: 600px;
+  margin: 0 auto; /* Center the form horizontally */
 }
 
 .quiz-form input {
@@ -24,8 +29,9 @@
   border: 1px solid #444444; /* Dark border color */
   border-radius: 5px;
   margin-bottom: 1rem;
-  background-color: #333333; /* Dark input background */
+  background-color: #0d1b2a; /* Dark input background */
   color: #ffffff; /* Light text color */
+  width: 100%; /* Ensure input takes full width */
 }
 
 /* Placeholder styling */
@@ -37,7 +43,7 @@
 .quiz-form button {
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -46,7 +52,7 @@
 }
 
 .quiz-form button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .example-urls {
@@ -56,17 +62,22 @@
 }
 
 .example-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 8px;
   margin-top: 6px;
   width: 100%;
-  max-width: 600px;
+  min-width: 350px;
+  max-width: 400px; /* Ensure the card has a maximum width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center; /* Center the text */
-  margin-left: auto; /* Center horizontally */
-  margin-right: auto; /* Center horizontally */
+  margin: 0 auto; /* Center the card horizontally */
+  box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 .example-urls h3 {
@@ -99,7 +110,7 @@
 .example-urls .use-url-button {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -107,9 +118,22 @@
 }
 
 .example-urls .use-url-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .loading-spinner {
   margin-top: 10px;
+}
+
+.quiz-form-back-button {
+  background-color: #4169e1; /* Royal blue */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.quiz-form-back-button:hover {
+  background-color: #fc8600; /* Firebase orange on hover */
 }

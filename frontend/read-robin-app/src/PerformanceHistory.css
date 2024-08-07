@@ -31,13 +31,13 @@
 
 .performance-history .timeframe-select span {
   padding: 5px 10px;
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   border-radius: 5px;
   color: #ffffff; /* Light text */
 }
 
 .performance-history .timeframe-select input:checked + span {
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Accent color */
 }
 
 .performance-history .slider {
@@ -46,7 +46,7 @@
   left: 0;
   width: 0;
   height: 3px;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Accent color */
   transition: 0.3s;
   z-index: 0;
 }
@@ -62,7 +62,7 @@
 }
 
 .performance-history .stats-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 20px;
@@ -97,7 +97,7 @@
 }
 
 .performance-history .chart-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 20px;
@@ -112,7 +112,7 @@
 }
 
 .performance-history .quiz-card {
-  background-color: #333333; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text */
   border-radius: 10px;
   padding: 20px;
@@ -126,7 +126,7 @@
 }
 
 .performance-history .attempt-item {
-  background-color: #444444; /* Slightly lighter background for attempts */
+  background-color: #2e3b55; /* Slightly lighter background for attempts */
   border-radius: 5px;
   margin: 10px 0;
   padding: 10px;
@@ -142,7 +142,7 @@
 .performance-history .view-details-button {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Accent color */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -150,13 +150,13 @@
 }
 
 .performance-history .view-details-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Darker accent color on hover */
 }
 
 .performance-history .back-button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Accent color */
   color: #ffffff; /* Light text color */
   border: none;
   border-radius: 5px;
@@ -165,5 +165,5 @@
 }
 
 .performance-history .back-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Darker accent color on hover */
 }

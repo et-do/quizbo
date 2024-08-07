@@ -1,8 +1,8 @@
-# Read Robin Backend
+# Quizbo Backend
 
 ## Overview
 
-This project is the backend part of the Read Robin application. It is a Go application running on Cloud Run integrated with Google Cloud Platform (GCP) services, including Firestore, Vertex AI (Gemini model), and Firebase for authentication. The backend handles content extraction, quiz generation, and storing/retrieving quiz data in Firestore.
+This project is the backend part of the Quizbo application. It is a Go application running on Cloud Run integrated with Google Cloud Platform (GCP) services, including Firestore, Vertex AI (Gemini model), and Firebase for authentication. The backend handles content extraction, quiz generation, and storing/retrieving quiz data in Firestore.
 
 ## Local Development
 

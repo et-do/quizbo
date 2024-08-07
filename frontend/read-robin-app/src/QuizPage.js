@@ -223,38 +223,42 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
       {!loading && questions.length > 0 && (
         <div>
           {questions.map((item, index) => (
-            <div key={index} className="quiz-item">
-              <h3>Question {index + 1}</h3>
-              <p>{item.question}</p>
-              <div className="response-container">
-                <input
-                  type="text"
-                  value={responses[index] || ""}
-                  onChange={(e) => handleResponseChange(e, index)}
-                />
-                <button
-                  onClick={() => handleSubmitResponse(index, item.question_id)}
-                  disabled={submitting[index]}
-                >
-                  Submit
-                </button>
-              </div>
-              {submitting[index] && <div className="loading-spinner"></div>}
-              {status[index] && (
-                <div
-                  className={
-                    status[index] === "Correct" ? "correct" : "incorrect"
-                  }
-                >
-                  {status[index]}
+            <div key={index} className="quiz-item-container">
+              <div className="quiz-item">
+                <h3>Question {index + 1}</h3>
+                <p>{item.question}</p>
+                <div className="response-container">
+                  <input
+                    type="text"
+                    value={responses[index] || ""}
+                    onChange={(e) => handleResponseChange(e, index)}
+                  />
                   <button
-                    className="explanation-button"
-                    onClick={() => handleShowExplanation(index)}
+                    onClick={() =>
+                      handleSubmitResponse(index, item.question_id)
+                    }
+                    disabled={submitting[index]}
                   >
-                    ℹ️
+                    Submit
                   </button>
                 </div>
-              )}
+                {submitting[index] && <div className="loading-spinner"></div>}
+                {status[index] && (
+                  <div
+                    className={
+                      status[index] === "Correct" ? "correct" : "incorrect"
+                    }
+                  >
+                    {status[index]}
+                    <button
+                      className="explanation-button"
+                      onClick={() => handleShowExplanation(index)}
+                    >
+                      ℹ️
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
           <button className="retake-button" onClick={handleRetakeQuiz}>

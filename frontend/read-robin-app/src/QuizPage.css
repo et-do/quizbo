@@ -10,8 +10,23 @@
   color: #ffffff; /* Light text color */
 }
 
+.quiz-item-container {
+  background-color: #0d1b2a; /* Dark background color */
+  padding: 20px;
+  margin: 1rem 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box; /* Include padding in width */
+}
+
 .quiz-item {
-  margin-top: 1rem;
+  width: 100%;
 }
 
 .quiz-item input {
@@ -21,13 +36,13 @@
   padding: 0.5rem;
   width: 100%;
   max-width: 300px;
-  background-color: #333333; /* Dark input background */
+  background-color: #1b263b; /* Slightly lighter dark input background */
   color: #ffffff; /* Light text color */
   border: 1px solid #444444; /* Dark border color */
 }
 
 .quiz-item button {
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -37,7 +52,7 @@
 }
 
 .quiz-item button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .quiz-item .correct {
@@ -65,7 +80,7 @@
 
 .loading-spinner {
   border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #dd3730; /* Accent color */
+  border-top: 4px solid #4169e1; /* Royal blue */
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -90,11 +105,11 @@
 }
 
 .explanation-button:hover {
-  color: #a96a59; /* Darker accent color on hover */
+  color: #fc8600; /* Firebase orange on hover */
 }
 
 .back-button {
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   margin-bottom: 1rem;
   border: none;
@@ -104,21 +119,23 @@
 }
 
 .back-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .retake-button {
-  background-color: #dd3730; /* Accent color */
+  background-color: #4169e1; /* Royal blue */
   color: #ffffff; /* Light text color */
   margin-bottom: 1rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   padding: 0.5rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .retake-button:hover {
-  background-color: #a96a59; /* Darker accent color on hover */
+  background-color: #fc8600; /* Firebase orange on hover */
 }
 
 .popup {
@@ -134,8 +151,8 @@
 }
 
 .popup-content {
-  background: #333333;
-  color: #ffffff;
+  background: #0d1b2a; /* Dark background */
+  color: #ffffff; /* Light text */
   padding: 20px;
   border-radius: 5px;
   max-width: 400px;
@@ -153,7 +170,7 @@
 }
 
 .close-button:hover {
-  color: #dd3730;
+  color: #4169e1; /* Royal blue on hover */
 }
 
 .correct::before {

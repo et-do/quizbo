@@ -158,9 +158,6 @@ function ContentManagementPage({
 
   return (
     <div className="cmp-content-management-page">
-      <button className="cmp-back-button" onClick={() => setPage("selection")}>
-        Back
-      </button>
       <h2>Your Content</h2>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {loading && <div className="cmp-loading-spinner"></div>}
