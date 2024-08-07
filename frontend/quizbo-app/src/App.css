@@ -182,27 +182,80 @@ body {
   cursor: pointer; /* Pointer cursor on hover */
 }
 
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 20px;
+  position: relative;
+}
+
+.header-buttons-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.header-button {
+  background-color: #4169e1; /* Royal blue */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.header-button:hover {
+  background-color: #fc8600; /* Firebase orange on hover */
+}
+
 .about-page,
 .howto-page {
   padding: 20px;
-  background-color: #1b263b; /* Dark background */
+  background-color: #0d1b2a; /* Dark background */
   color: #ffffff; /* Light text color */
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 800px;
   margin: 20px auto;
-  text-align: center; /* Center the text */
+  text-align: left; /* Left align the text */
 }
 
 .about-page h1,
 .howto-page h1 {
-  font-size: 2rem; /* Larger font size for headers */
+  font-size: 2.5rem; /* Larger font size for the main header */
   color: #fc8600; /* Accent color for headers */
   margin-bottom: 20px;
+}
+
+.about-page h2,
+.howto-page h2 {
+  font-size: 2rem; /* Font size for subheaders */
+  color: #707070; /* Accent color for subheaders */
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.about-page h3,
+.howto-page h3 {
+  font-size: 1.5rem; /* Font size for smaller subheaders */
+  color: #4169e1; /* Accent color for subheaders */
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 
 .about-page p,
 .howto-page p {
   font-size: 1.2rem; /* Font size for paragraphs */
   line-height: 1.5; /* Line height for better readability */
+  margin-bottom: 20px;
+}
+
+.about-page strong,
+.howto-page strong {
+  color: #4169e1; /* Different accent color for emphasis */
 }

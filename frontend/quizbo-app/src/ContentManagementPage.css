@@ -68,7 +68,7 @@
 
 .cmp-loading-spinner {
   border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #4169e1; /* Royal blue */
+  border-top: 4px solid #fc8600; /* Royal blue */
   border-radius: 50%;
   width: 20px;
   height: 20px;
