@@ -32,6 +32,8 @@ import VideoForm from "./VideoForm";
 import TextForm from "./TextForm";
 import PerformanceHistory from "./PerformanceHistory";
 import ContentManagementPage from "./ContentManagementPage";
+import About from "./About";
+import HowTo from "./HowTo";
 
 function App() {
   const [page, setPage] = useState("intro");
@@ -291,6 +293,10 @@ function App() {
             </button>
           </>
         );
+      case "about":
+        return <About />;
+      case "howto":
+        return <HowTo setPage={setPage} />;
       default:
         return null;
     }
@@ -317,14 +323,28 @@ function App() {
                 <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">Quizbo</h1>
               </div>
-              <h2 className="tagline">
-                Your AI Companion for Smarter Comprehension
-              </h2>
-              <div
-                className="refresh-icon"
-                onClick={() => window.location.reload()}
-              ></div>
+              <div className="header-buttons-container">
+                <button
+                  className="header-button"
+                  onClick={() => setPage("about")}
+                >
+                  About
+                </button>
+                <button
+                  className="header-button"
+                  onClick={() => setPage("howto")}
+                >
+                  How To
+                </button>
+              </div>
             </div>
+            <h2 className="tagline">
+              Your AI Companion for Smarter Comprehension
+            </h2>
+            <div
+              className="refresh-icon"
+              onClick={() => window.location.reload()}
+            ></div>
             {user && (
               <div className="user-info">
                 <p>Welcome, {user.displayName}</p>
