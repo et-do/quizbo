@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import "./AttemptPage.css";
 
 function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
@@ -8,6 +8,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
   const [loading, setLoading] = useState(true);
   const [quizTitle, setQuizTitle] = useState("");
   const [contentType, setContentType] = useState("");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -51,6 +52,30 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
     fetchAttempt();
   }, [user, activePersona, contentID, attemptID]);
 
+  const handleDeleteAttempt = async () => {
+    setLoading(true);
+    try {
+      const attemptDocRef = doc(
+        db,
+        "users",
+        user.uid,
+        "personas",
+        activePersona.id,
+        "quizzes",
+        contentID,
+        "attempts",
+        attemptID
+      );
+      await deleteDoc(attemptDocRef);
+      setPage("selection");
+    } catch (error) {
+      console.error("Error deleting attempt:", error);
+      setError("Error deleting attempt: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getScoreClass = (score) => {
     if (score <= 50) return "red";
     if (score >= 80) return "green";
@@ -76,6 +101,9 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         onClick={() => setPage("performanceHistory")}
       >
         Back
+      </button>
+      <button className="delete-attempt-button" onClick={handleDeleteAttempt}>
+        &times;
       </button>
       <h2>{quizTitle}</h2>
       <p className="content-type">Content Type: {contentType}</p>
@@ -117,6 +145,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
         ))}
       </ul>
       <p className="attempt-id">Attempt ID: {attempt.attemptID}</p>
+      {error && <div style={{ color: "red" }}>{error}</div>}
     </div>
   );
 }
