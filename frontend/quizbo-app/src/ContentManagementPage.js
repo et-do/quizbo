@@ -209,7 +209,7 @@ function ContentManagementPage({
                       )
                     }
                   >
-                    Generate New Quiz
+                    New Attempt
                   </button>
                   <button
                     className="cmp-see-content"

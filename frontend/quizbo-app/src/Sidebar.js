@@ -128,47 +128,55 @@ function Sidebar({ user, activePersona, setContentID, setAttemptID, setPage }) {
           <p>No quizzes found.</p>
         ) : (
           <>
-            {Object.entries(groupedQuizzes).map(([contentType, quizzes]) => (
-              <div key={contentType}>
-                <h3>{contentType}</h3>
-                <ul>
-                  {quizzes.map((quiz) => (
-                    <li key={quiz.id} className="quiz-item">
-                      <div
-                        className="quiz-title"
-                        onClick={() => toggleQuiz(quiz.id)}
-                      >
-                        {quiz.title}
-                      </div>
-                      {expandedQuiz === quiz.id && (
-                        <ul className="attempts-list">
-                          {quiz.attempts.length > 0 ? (
-                            quiz.attempts.map((attempt) => (
-                              <li
-                                key={attempt.attemptID}
-                                onClick={() =>
-                                  handleAttemptClick(quiz.id, attempt.attemptID)
-                                }
-                              >
-                                {attempt.createdAt
-                                  ? new Date(
-                                      attempt.createdAt.seconds * 1000
-                                    ).toLocaleString()
-                                  : "N/A"}
-                                <br />
-                                {attempt.score ? `${attempt.score}%` : "0.00%"}
-                              </li>
-                            ))
-                          ) : (
-                            <li>No attempts found</li>
+            {Object.entries(groupedQuizzes).map(
+              ([contentType, quizzes]) =>
+                quizzes.length > 0 && (
+                  <div key={contentType}>
+                    <h3>{contentType}</h3>
+                    <ul>
+                      {quizzes.map((quiz) => (
+                        <li key={quiz.id} className="quiz-item">
+                          <div
+                            className="quiz-title"
+                            onClick={() => toggleQuiz(quiz.id)}
+                          >
+                            {quiz.title}
+                          </div>
+                          {expandedQuiz === quiz.id && (
+                            <ul className="attempts-list">
+                              {quiz.attempts.length > 0 ? (
+                                quiz.attempts.map((attempt) => (
+                                  <li
+                                    key={attempt.attemptID}
+                                    onClick={() =>
+                                      handleAttemptClick(
+                                        quiz.id,
+                                        attempt.attemptID
+                                      )
+                                    }
+                                  >
+                                    {attempt.createdAt
+                                      ? new Date(
+                                          attempt.createdAt.seconds * 1000
+                                        ).toLocaleString()
+                                      : "N/A"}
+                                    <br />
+                                    {attempt.score
+                                      ? `${attempt.score}%`
+                                      : "0.00%"}
+                                  </li>
+                                ))
+                              ) : (
+                                <li>No attempts found</li>
+                              )}
+                            </ul>
                           )}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+            )}
           </>
         )}
       </div>
