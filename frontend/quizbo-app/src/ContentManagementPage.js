@@ -64,7 +64,6 @@ function ContentManagementPage({
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
-        setError("Error fetching contents");
       } finally {
         setLoading(false);
       }

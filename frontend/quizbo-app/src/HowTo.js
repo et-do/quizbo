@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, auth } from "./firebase"; // Import auth from firebase
 import "./App.css";
 
 function HowTo({ user, setPage }) {
@@ -12,11 +12,29 @@ function HowTo({ user, setPage }) {
     setLoading(true);
     setError(null);
     try {
+      console.log("Starting profile deletion process...");
+
+      // Delete user profile from Firestore
       const userDocRef = doc(db, "users", user.uid);
+      console.log("Deleting user document from Firestore with ID:", user.uid);
       await deleteDoc(userDocRef);
-      // Add any additional cleanup actions here, like logging out the user
+      console.log("User document deleted from Firestore.");
+
+      // Sign out the user
+      console.log("Signing out the user...");
+      await auth.signOut();
+      console.log("User signed out.");
+
+      // Optionally, delete the user's Firebase Authentication profile
+      console.log("Deleting the user's Firebase Authentication profile...");
+      await user.delete();
+      console.log("User's Firebase Authentication profile deleted.");
+
+      // Redirect to login page or another appropriate page
+      console.log("Redirecting to login page...");
       setPage("login");
     } catch (error) {
+      console.error("Error during profile deletion process:", error);
       setError("Error deleting profile: " + error.message);
     } finally {
       setLoading(false);
