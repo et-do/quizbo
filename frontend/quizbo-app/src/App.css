@@ -259,3 +259,74 @@ body {
 .howto-page strong {
   color: #4169e1; /* Different accent color for emphasis */
 }
+
+.delete-button {
+  background-color: #fc8600; /* Firebase orange */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.delete-button:hover {
+  background-color: #e25700; /* Darker orange on hover */
+}
+
+.confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmation-content {
+  background: #0d1b2a; /* Match the app's theme */
+  color: #ffffff; /* Light text color */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.confirm-button {
+  background-color: #fc8600; /* Firebase orange */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.confirm-button:disabled {
+  background-color: #e25700; /* Darker orange when disabled */
+  cursor: not-allowed;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background-color: #e25700; /* Darker orange on hover */
+}
+
+.cancel-button {
+  background-color: #4169e1; /* Royal blue */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  margin-left: 10px;
+}
+
+.cancel-button:hover {
+  background-color: #365ebd; /* Darker blue on hover */
+}
