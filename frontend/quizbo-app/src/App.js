@@ -294,9 +294,13 @@ function App() {
           </>
         );
       case "about":
-        return <About />;
+        return user ? <About /> : <Login signIn={signIn} />;
       case "howto":
-        return <HowTo setPage={setPage} />;
+        return user ? (
+          <HowTo setPage={setPage} user={user} />
+        ) : (
+          <Login signIn={signIn} />
+        );
       default:
         return null;
     }
@@ -323,20 +327,22 @@ function App() {
                 <img src={logo} alt="Logo" className="logo" />
                 <h1 className="app-title">Quizbo</h1>
               </div>
-              <div className="header-buttons-container">
-                <button
-                  className="header-button"
-                  onClick={() => setPage("about")}
-                >
-                  About
-                </button>
-                <button
-                  className="header-button"
-                  onClick={() => setPage("howto")}
-                >
-                  How To
-                </button>
-              </div>
+              {user && (
+                <div className="header-buttons-container">
+                  <button
+                    className="header-button"
+                    onClick={() => setPage("about")}
+                  >
+                    About
+                  </button>
+                  <button
+                    className="header-button"
+                    onClick={() => setPage("howto")}
+                  >
+                    How To
+                  </button>
+                </div>
+              )}
             </div>
             <h2 className="tagline">
               Your AI Companion for Smarter Comprehension

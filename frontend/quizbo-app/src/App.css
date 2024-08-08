@@ -200,7 +200,7 @@ body {
 }
 
 .header-button {
-  background-color: #4169e1; /* Royal blue */
+  background-color: #fc8600; /* Royal blue */
   color: #fff;
   padding: 10px;
   border: none;
@@ -210,9 +210,8 @@ body {
 }
 
 .header-button:hover {
-  background-color: #fc8600; /* Firebase orange on hover */
+  background-color: #4169e1; /* Firebase orange on hover */
 }
-
 .about-page,
 .howto-page {
   padding: 20px;
