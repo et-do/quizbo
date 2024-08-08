@@ -9,6 +9,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
   const [quizTitle, setQuizTitle] = useState("");
   const [contentType, setContentType] = useState("");
   const [error, setError] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchAttempt = async () => {
@@ -52,8 +53,13 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
     fetchAttempt();
   }, [user, activePersona, contentID, attemptID]);
 
-  const handleDeleteAttempt = async () => {
+  const handleDeleteClick = () => {
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = async () => {
     setLoading(true);
+    setShowConfirmation(false);
     try {
       const attemptDocRef = doc(
         db,
@@ -74,6 +80,10 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false);
   };
 
   const getScoreClass = (score) => {
@@ -102,7 +112,7 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
       >
         Back
       </button>
-      <button className="delete-attempt-button" onClick={handleDeleteAttempt}>
+      <button className="delete-attempt-button" onClick={handleDeleteClick}>
         &times;
       </button>
       <h2>{quizTitle}</h2>
@@ -146,6 +156,25 @@ function AttemptPage({ user, activePersona, contentID, attemptID, setPage }) {
       </ul>
       <p className="attempt-id">Attempt ID: {attempt.attemptID}</p>
       {error && <div style={{ color: "red" }}>{error}</div>}
+      {showConfirmation && (
+        <div className="confirmation-modal">
+          <div className="confirmation-content">
+            <h3>Are you sure you want to permanently delete this attempt?</h3>
+            <p>This action cannot be undone.</p>
+            <button
+              className="confirm-button"
+              onClick={handleConfirmDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Yes, Delete"}
+            </button>
+            <button className="cancel-button" onClick={handleCancelDelete}>
+              Cancel
+            </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

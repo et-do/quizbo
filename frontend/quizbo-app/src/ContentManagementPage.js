@@ -16,6 +16,8 @@ function ContentManagementPage({
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState("");
   const [popupTitle, setPopupTitle] = useState("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [contentToDelete, setContentToDelete] = useState(null);
 
   useEffect(() => {
     const fetchContents = async () => {
@@ -62,7 +64,6 @@ function ContentManagementPage({
         setContents(contentsList);
       } catch (error) {
         console.error("Error fetching contents:", error);
-        setError("Error fetching contents");
       } finally {
         setLoading(false);
       }
@@ -135,8 +136,14 @@ function ContentManagementPage({
     setPopupTitle("");
   };
 
-  const handleDeleteContent = async (contentID) => {
+  const handleDeleteClick = (contentID) => {
+    setContentToDelete(contentID);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = async () => {
     setLoading(true);
+    setShowConfirmation(false);
     try {
       const contentDocRef = doc(
         db,
@@ -145,16 +152,22 @@ function ContentManagementPage({
         "personas",
         activePersona.id,
         "quizzes",
-        contentID
+        contentToDelete
       );
       await deleteDoc(contentDocRef);
-      setContents(contents.filter((content) => content.id !== contentID));
+      setContents(contents.filter((content) => content.id !== contentToDelete));
     } catch (error) {
       console.error("Error deleting content:", error);
       setError("Error deleting content: " + error.message);
     } finally {
       setLoading(false);
+      setContentToDelete(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false);
+    setContentToDelete(null);
   };
 
   // Group contents by content_type
@@ -185,7 +198,7 @@ function ContentManagementPage({
                 <div key={content.id} className="cmp-content-item">
                   <button
                     className="cmp-delete-content"
-                    onClick={() => handleDeleteContent(content.id)}
+                    onClick={() => handleDeleteClick(content.id)}
                   >
                     &times;
                   </button>
@@ -240,6 +253,25 @@ function ContentManagementPage({
             <div className="cmp-popup-scroll">
               <pre>{popupContent}</pre>
             </div>
+          </div>
+        </div>
+      )}
+      {showConfirmation && (
+        <div className="cmp-popup-overlay">
+          <div className="cmp-popup-content">
+            <h3>Are you sure you want to delete this content?</h3>
+            <p>This action cannot be undone.</p>
+            <button
+              className="confirm-button"
+              onClick={handleConfirmDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Yes, Delete"}
+            </button>
+            <button className="cancel-button" onClick={handleCancelDelete}>
+              Cancel
+            </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
         </div>
       )}
