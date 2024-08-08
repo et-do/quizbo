@@ -22,25 +22,6 @@
   gap: 1rem; /* Add spacing between content items */
 }
 
-.cmp-content-item {
-  background-color: #0d1b2a; /* Dark background color */
-  color: #ffffff; /* Light text color */
-  padding: 1rem;
-  margin: 0.5rem 0;
-  border-radius: 5px;
-  width: 100%;
-  min-width: 450px;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  word-wrap: break-word; /* Ensure text wraps within the container */
-  overflow-wrap: break-word; /* Break words when necessary */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
-  box-sizing: border-box; /* Ensure padding is included in width */
-}
-
 .cmp-content-type-title {
   color: #ffffff; /* Light text color */
   text-align: center;
@@ -151,4 +132,42 @@
 
 .cmp-close-button:hover {
   color: #fc8600; /* Firebase orange on hover */
+}
+
+.cmp-content-item {
+  background-color: #0d1b2a; /* Dark background color */
+  color: #ffffff; /* Light text color */
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  width: 100%;
+  min-width: 450px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center; /* Changed from center to left */
+  word-wrap: break-word; /* Ensure text wraps within the container */
+  overflow-wrap: break-word; /* Break words when necessary */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  box-sizing: border-box; /* Ensure padding is included in width */
+  position: relative; /* Added to enable absolute positioning of the delete button */
+}
+
+.cmp-delete-content {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 1rem; /* Reduced font size */
+  color: #ffffff; /* White text color */
+  background: #fc8600; /* Firebase orange background */
+  border: none; /* Remove button border */
+  cursor: pointer;
+  padding: 0.2rem 0.4rem; /* Add padding to make the button smaller */
+  border-radius: 3px; /* Add border radius for rounded corners */
+}
+
+.cmp-delete-content:hover {
+  background: #ffffff; /* Change background color on hover */
+  color: #fc8600; /* Change text color on hover */
 }

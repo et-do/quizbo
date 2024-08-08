@@ -1,0 +1,19 @@
+Welcome to Quizbo, the web app transforming how we learn, powered by Google's latest large language model, Gemineye
+
+Turn any content—URLs, text, PDFs, audio, or video—into comprehensive quizzes. Thanks to Gemini’s advanced multimodal capabilities, Quizbo ensures thorough understanding, no matter the format.
+
+Create personalized quizzing personas tailored to your difficulty level and language. Whether you're a beginner or an expert, Quizbo adapts to your needs.
+
+Quizbo's advanced grading system, powered by Gemini, accepts a wide range of responses, ensuring fair assessment. No more losing points for minor mistakes!
+
+Get custom tips and insights for every question. Struggling? Quizbo highlights areas to focus on. Excelling? Get recommendations for further study.
+
+Track your learning journey with detailed history and performance insights. View your "quizzified" content and generate new quizzes anytime.
+
+Quizbo revolutionizes education by making learning accessible and personalized.
+
+Students can master new languages, academics can manage research, and professionals can stay sharp with tailored quizzes.
+
+Feeling overwhelmed by the daily swarm of information? Let Quizbo make learning fun and personalized, helping you retain material effortlessly.
+
+Welcome to Quizbo, a smarter way to learn.
