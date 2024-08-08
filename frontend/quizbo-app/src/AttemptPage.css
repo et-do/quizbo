@@ -6,6 +6,7 @@
   border-radius: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+  position: relative; /* Enable absolute positioning for delete button */
 }
 
 .back-button {
@@ -24,6 +25,24 @@
   background-color: #fc8600; /* Firebase orange on hover */
 }
 
+.delete-attempt-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: #ffffff; /* White text color */
+  background-color: #fc8600; /* Firebase orange */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+}
+
+.delete-attempt-button:hover {
+  background-color: #ffffff; /* Change background color on hover */
+  color: #fc8600; /* Change text color on hover */
+}
+
 .attempt-page h2 {
   margin-top: 0;
   color: #ffffff; /* Light text color */
@@ -36,7 +55,7 @@
 }
 
 .attempt-page .score-value.red {
-  color: #4169e1; /* Royal blue color for low scores */
+  color: #e14141; /* Royal blue color for low scores */
 }
 
 .attempt-page .score-value.green {
@@ -69,11 +88,11 @@
 }
 
 .attempt-page .status-value.red {
-  color: #e14141; /* Royal blue color for incorrect status */
+  color: #e14141; /* Red color for incorrect status */
 }
 
 .attempt-page .status-value.green {
-  color: #03dac6; /* Green color for correct status */
+  color: #10c33d; /* Green color for correct status */
 }
 
 .attempt-page hr {

@@ -12,10 +12,9 @@ Users can store their quiz history, compare their performance with peers, and co
 
 ## Features
 - **Multi-Media Quiz Generation**: Generate quizzes from text, video, audio, and images.
-- **User Authentication**: Secure login with Google authentication.
-- **Quiz History**: Track and review past quizzes.
-- **Peer Comparison**: Compare quiz results with peers.
-- **Interactive UI**: Engaging and user-friendly interface.
+- **Quiz History**: Track and review past quizzes. See scores over time and what type of content you quiz yourself on.
+- **Tailored Peronas**: Create a user persona to tailor the quizzes to your specific needs. Control the audience, difficulty, and language of your quizzes
+- **Question Insights**: Get helpful insights on each and every question, right or wrong.
 
 ## Repository Layout
 ```bash
@@ -37,6 +36,3 @@ Users can store their quiz history, compare their performance with peers, and co
     └── firebase.json      # Firebase configuration
 ```
 
-#### Attributions
-
-Logo: <a href="https://www.flaticon.com/free-icons/robin" title="robin icons">Robin icons created by Freepik - Flaticon</a>

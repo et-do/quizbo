@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ContentManagementPage.css";
 import { db } from "./firebase";
-import {
-  collection,
-  getDocs,
-  doc,
-  query,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
 function ContentManagementPage({
   user,
@@ -142,6 +135,28 @@ function ContentManagementPage({
     setPopupTitle("");
   };
 
+  const handleDeleteContent = async (contentID) => {
+    setLoading(true);
+    try {
+      const contentDocRef = doc(
+        db,
+        "users",
+        user.uid,
+        "personas",
+        activePersona.id,
+        "quizzes",
+        contentID
+      );
+      await deleteDoc(contentDocRef);
+      setContents(contents.filter((content) => content.id !== contentID));
+    } catch (error) {
+      console.error("Error deleting content:", error);
+      setError("Error deleting content: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Group contents by content_type
   const groupContentsByContentType = (contents) => {
     return contents.reduce((acc, content) => {
@@ -168,6 +183,12 @@ function ContentManagementPage({
               <h3 className="cmp-content-type-title">{contentType}</h3>
               {groupedContents[contentType].map((content) => (
                 <div key={content.id} className="cmp-content-item">
+                  <button
+                    className="cmp-delete-content"
+                    onClick={() => handleDeleteContent(content.id)}
+                  >
+                    &times;
+                  </button>
                   <h3 style={{ color: "white" }}>{content.title}</h3>
                   <p>Attempts: {content.attempts}</p>
                   <p>
