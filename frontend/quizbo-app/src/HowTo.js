@@ -1,7 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db, auth } from "./firebase"; // Import auth from firebase
 import "./App.css";
 
-function HowTo({ setPage }) {
+function HowTo({ user, setPage }) {
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleDeleteProfile = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log("Starting profile deletion process...");
+
+      // Delete user profile from Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      console.log("Deleting user document from Firestore with ID:", user.uid);
+      await deleteDoc(userDocRef);
+      console.log("User document deleted from Firestore.");
+
+      // Sign out the user
+      console.log("Signing out the user...");
+      await auth.signOut();
+      console.log("User signed out.");
+
+      // Optionally, delete the user's Firebase Authentication profile
+      console.log("Deleting the user's Firebase Authentication profile...");
+      await user.delete();
+      console.log("User's Firebase Authentication profile deleted.");
+
+      // Redirect to login page or another appropriate page
+      console.log("Redirecting to login page...");
+      setPage("login");
+    } catch (error) {
+      console.error("Error during profile deletion process:", error);
+      setError("Error deleting profile: " + error.message);
+    } finally {
+      setLoading(false);
+      setShowConfirmation(false);
+    }
+  };
+
   return (
     <div className="howto-page">
       <h1>How to Use Quizbo</h1>
@@ -79,6 +119,42 @@ function HowTo({ setPage }) {
         can also see your latest scores to ensure you are up to date with all
         your important content.
       </p>
+
+      <h2>Delete Profile</h2>
+      <p>
+        If you wish to delete your profile, you can do so by clicking the button
+        below. Please note that this action is irreversible. While you'll be
+        able to make another account, you will lose all of your history.
+      </p>
+      <button
+        onClick={() => setShowConfirmation(true)}
+        className="delete-button"
+      >
+        Delete Profile
+      </button>
+
+      {showConfirmation && (
+        <div className="confirmation-modal">
+          <div className="confirmation-content">
+            <h3>Are you sure you want to delete your profile?</h3>
+            <p>This action cannot be undone.</p>
+            <button
+              onClick={handleDeleteProfile}
+              disabled={loading}
+              className="confirm-button"
+            >
+              {loading ? "Deleting..." : "Yes, Delete"}
+            </button>
+            <button
+              onClick={() => setShowConfirmation(false)}
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
