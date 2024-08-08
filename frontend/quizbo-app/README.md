@@ -1,8 +1,8 @@
-# Read Robin Frontend
+# Quizbo Frontend
 
 ## Overview
 
-This project is the frontend part of the Read Robin application. It is a React application integrated with Firebase for authentication and hosting.
+This project is the frontend part of the Quizbo application. It is a React application integrated with Firebase for authentication and hosting.
 
 ## Local Development
 

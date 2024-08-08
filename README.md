@@ -1,7 +1,8 @@
 # Quizbo
-![Quizbo Logo](frontend/read-robin-app/src/logo.png)
+<img src="frontend/quizbo-app/src/logo.png" alt="Quizbo Logo" width="300" height="auto">
 
 **Turn Anything into a Quiz**: Your Personalized Knowledge Platform for Articles, Research Papers, Podcasts, Videos, and more!
+
 
 ## Overview
 Quizbo is a versatile application designed to transform any media into interactive quizzes. 
