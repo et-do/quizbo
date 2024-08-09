@@ -59,6 +59,19 @@ function About() {
         individual learning needs, from any type of content, Gemini transforms
         learning into a more interactive and impactful experience.
       </p>
+
+      <h2>GitHub Repository</h2>
+      <p>
+        You can find the source code and contribute to Quizbo on our GitHub
+        repository:
+        <a
+          href="https://github.com/et-do/quizbo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          https://github.com/et-do/quizbo
+        </a>
+      </p>
     </div>
   );
 }

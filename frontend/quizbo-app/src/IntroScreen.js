@@ -13,7 +13,7 @@ const slides = [
   },
   {
     title: "💡 Tailored Learning Experience",
-    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, preferred language, and difficulty level",
+    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, preferred language, and difficulty level.",
   },
   {
     title: "🚀 Get Started",
@@ -23,20 +23,21 @@ const slides = [
 
 const IntroScreen = ({ onFinish }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [fadeOut, setFadeOut] = useState(false);
 
   const handleDotClick = (index) => {
-    if (index === slides.length - 1) {
-      setFadeOut(true);
-      setTimeout(onFinish, 1000); // Adjust as needed for fade-out duration
-    } else {
-      setCurrentSlide(index);
-    }
+    setCurrentSlide(index);
+  };
+
+  const handleClose = () => {
+    onFinish();
   };
 
   return (
     <div className="intro-screen">
-      <div className={`intro-container ${fadeOut ? "fade-out" : ""}`}>
+      <div className="intro-container">
+        <button className="intro-container-close-button" onClick={handleClose}>
+          ×
+        </button>
         <img src={logo} alt="Logo" className="intro-logo" />
         <div className="slides-container">
           {slides.map((slide, index) => (
