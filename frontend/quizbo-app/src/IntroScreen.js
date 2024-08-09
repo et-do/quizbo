@@ -27,8 +27,12 @@ const IntroScreen = ({ onFinish }) => {
 
   const handleDotClick = (index) => {
     if (index === slides.length - 1) {
-      setFadeOut(true);
-      setTimeout(onFinish, 1000); // Adjust as needed for fade-out duration
+      // Show the last slide and then fade out
+      setCurrentSlide(index);
+      setTimeout(() => {
+        setFadeOut(true);
+        setTimeout(onFinish, 1000); // Adjust as needed for fade-out duration
+      }, 1000); // Adjust this duration to match the display time for the last slide
     } else {
       setCurrentSlide(index);
     }
