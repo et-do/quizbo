@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./IntroScreen.css";
 import logo from "./logo.png";
 
@@ -23,32 +23,21 @@ const slides = [
 
 const IntroScreen = ({ onFinish }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [fadeOut, setFadeOut] = useState(false);
 
   const handleDotClick = (index) => {
-    if (index === slides.length - 1) {
-      // Show the last slide and then fade out
-      setCurrentSlide(index);
-      setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(onFinish, 1000); // Adjust as needed for fade-out duration
-      }, 1000); // Adjust this duration to match the display time for the last slide
-    } else {
-      setCurrentSlide(index);
-    }
+    setCurrentSlide(index);
   };
 
-  useEffect(() => {
-    if (fadeOut) {
-      setTimeout(() => {
-        onFinish();
-      }, 1000);
-    }
-  }, [fadeOut, onFinish]);
+  const handleClose = () => {
+    onFinish();
+  };
 
   return (
     <div className="intro-screen">
-      <div className={`intro-container ${fadeOut ? "fade-out" : ""}`}>
+      <div className="intro-container">
+        <button className="intro-container-close-button" onClick={handleClose}>
+          ×
+        </button>
         <img src={logo} alt="Logo" className="intro-logo" />
         <div className="slides-container">
           {slides.map((slide, index) => (
