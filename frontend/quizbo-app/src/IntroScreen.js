@@ -13,7 +13,7 @@ const slides = [
   },
   {
     title: "💡 Tailored Learning Experience",
-    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, preferred language, and difficulty level",
+    text: "Whether you're a student, professional, or lifelong learner, generate quizzes that match your role, preferred language, and difficulty level.",
   },
   {
     title: "🚀 Get Started",
