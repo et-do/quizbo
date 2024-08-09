@@ -21,7 +21,7 @@
 .persona-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Center items vertically */
   padding: 10px;
   border: 1px solid #444444; /* Dark border color */
   border-radius: 5px;
@@ -31,35 +31,34 @@
 }
 
 .persona-item.active {
-  background-color: #444444; /* Slightly lighter background */
-  color: #ffffff; /* Light text color */
-}
-
-.persona-info {
-  flex-grow: 1;
+  background-color: #4e4e4e; /* Slightly lighter background for active state */
 }
 
 .persona-actions {
   display: flex;
   gap: 10px;
+  align-items: center; /* Ensure buttons are centered vertically */
 }
 
 .persona-button {
-  padding: 5px 10px;
+  width: 100px; /* Fixed width for consistency */
+  height: 40px; /* Add height for consistency */
+  padding: 0; /* Remove padding for consistent height */
+  margin: 0; /* Remove margin for consistent height */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: #4169e1; /* Royal blue */
   color: #fff;
+  text-align: center; /* Center align text */
+  display: flex;
+  align-items: center; /* Center align text vertically */
+  justify-content: center; /* Center align text horizontally */
+  box-sizing: border-box; /* Ensure padding and border are included in width/height */
 }
 
 .persona-button.delete-button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   background-color: #fc8600; /* Firebase orange */
-  color: #fff;
 }
 
 .persona-button:hover {

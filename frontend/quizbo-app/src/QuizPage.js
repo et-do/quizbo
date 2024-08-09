@@ -217,7 +217,7 @@ function QuizPage({ user, activePersona, setPage, contentID, quizID }) {
       <button className="back-button" onClick={() => setPage("selection")}>
         Back
       </button>
-      <h2>Quiz</h2>
+      <h2>{quizTitle}</h2> {/* Display quiz title */}
       {error && !loading && <div style={{ color: "red" }}>{error}</div>}
       {loading && <div className="loading-spinner"></div>}
       {!loading && questions.length > 0 && (

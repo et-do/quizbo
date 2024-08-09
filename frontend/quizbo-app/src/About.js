@@ -7,8 +7,8 @@ function About() {
       <h1>About Quizbo</h1>
       <p>
         Quizbo is your AI companion for smarter comprehension, leveraging the
-        power of Gemini, Google's Language Model (LLM), to create tailored
-        quizzes from a vast array of internet content.
+        power of Gemini, Google's latest Large Language Model, to create
+        tailored quizzes from a vast array of internet content.
       </p>
 
       <h2>Why LLMs for Quiz Generation?</h2>
@@ -35,6 +35,16 @@ function About() {
         the text to show how it derived the answers.
       </p>
 
+      <h3>Tailoring Questions</h3>
+      <p>
+        Quizbo uses user-defined personas to tailor quizzes to each user's
+        characteristics, difficulty, and language preferences. By defining a
+        persona, users can specify their role (e.g., student, researcher),
+        preferred difficulty level, and desired language. This information
+        allows Quizbo to generate quizzes that are better suited to the user's
+        needs and learning goals.
+      </p>
+
       <h3>Answer Review</h3>
       <p>
         When you respond to a question, your answer, along with the content
@@ -44,10 +54,10 @@ function About() {
 
       <h2>The Power of LLMs</h2>
       <p>
-        Through this entire system, LLMs power all the major backend components,
-        showcasing how powerful and flexible these systems can be. They enable
-        the dynamic creation of quizzes tailored to individual learning needs,
-        making learning more interactive and effective.
+        Gemini powers every core component of Quizbo, demonstrating its immense
+        capability and adaptability. By dynamically creating quizzes tailored to
+        individual learning needs, from any type of content, Gemini transforms
+        learning into a more interactive and impactful experience.
       </p>
     </div>
   );

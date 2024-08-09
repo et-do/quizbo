@@ -87,6 +87,7 @@
 
 .example-audio .example-link:hover {
   text-decoration: underline;
+  color: #fc8600;
 }
 
 .example-audio .download-button {
@@ -107,4 +108,5 @@
 
 .loading-spinner {
   margin-top: 10px;
+  color: #fc8600;
 }
