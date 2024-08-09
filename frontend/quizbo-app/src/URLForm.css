@@ -105,6 +105,7 @@
 
 .example-urls .example-link:hover {
   text-decoration: underline;
+  color: #fc8600;
 }
 
 .example-urls .use-url-button {
@@ -123,6 +124,7 @@
 
 .loading-spinner {
   margin-top: 10px;
+  color: #fc8600;
 }
 
 .quiz-form-back-button {

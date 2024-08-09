@@ -33,6 +33,7 @@ func main() {
 		"https://read-robin-2e150.web.app",
 		"https://read-robin-dev-6yudia4zva-nn.a.run.app",
 		"https://read-robin-6yudia4zva-nn.a.run.app",
+		"https://quizbo.app",
 	})
 	corsAllowedMethods := gorillahandlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"})
 	corsAllowedHeaders := gorillahandlers.AllowedHeaders([]string{"Content-Type", "Authorization"})

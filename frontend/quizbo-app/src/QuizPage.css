@@ -8,6 +8,7 @@
 
 .quiz-page h2 {
   color: #ffffff; /* Light text color */
+  margin-bottom: 10px; /* Add some spacing below the title */
 }
 
 .quiz-item-container {

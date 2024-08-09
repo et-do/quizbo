@@ -54,7 +54,7 @@ button[type="submit"]:hover {
 
 .loading-spinner {
   border: 4px solid rgba(255, 255, 255, 0.3);
-  border-left-color: #ffffff;
+  border-left-color: #fc8600;
   border-radius: 50%;
   width: 36px;
   height: 36px;
