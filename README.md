@@ -1,5 +1,7 @@
 # Quizbo
-<img src="frontend/quizbo-app/src/logo.png" alt="Quizbo Logo" width="300" height="auto">
+<a href="https://quizbo.app">
+  <img src="frontend/quizbo-app/src/logo.png" alt="Quizbo Logo" width="300" height="auto">
+</a>
 
 **Turn Anything into a Quiz**: Your Personalized Knowledge Platform for Articles, Research Papers, Podcasts, Videos, and more!
 
@@ -37,3 +39,7 @@ Users can store their quiz history, compare their performance with peers, and co
     └── firebase.json      # Firebase configuration
 ```
 
+
+## Fair Use & Data Privacy
+- **Fair Use**: Any content uploaded by the user is presumed to be owned by the user and/or the user has the explicit permission to generate quizzes with it.
+- **Data Privacy**: None of the uploaded data from users is accessed by others and can be permanently removed from the databases by each user at any point.
