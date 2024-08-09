@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./IntroScreen.css";
 import logo from "./logo.png";
 
@@ -33,6 +33,14 @@ const IntroScreen = ({ onFinish }) => {
       setCurrentSlide(index);
     }
   };
+
+  useEffect(() => {
+    if (fadeOut) {
+      setTimeout(() => {
+        onFinish();
+      }, 1000);
+    }
+  }, [fadeOut, onFinish]);
 
   return (
     <div className="intro-screen">
